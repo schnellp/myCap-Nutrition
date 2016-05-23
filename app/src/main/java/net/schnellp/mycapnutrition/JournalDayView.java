@@ -17,7 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ArrayAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class JournalDayView extends AppCompatActivity {
 
@@ -117,6 +123,9 @@ public class JournalDayView extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+
+
             return rootView;
         }
     }
@@ -135,7 +144,7 @@ public class JournalDayView extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return new JournalDayFragment();
         }
 
         @Override
