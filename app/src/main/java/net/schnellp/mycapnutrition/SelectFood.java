@@ -124,7 +124,7 @@ public class SelectFood extends AppCompatActivity {
 
                 holder = new ViewHolder();
                 convertView = inflater.inflate(R.layout.foodrow, null);
-                holder.llContainer = (LinearLayout)convertView.findViewById(R.id.selectfoodrow);
+                holder.llContainer = (LinearLayout) convertView.findViewById(R.id.selectfoodrow);
                 holder.tvName = (TextView) convertView.findViewById(R.id.foodrowName);
                 holder.tvDetails = (TextView) convertView.findViewById(R.id.foodrowDetails);
                 convertView.setTag(holder);
@@ -134,7 +134,7 @@ public class SelectFood extends AppCompatActivity {
             holder.tvName.setText(foodsDisplayedValues.get(position).getName());
             holder.tvDetails.setText(foodsDisplayedValues.get(position).getKcal()+"");
 
-            /*
+
             holder.llContainer.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
@@ -142,7 +142,7 @@ public class SelectFood extends AppCompatActivity {
                     Toast.makeText(SelectFood.this, foodsDisplayedValues.get(position).getName(), Toast.LENGTH_SHORT).show();
                 }
             });
-            */
+
 
             return convertView;
         }
