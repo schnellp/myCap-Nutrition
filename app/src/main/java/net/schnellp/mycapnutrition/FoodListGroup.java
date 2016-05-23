@@ -3,9 +3,6 @@ package net.schnellp.mycapnutrition;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Patrick on 5/23/2016.
- */
 public class FoodListGroup {
 
     public String string;

@@ -76,8 +76,8 @@ public class SelectFood extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onResume();
 
-        foodArrayList.add(new Food("Egg"));
-        foodArrayList.add(new Food("Bacon"));
+        foodArrayList.add(new Food(0).setName("Egg"));
+        foodArrayList.add(new Food(1).setName("Bacon"));
 
 
         foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, foodArrayList);
@@ -140,6 +140,8 @@ public class SelectFood extends AppCompatActivity {
 
                 public void onClick(View v) {
                     Intent intent = new Intent(SelectFood.this, RecordView.class);
+                    Food food = foodsDisplayedValues.get(position);
+                    intent.putExtra("food_dbid", food.DBID);
                     startActivity(intent);
                 }
             });
@@ -185,7 +187,8 @@ public class SelectFood extends AppCompatActivity {
                         for (int i = 0; i < foodsOriginalValues.size(); i++) {
                             String data = foodsOriginalValues.get(i).getName();
                             if (data.toLowerCase().startsWith(constraint.toString())) {
-                                FilteredArrList.add(new Food(foodsOriginalValues.get(i).getName()));
+                                FilteredArrList.add(new Food(foodsOriginalValues.get(i).DBID).
+                                        setName(foodsOriginalValues.get(i).getName()));
                             }
                         }
                         // set the Filtered result to return
