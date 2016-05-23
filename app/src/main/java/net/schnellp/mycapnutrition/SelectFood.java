@@ -139,8 +139,8 @@ public class SelectFood extends AppCompatActivity {
             holder.llContainer.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-
-                    Toast.makeText(SelectFood.this, foodsDisplayedValues.get(position).getName(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SelectFood.this, RecordView.class);
+                    startActivity(intent);
                 }
             });
 
