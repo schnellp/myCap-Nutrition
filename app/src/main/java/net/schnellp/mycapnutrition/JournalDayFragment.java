@@ -14,13 +14,14 @@ import android.widget.TextView;
 public class JournalDayFragment extends Fragment {
 
     SparseArray<FoodListGroup> groups = new SparseArray<FoodListGroup>();
+    public static final String DAY_NUMBER = "day_number";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText("test fragment");
+        textView.setText("test fragment " + getArguments().getInt(DAY_NUMBER));
 
         createData();
 

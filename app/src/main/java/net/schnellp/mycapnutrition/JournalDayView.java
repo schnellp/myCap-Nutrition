@@ -144,7 +144,11 @@ public class JournalDayView extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return new JournalDayFragment();
+            JournalDayFragment fragment = new JournalDayFragment();
+            Bundle args = new Bundle();
+            args.putInt(JournalDayFragment.DAY_NUMBER, position + 1);
+            fragment.setArguments(args);
+            return fragment;
         }
 
         @Override
