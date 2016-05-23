@@ -21,6 +21,10 @@
         <activity
             android:name=".RecordView"
             android:label="@string/title_activity_record_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SelectFood"
+            android:label="@string/title_activity_select_food"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
