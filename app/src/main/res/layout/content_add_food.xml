@@ -17,12 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Name"
-        android:id="@+id/textView" />
+        android:id="@+id/textView"
+        android:labelFor="@+id/etName" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etName" />
+        android:id="@id/etName"
+        android:inputType="text"/>
 
     <TextView
         android:layout_width="match_parent"
