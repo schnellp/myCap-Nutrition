@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -18,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -32,7 +29,6 @@ import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SelectFood extends AppCompatActivity {
 

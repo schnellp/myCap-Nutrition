@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * Created by Patrick on 5/23/2016.
- */
 public class JournalDayFragment extends Fragment {
 
     SparseArray<FoodListGroup> groups = new SparseArray<FoodListGroup>();

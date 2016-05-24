@@ -9,9 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by Patrick on 5/23/2016.
- */
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
     public final SparseArray<FoodListGroup> groups;
