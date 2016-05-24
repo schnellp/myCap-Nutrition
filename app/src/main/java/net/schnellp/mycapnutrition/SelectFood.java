@@ -5,13 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -33,6 +39,7 @@ public class SelectFood extends AppCompatActivity {
     private EditText editText;
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
+    private Menu menu;
 
     private FoodDataSource datasource;
     private ArrayList<Food> foodArrayList = new ArrayList<>();
@@ -75,49 +82,68 @@ public class SelectFood extends AppCompatActivity {
         });
 
         datasource = new FoodDataSource(this);
-        datasource.open();
 
-        List<Food> values = datasource.getAllFoods();
+        registerForContextMenu(listView);
+    }
 
-        System.out.println("AFKLJHASKJFHASKJFHAS: " + values.size());
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.listViewFoodResults) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_context_select_food_view, menu);
+        }
+    }
 
-        ArrayAdapter<Food> adapter = new ArrayAdapter<>(this,
-                R.layout.foodrow, values);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.edit:
+                // edit stuff here
+                return true;
+            case R.id.delete:
+                foodSearchAdapter.deleteItem(info.position);
+                Toast toast = Toast.makeText(this, "" + info.position, Toast.LENGTH_SHORT);
+                toast.show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        foodArrayList.clear();
+        //foodArrayList.clear();
         // foodArrayList.add(new Food(0).setName("Egg"));
         // foodArrayList.add(new Food(1).setName("Bacon"));
 
-        datasource.open();
-        foodArrayList.addAll(datasource.getAllFoods());
-        datasource.close();
+        //foodArrayList.addAll(datasource.getAllFoods());
 
-        foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, foodArrayList);
+        foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, datasource);
         listView.setAdapter(foodSearchAdapter);
     }
 
     @Override
     protected void onPause() {
-        datasource.close();
         super.onPause();
     }
 
     public class FoodSearchAdapter extends BaseAdapter implements Filterable {
 
-        private ArrayList<Food> foodsOriginalValues;
-        private ArrayList<Food> foodsDisplayedValues;
+        private ArrayList<Food> foodsOriginalValues = new ArrayList<>();
+        private ArrayList<Food> foodsDisplayedValues = new ArrayList<>();
         LayoutInflater inflater;
+        FoodDataSource datasource;
 
-        public FoodSearchAdapter(Context context, ArrayList<Food> foodsValues) {
-            this.foodsOriginalValues = foodsValues;
-            this.foodsDisplayedValues = foodsValues;
+        public FoodSearchAdapter(Context context, FoodDataSource datasource) {
+            this.datasource = datasource;
+            datasource.open();
+            foodsOriginalValues.addAll(datasource.getAllFoods());
+            foodsDisplayedValues.addAll(datasource.getAllFoods());
+            datasource.close();
             inflater = LayoutInflater.from(context);
         }
 
@@ -134,6 +160,16 @@ public class SelectFood extends AppCompatActivity {
         @Override
         public long getItemId(int position) {
             return position;
+        }
+
+        public void deleteItem(int position) {
+            Food food = foodsDisplayedValues.get(position);
+            datasource.open();
+            datasource.deleteFood(food);
+            datasource.close();
+            foodsOriginalValues.remove(position);
+            foodSearchAdapter.getFilter().filter("");
+            notifyDataSetChanged();
         }
 
         private class ViewHolder {
@@ -171,6 +207,17 @@ public class SelectFood extends AppCompatActivity {
                 }
             });
 
+            /*
+            holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View v) {
+                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), android.R.color.holo_purple));
+
+                    return true;
+                }
+            });
+            */
 
             return convertView;
         }
