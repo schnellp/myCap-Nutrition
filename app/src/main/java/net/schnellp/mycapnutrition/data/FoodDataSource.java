@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FoodDataSource {
@@ -54,6 +55,7 @@ public class FoodDataSource {
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
                 FoodEntry._ID + " = " + insertID,
                 null, null, null, null);
+        cursor.moveToFirst();
         Food newFood = new Food(cursor);
         cursor.close();
 
