@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -22,8 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.Food;
+import net.schnellp.mycapnutrition.data.FoodDataSource;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SelectFood extends AppCompatActivity {
 
@@ -31,6 +34,7 @@ public class SelectFood extends AppCompatActivity {
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
 
+    private FoodDataSource datasource;
     private ArrayList<Food> foodArrayList = new ArrayList<>();
 
     @Override
@@ -69,19 +73,36 @@ public class SelectFood extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        datasource = new FoodDataSource(this);
+        datasource.open();
+
+        List<Food> values = datasource.getAllFoods();
+
+        ArrayAdapter<Food> adapter = new ArrayAdapter<Food>(this,
+                R.layout.foodrow, values);
+        listView.setAdapter(adapter);
     }
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
+        datasource.open();
+
         super.onResume();
 
-        foodArrayList.add(new Food(0).setName("Egg"));
-        foodArrayList.add(new Food(1).setName("Bacon"));
+        foodArrayList.clear();
+        // foodArrayList.add(new Food(0).setName("Egg"));
+        // foodArrayList.add(new Food(1).setName("Bacon"));
 
 
         foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, foodArrayList);
         listView.setAdapter(foodSearchAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        datasource.close();
+        super.onPause();
     }
 
     public class FoodSearchAdapter extends BaseAdapter implements Filterable {
@@ -132,8 +153,8 @@ public class SelectFood extends AppCompatActivity {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.tvName.setText(foodsDisplayedValues.get(position).getName());
-            holder.tvDetails.setText(foodsDisplayedValues.get(position).getKcal()+"");
+            holder.tvName.setText(foodsDisplayedValues.get(position).name);
+            holder.tvDetails.setText(foodsDisplayedValues.get(position).kcal+"");
 
 
             holder.llContainer.setOnClickListener(new View.OnClickListener() {
@@ -185,10 +206,9 @@ public class SelectFood extends AppCompatActivity {
                     } else {
                         constraint = constraint.toString().toLowerCase();
                         for (int i = 0; i < foodsOriginalValues.size(); i++) {
-                            String data = foodsOriginalValues.get(i).getName();
+                            String data = foodsOriginalValues.get(i).name;
                             if (data.toLowerCase().startsWith(constraint.toString())) {
-                                FilteredArrList.add(new Food(foodsOriginalValues.get(i).DBID).
-                                        setName(foodsOriginalValues.get(i).getName()));
+                                FilteredArrList.add(foodsOriginalValues.get(i));
                             }
                         }
                         // set the Filtered result to return

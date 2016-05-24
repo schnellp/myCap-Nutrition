@@ -1,26 +1,21 @@
 package net.schnellp.mycapnutrition.data;
 
+import android.database.Cursor;
+
 public class Food {
 
     public final int DBID;
-    private String name = "null";
-    private int referenceServing_mg = 1000;
-    private int kcal, carb_mg, fat_mg, protein_mg = 0;
+    public final String name;
+    public final int referenceServing_mg;
+    public final int kcal, carb_mg, fat_mg, protein_mg;
 
-    public Food(int DBID) {
-        this.DBID = DBID;
-    }
-
-    public Food setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getKcal() {
-        return kcal;
+    public Food(Cursor cursor) {
+        DBID = cursor.getInt(0);
+        name = cursor.getString(1);
+        referenceServing_mg = cursor.getInt(2);
+        kcal = cursor.getInt(3);
+        carb_mg = cursor.getInt(4);
+        fat_mg = cursor.getInt(5);
+        protein_mg = cursor.getInt(6);
     }
 }
