@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,8 @@ public class FoodDataSource {
         dbHelper.close();
     }
 
-    public Food createFood(String name, int referenceServing_mg,
-                           int kcal, int carb_mg, int fat_mg, int protein_mg) {
+    public Food createFood(String name, String referenceServing_mg,
+                           String kcal, String carb_mg, String fat_mg, String protein_mg) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
         values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg);
@@ -42,7 +43,14 @@ public class FoodDataSource {
         values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg);
         values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg);
 
-        long insertID = database.insert(FoodEntry.TABLE_NAME, null, values);
+        long insertID = -1;
+        try {
+            insertID = database.insertOrThrow(FoodEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
                 FoodEntry._ID + " = " + insertID,
                 null, null, null, null);

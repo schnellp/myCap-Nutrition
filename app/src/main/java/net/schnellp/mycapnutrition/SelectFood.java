@@ -79,21 +79,25 @@ public class SelectFood extends AppCompatActivity {
 
         List<Food> values = datasource.getAllFoods();
 
-        ArrayAdapter<Food> adapter = new ArrayAdapter<Food>(this,
+        System.out.println("AFKLJHASKJFHASKJFHAS: " + values.size());
+
+        ArrayAdapter<Food> adapter = new ArrayAdapter<>(this,
                 R.layout.foodrow, values);
         listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
-        datasource.open();
-
         super.onResume();
 
         foodArrayList.clear();
         // foodArrayList.add(new Food(0).setName("Egg"));
         // foodArrayList.add(new Food(1).setName("Bacon"));
 
+        datasource.open();
+        foodArrayList.addAll(datasource.getAllFoods());
+        datasource.close();
 
         foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, foodArrayList);
         listView.setAdapter(foodSearchAdapter);
