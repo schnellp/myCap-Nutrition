@@ -28,7 +28,7 @@ public class JournalDayFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText("test fragment " + getArguments().getInt(DAY_NUMBER));
+        textView.setText(getArguments().getString(DAY_NUMBER));
 
         datasource = new FoodDataSource(this.getContext());
         datasource.open();

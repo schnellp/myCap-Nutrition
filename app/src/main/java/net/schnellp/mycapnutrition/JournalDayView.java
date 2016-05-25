@@ -15,6 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import net.schnellp.mycapnutrition.data.Conversion;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class JournalDayView extends AppCompatActivity {
 
     /**
@@ -31,6 +36,7 @@ public class JournalDayView extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private int pageCount = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,12 @@ public class JournalDayView extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setCurrentItem(9, false);
+
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+
+        mViewPager.setCurrentItem(Conversion.dateToDayNumber(strDate) + 1, false);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,15 +111,14 @@ public class JournalDayView extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             JournalDayFragment fragment = new JournalDayFragment();
             Bundle args = new Bundle();
-            args.putInt(JournalDayFragment.DAY_NUMBER, position + 1);
+            args.putString(JournalDayFragment.DAY_NUMBER, Conversion.dayNumberToDate(position));
             fragment.setArguments(args);
             return fragment;
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 10;
+            return 365608;
         }
 
         @Override
