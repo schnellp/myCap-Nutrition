@@ -9,6 +9,16 @@ public class IntOrNA {
         this.isNA = false;
     }
 
+    public IntOrNA(String string) {
+        if (string.equals("") || string.equals("null") || string.equals("NA")) {
+            isNA = true;
+            val = 0;
+        } else {
+            isNA = false;
+            val = Integer.parseInt(string);
+        }
+    }
+
     public IntOrNA(int val, boolean isNA) {
         this.val = val;
         this.isNA = isNA;

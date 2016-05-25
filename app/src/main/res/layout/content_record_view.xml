@@ -16,9 +16,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvFoodName"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/tvFoodName" />
 
     <TextView
         android:layout_width="match_parent"
@@ -33,13 +31,14 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editText" />
+        android:id="@+id/etRecordServing" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Record"
         android:id="@+id/button2"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="saveRecord" />
 
 </LinearLayout>

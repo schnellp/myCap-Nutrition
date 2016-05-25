@@ -11,22 +11,26 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Food.db";
 
-    private static final String SQL_CREATE_ENTRIES =
+    private static final String SQL_CREATE_TABLE_FOOD =
             "CREATE TABLE " + FoodEntry.TABLE_NAME + " (" +
-            FoodEntry._ID + " INTEGER PRIMARY KEY, " +
-            FoodEntry.COLUMN_NAME_NAME + " TEXT, " +
-            FoodEntry.COLUMN_NAME_REF_SERVING_MG + " INTEGER, " +
-            FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
-            FoodEntry.COLUMN_NAME_CARB_MG + " INTEGER, " +
-            FoodEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
-            FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER); " +
+                    FoodEntry._ID + " INTEGER PRIMARY KEY, " +
+                    FoodEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    FoodEntry.COLUMN_NAME_REF_SERVING_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_CARB_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
+
+    private static final String SQL_CREATE_TABLE_RECORD =
             "CREATE TABLE " + RecordEntry.TABLE_NAME + " (" +
-            RecordEntry._ID + " INTEGER PRIMARY KEY, " +
-            RecordEntry.COLUMN_NAME_DATE + " TEXT, " +
-            RecordEntry.COLUMN_NAME_FOOD + " INTEGER, " +
-            "FOREIGN KEY(" + RecordEntry.COLUMN_NAME_FOOD + ") " +
-            "REFERENCES " + FoodEntry.TABLE_NAME + "(" + FoodEntry._ID + "), " +
-            RecordEntry.COLUMN_NAME_AMOUNT_MG + " INTEGER)";
+                    RecordEntry._ID + " INTEGER PRIMARY KEY, " +
+                    RecordEntry.COLUMN_NAME_DATE + " TEXT, " +
+                    RecordEntry.COLUMN_NAME_FOOD_NAME + " TEXT, " +
+                    RecordEntry.COLUMN_NAME_AMOUNT_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_CARB_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " +
@@ -39,7 +43,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_TABLE_FOOD);
+        db.execSQL(SQL_CREATE_TABLE_RECORD);
     }
 
     @Override

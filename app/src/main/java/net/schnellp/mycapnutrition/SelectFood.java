@@ -112,12 +112,6 @@ public class SelectFood extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //foodArrayList.clear();
-        // foodArrayList.add(new Food(0).setName("Egg"));
-        // foodArrayList.add(new Food(1).setName("Bacon"));
-
-        //foodArrayList.addAll(datasource.getAllFoods());
-
         foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, datasource);
         listView.setAdapter(foodSearchAdapter);
     }

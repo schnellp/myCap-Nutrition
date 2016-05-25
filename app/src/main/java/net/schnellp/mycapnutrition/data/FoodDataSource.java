@@ -17,6 +17,7 @@ public class FoodDataSource {
     private SQLiteDatabase database;
     private DBHelper dbHelper;
     private String[] foodColNames;
+    private String[] recordColNames;
 
     public FoodDataSource(Context context) {
         dbHelper = new DBHelper(context);
@@ -24,8 +25,13 @@ public class FoodDataSource {
 
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
+
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, null, null, null, null, null, null);
         foodColNames = cursor.getColumnNames();
+
+        cursor = database.query(RecordEntry.TABLE_NAME, null, null, null, null, null, null);
+        recordColNames = cursor.getColumnNames();
+
         cursor.close();
     }
 
@@ -53,6 +59,59 @@ public class FoodDataSource {
 
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
                 FoodEntry._ID + " = " + insertID,
+                null, null, null, null);
+        cursor.moveToFirst();
+        Food newFood = new Food(cursor);
+        cursor.close();
+
+        return newFood;
+    }
+
+    public Record createRecord(String date, Food food, IntOrNA amount_mg) {
+        DoubleOrNA dAmount_mg = new DoubleOrNA(amount_mg);
+        DoubleOrNA dRefServ_mg = new DoubleOrNA(food.referenceServing_mg);
+        DoubleOrNA dKcal = new DoubleOrNA(food.kcal);
+        DoubleOrNA dCarb_mg = new DoubleOrNA(food.carb_mg);
+        DoubleOrNA dFat_mg = new DoubleOrNA(food.fat_mg);
+        DoubleOrNA dProtein_mg = new DoubleOrNA(food.protein_mg);
+
+        DoubleOrNA dServ = dAmount_mg.divide(dRefServ_mg);
+
+        String sKcal = dKcal.multiply(dServ).round().toDBString();
+        String sCarb_mg = dCarb_mg.multiply(dServ).round().toDBString();
+        String sFat_mg = dFat_mg.multiply(dServ).round().toDBString();
+        String sProtein_mg = dProtein_mg.multiply(dServ).round().toDBString();
+
+        ContentValues values = new ContentValues();
+        values.put(RecordEntry.COLUMN_NAME_DATE, date);
+        values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, food.name);
+        values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, amount_mg.toDBString());
+        values.put(RecordEntry.COLUMN_NAME_KCAL, sKcal);
+        values.put(RecordEntry.COLUMN_NAME_CARB_MG, sCarb_mg);
+        values.put(RecordEntry.COLUMN_NAME_FAT_MG, sFat_mg);
+        values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, sProtein_mg);
+
+        long insertID = -1;
+        try {
+            insertID = database.insertOrThrow(RecordEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        Cursor cursor = database.query(RecordEntry.TABLE_NAME, recordColNames,
+                RecordEntry._ID + " = " + insertID,
+                null, null, null, null);
+        cursor.moveToFirst();
+        Record newRecord = new Record(cursor);
+        cursor.close();
+
+        return newRecord;
+    }
+
+    public Food getFood(int dbid) {
+        Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
+                FoodEntry._ID + " = " + dbid,
                 null, null, null, null);
         cursor.moveToFirst();
         Food newFood = new Food(cursor);
