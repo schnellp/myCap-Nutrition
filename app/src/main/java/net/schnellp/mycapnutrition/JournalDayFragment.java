@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.FoodDataSource;
 import net.schnellp.mycapnutrition.data.Record;
@@ -22,7 +21,8 @@ public class JournalDayFragment extends Fragment {
 
     SparseArray<FoodListGroup> groups = new SparseArray<>();
     public FoodDataSource datasource;
-    public static final String DAY_NUMBER = "day_number";
+    public static final String DATE = "day_number";
+    private String date;
     ExpandableRecordListAdapter adapter;
 
     @Override
@@ -30,12 +30,14 @@ public class JournalDayFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText(getArguments().getString(DAY_NUMBER));
+
+        date = getArguments().getString(DATE);
+        textView.setText(date);
 
         datasource = new FoodDataSource(this.getContext());
         datasource.open();
 
-        ArrayList<Record> records = new ArrayList<>(datasource.getAllRecords());
+        ArrayList<Record> records = new ArrayList<>(datasource.getRecordsFromDate(date));
 
         for (int i = 0; i < records.size(); i++) {
             groups.append(i, new FoodListGroup(records.get(i)));
@@ -73,6 +75,10 @@ public class JournalDayFragment extends Fragment {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    public String getDate() {
+        return date;
     }
 
     public void deleteRecord(int position) {

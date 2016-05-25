@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
@@ -23,6 +22,9 @@ public class RecordView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("RecordView " + getIntent().getExtras().get("DATE"));
+
         setContentView(R.layout.activity_record_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,7 +43,7 @@ public class RecordView extends AppCompatActivity {
 
     public void saveRecord(View v) {
         EditText et = (EditText) findViewById(R.id.etRecordServing);
-        String date = "1970-01-01";
+        String date = getIntent().getStringExtra("DATE");
         IntOrNA amount_mg = (new IntOrNA(et.getText().toString())).multiply(1000);
         datasource.open();
         Record record = datasource.createRecord(date, food, amount_mg);

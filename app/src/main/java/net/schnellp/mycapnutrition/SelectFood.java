@@ -35,14 +35,13 @@ public class SelectFood extends AppCompatActivity {
     private EditText editText;
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
-    private Menu menu;
 
     private FoodDataSource datasource;
-    private ArrayList<Food> foodArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_select_food);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,6 +72,7 @@ public class SelectFood extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AddFood.class);
+                intent.putExtras(((SelectFood) view.getContext()).getIntent());
                 startActivity(intent);
             }
         });
@@ -193,6 +193,7 @@ public class SelectFood extends AppCompatActivity {
                     Intent intent = new Intent(SelectFood.this, RecordView.class);
                     Food food = foodsDisplayedValues.get(position);
                     intent.putExtra("food_dbid", food.DBID);
+                    intent.putExtras(((SelectFood) v.getContext()).getIntent());
                     startActivity(intent);
                 }
             });

@@ -9,9 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.schnellp.mycapnutrition.data.FoodDataSource;
-import net.schnellp.mycapnutrition.data.Record;
-
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
     public final SparseArray<FoodListGroup> groups;
@@ -42,8 +39,11 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.recordrow_details, null);
         }
-        text = (TextView) convertView.findViewById(R.id.textView1);
-        text.setText(children);
+
+        FoodListGroup group = (FoodListGroup) getGroup(groupPosition);
+
+        text = (TextView) convertView.findViewById(R.id.tvRecordDetails);
+        text.setText(group.record.date);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +95,7 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         ((TextView) convertView.findViewById(R.id.tvRecordKcal)).setText(group.record.kcal.toString());
         ((TextView) convertView.findViewById(R.id.tvRecordAmount)).setText(
                 group.record.amount_mg.toDoubleOrNA().divide(1000) + "g");
+
         return convertView;
     }
 

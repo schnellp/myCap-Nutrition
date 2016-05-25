@@ -63,6 +63,8 @@ public class JournalDayView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), SelectFood.class);
+                String date = Conversion.dayNumberToDate(mViewPager.getCurrentItem());
+                intent.putExtra("DATE", date);
                 startActivity(intent);
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
@@ -110,7 +112,7 @@ public class JournalDayView extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             JournalDayFragment fragment = new JournalDayFragment();
             Bundle args = new Bundle();
-            args.putString(JournalDayFragment.DAY_NUMBER, Conversion.dayNumberToDate(position));
+            args.putString(JournalDayFragment.DATE, Conversion.dayNumberToDate(position));
             fragment.setArguments(args);
             return fragment;
         }
