@@ -8,9 +8,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.data.Food;
+import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.Record;
+
+import org.w3c.dom.Comment;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class JournalDayFragment extends Fragment {
 
-    SparseArray<FoodListGroup> groups = new SparseArray<FoodListGroup>();
+    SparseArray<FoodListGroup> groups = new SparseArray<>();
+    public FoodDataSource datasource;
     public static final String DAY_NUMBER = "day_number";
 
     @Override
@@ -20,7 +30,14 @@ public class JournalDayFragment extends Fragment {
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText("test fragment " + getArguments().getInt(DAY_NUMBER));
 
-        createData();
+        datasource = new FoodDataSource(this.getContext());
+        datasource.open();
+
+        ArrayList<Record> records = new ArrayList<>(datasource.getAllRecords());
+
+        for (int i = 0; i < records.size(); i++) {
+            groups.append(i, new FoodListGroup(records.get(i)));
+        }
 
         ExpandableRecordListView listView = (ExpandableRecordListView)
                 rootView.findViewById(R.id.recordListView);
@@ -29,15 +46,5 @@ public class JournalDayFragment extends Fragment {
         listView.setAdapter(adapter);
 
         return rootView;
-    }
-
-    public void createData() {
-        for (int j = 0; j < 5; j++) {
-            FoodListGroup group = new FoodListGroup("Test " + j);
-            for (int i = 0; i < 5; i++) {
-                group.children.add("Sub Item" + i);
-            }
-            groups.append(j, group);
-        }
     }
 }

@@ -9,6 +9,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.schnellp.mycapnutrition.data.FoodDataSource;
+
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
     public final SparseArray<FoodListGroup> groups;
@@ -88,7 +90,7 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.recordrow_group, null);
         }
         FoodListGroup group = (FoodListGroup) getGroup(groupPosition);
-        ((TextView) convertView).setText(group.string);
+        ((TextView) convertView).setText(group.record.foodName);
         return convertView;
     }
 

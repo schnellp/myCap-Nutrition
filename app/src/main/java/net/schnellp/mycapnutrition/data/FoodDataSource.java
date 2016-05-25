@@ -142,4 +142,21 @@ public class FoodDataSource {
         cursor.close();
         return foods;
     }
+
+    public List<Record> getAllRecords() {
+        List<Record> records = new ArrayList<>();
+
+        Cursor cursor = database.query(RecordEntry.TABLE_NAME,
+                recordColNames, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Record record = new Record(cursor);
+            records.add(record);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+        return records;
+    }
 }
