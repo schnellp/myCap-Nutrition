@@ -47,8 +47,9 @@ public class RecordView extends AppCompatActivity {
         Record record = datasource.createRecord(date, food, amount_mg);
         datasource.close();
 
-        Toast toast = Toast.makeText(this, record.foodName, Toast.LENGTH_SHORT);
-        toast.show();
+        Intent intent = new Intent(this, JournalDayView.class);
+        intent.putExtra("DATE", date);
+        startActivity(intent);
     }
 
 }
