@@ -54,4 +54,26 @@ public class RecordView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void switchFood(View v) {
+        Intent intent = new Intent(this, SelectFood.class);
+        intent.putExtra("CALLED_FOR_RESULT", true);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == 1) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                datasource.open();
+                food = datasource.getFood(data.getIntExtra("food_dbid", -1));
+                datasource.close();
+
+                TextView tv = (TextView) findViewById(R.id.tvFoodName);
+                tv.setText(food.name);
+            }
+        }
+    }
+
 }

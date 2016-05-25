@@ -194,7 +194,13 @@ public class SelectFood extends AppCompatActivity {
                     Food food = foodsDisplayedValues.get(position);
                     intent.putExtra("food_dbid", food.DBID);
                     intent.putExtras(((SelectFood) v.getContext()).getIntent());
-                    startActivity(intent);
+
+                    if (((SelectFood) v.getContext()).getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    } else {
+                        startActivity(intent);
+                    }
                 }
             });
 
