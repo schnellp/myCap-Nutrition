@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FoodDataSource {
@@ -39,6 +40,10 @@ public class FoodDataSource {
         dbHelper.close();
     }
 
+    private String[] getMutableFoodColNames() {
+        return Arrays.copyOfRange(foodColNames, 1, foodColNames.length);
+    }
+
     public Food createFood(String name, String referenceServing_mg,
                            String kcal, String carb_mg, String fat_mg, String protein_mg) {
         ContentValues values = new ContentValues();
@@ -59,6 +64,35 @@ public class FoodDataSource {
 
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
                 FoodEntry._ID + " = " + insertID,
+                null, null, null, null);
+        cursor.moveToFirst();
+        Food newFood = new Food(cursor);
+        cursor.close();
+
+        return newFood;
+    }
+
+    public Food updateFood(int dbid, String name, String referenceServing_mg,
+                           String kcal, String carb_mg, String fat_mg, String protein_mg) {
+        ContentValues values = new ContentValues();
+        values.put(FoodEntry.COLUMN_NAME_NAME, name);
+        values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg);
+        values.put(FoodEntry.COLUMN_NAME_KCAL, kcal);
+        values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg);
+        values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg);
+        values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg);
+
+        String[] mutableFoodColNames = getMutableFoodColNames();
+
+        try {
+            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + dbid, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
+                FoodEntry._ID + " = " + dbid,
                 null, null, null, null);
         cursor.moveToFirst();
         Food newFood = new Food(cursor);

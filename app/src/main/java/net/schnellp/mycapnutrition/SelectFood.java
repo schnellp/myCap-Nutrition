@@ -96,7 +96,7 @@ public class SelectFood extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
             case R.id.edit:
-                // edit stuff here
+                foodSearchAdapter.editItem(info.position);
                 return true;
             case R.id.delete:
                 foodSearchAdapter.deleteItem(info.position);
@@ -150,6 +150,15 @@ public class SelectFood extends AppCompatActivity {
         @Override
         public long getItemId(int position) {
             return position;
+        }
+
+        public void editItem(int position) {
+            SelectFood context = SelectFood.this;
+            Food food = foodsDisplayedValues.get(position);
+            Intent intent = new Intent(context, AddFood.class);
+            intent.putExtra("CALLED_FOR_RESULT", true);
+            intent.putExtra("food_dbid", food.DBID);
+            startActivityForResult(intent, 1);
         }
 
         public void deleteItem(int position) {

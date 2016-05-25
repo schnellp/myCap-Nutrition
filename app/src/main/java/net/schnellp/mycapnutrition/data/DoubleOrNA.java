@@ -28,6 +28,10 @@ public class DoubleOrNA {
         return new DoubleOrNA(val * d.val, isNA || d.isNA);
     }
 
+    public DoubleOrNA multiply(double d) {
+        return new DoubleOrNA(val * d, isNA);
+    }
+
     public DoubleOrNA divide(DoubleOrNA d) {
         return new DoubleOrNA(val / d.val, isNA || d.isNA);
     }
