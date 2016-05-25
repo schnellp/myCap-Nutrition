@@ -42,7 +42,7 @@ public class RecordView extends AppCompatActivity {
     public void saveRecord(View v) {
         EditText et = (EditText) findViewById(R.id.etRecordServing);
         String date = "1970-01-01";
-        IntOrNA amount_mg = new IntOrNA(et.getText().toString());
+        IntOrNA amount_mg = (new IntOrNA(et.getText().toString())).multiply(1000);
         datasource.open();
         Record record = datasource.createRecord(date, food, amount_mg);
         datasource.close();

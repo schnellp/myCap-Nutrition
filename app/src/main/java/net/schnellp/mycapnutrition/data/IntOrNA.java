@@ -41,6 +41,10 @@ public class IntOrNA {
         return new IntOrNA(val * n.val, isNA | n.isNA);
     }
 
+    public IntOrNA multiply(int n) {
+        return new IntOrNA(val * n, isNA);
+    }
+
     public String toString() {
         if (isNA) {
             return "NA";
