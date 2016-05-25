@@ -3,10 +3,16 @@ package net.schnellp.mycapnutrition;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
@@ -44,7 +50,33 @@ public class JournalDayFragment extends Fragment {
         ExpandableRecordListAdapter adapter = new ExpandableRecordListAdapter(this.getActivity(), groups);
 
         listView.setAdapter(adapter);
+        registerForContextMenu(listView);
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.recordListView) {
+            MenuInflater inflater = this.getActivity().getMenuInflater();
+            inflater.inflate(R.menu.menu_context_recordrow_group, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.edit:
+                // edit stuff here
+                return true;
+            case R.id.delete:
+                Toast toast = Toast.makeText(this.getActivity(), "delete", Toast.LENGTH_SHORT);
+                toast.show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 }
