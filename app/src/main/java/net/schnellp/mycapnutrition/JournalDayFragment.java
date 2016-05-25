@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class JournalDayFragment extends Fragment {
 
-    SparseArray<FoodListGroup> groups = new SparseArray<>();
+    ArrayList<FoodListGroup> groups = new ArrayList<>();
     public FoodDataSource datasource;
     public static final String DATE = "day_number";
     private String date;
@@ -40,7 +40,7 @@ public class JournalDayFragment extends Fragment {
         ArrayList<Record> records = new ArrayList<>(datasource.getRecordsFromDate(date));
 
         for (int i = 0; i < records.size(); i++) {
-            groups.append(i, new FoodListGroup(records.get(i)));
+            groups.add(i, new FoodListGroup(records.get(i)));
         }
 
         ExpandableRecordListView listView = (ExpandableRecordListView)

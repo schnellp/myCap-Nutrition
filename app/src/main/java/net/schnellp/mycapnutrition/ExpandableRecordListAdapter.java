@@ -1,7 +1,6 @@
 package net.schnellp.mycapnutrition;
 
 import android.app.Activity;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +8,15 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
-    public final SparseArray<FoodListGroup> groups;
+    public final ArrayList<FoodListGroup> groups;
     public LayoutInflater inflater;
     public Activity activity;
 
-    public ExpandableRecordListAdapter(Activity act, SparseArray<FoodListGroup> groups) {
+    public ExpandableRecordListAdapter(Activity act, ArrayList<FoodListGroup> groups) {
         activity = act;
         this.groups = groups;
         inflater = act.getLayoutInflater();
@@ -111,7 +112,7 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
     }
 
     public void removeRecord(int position) {
-        groups.removeAt(position);
+        groups.remove(position);
         notifyDataSetChanged();
     }
 }
