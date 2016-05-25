@@ -1,5 +1,6 @@
 package net.schnellp.mycapnutrition;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
 
 public class AddFood extends AppCompatActivity {
@@ -49,14 +51,11 @@ public class AddFood extends AppCompatActivity {
 
         FoodDataSource datasource = new FoodDataSource(this);
         datasource.open();
-        datasource.createFood(name, sRefServing_mg, sKcal, sCarb_mg, sFat_mg, sProtein_mg);
+        Food food = datasource.createFood(name, sRefServing_mg, sKcal, sCarb_mg, sFat_mg, sProtein_mg);
         datasource.close();
 
-        Toast.makeText(this, name + " " +
-                sRefServing_mg + " " +
-                sKcal + " " +
-                sCarb_mg + " " +
-                sFat_mg + " " +
-                sProtein_mg, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, RecordView.class);
+        intent.putExtra("food_dbid", food.DBID);
+        startActivity(intent);
     }
 }
