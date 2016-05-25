@@ -101,8 +101,8 @@ public class FoodDataSource {
         return newFood;
     }
 
-    public Record createRecord(String date, Food food, IntOrNA amount_mg) {
-        DoubleOrNA dAmount_mg = new DoubleOrNA(amount_mg);
+    public Record createRecord(String date, Food food, IntOrNA amount, Unit unit) {
+        DoubleOrNA dAmount_mg = unit.amount_mg.multiply(amount).toDoubleOrNA();
         DoubleOrNA dRefServ_mg = new DoubleOrNA(food.referenceServing_mg);
         DoubleOrNA dKcal = new DoubleOrNA(food.kcal);
         DoubleOrNA dCarb_mg = new DoubleOrNA(food.carb_mg);
@@ -110,6 +110,12 @@ public class FoodDataSource {
         DoubleOrNA dProtein_mg = new DoubleOrNA(food.protein_mg);
 
         DoubleOrNA dServ = dAmount_mg.divide(dRefServ_mg);
+
+        System.out.println("DUMP");
+        System.out.println(amount);
+        System.out.println(unit.amount_mg);
+        System.out.println(dAmount_mg);
+        System.out.println(dServ);
 
         String sKcal = dKcal.multiply(dServ).round().toDBString();
         String sCarb_mg = dCarb_mg.multiply(dServ).round().toDBString();
@@ -119,7 +125,9 @@ public class FoodDataSource {
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, date);
         values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, food.name);
-        values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, amount_mg.toDBString());
+        values.put(RecordEntry.COLUMN_NAME_QUANTITY, amount.toDBString());
+        values.put(RecordEntry.COLUMN_NAME_UNIT, unit.name);
+        values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, dAmount_mg.round().toDBString());
         values.put(RecordEntry.COLUMN_NAME_KCAL, sKcal);
         values.put(RecordEntry.COLUMN_NAME_CARB_MG, sCarb_mg);
         values.put(RecordEntry.COLUMN_NAME_FAT_MG, sFat_mg);

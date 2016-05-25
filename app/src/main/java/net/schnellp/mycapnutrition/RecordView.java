@@ -2,17 +2,20 @@ package net.schnellp.mycapnutrition;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
 import net.schnellp.mycapnutrition.data.IntOrNA;
 import net.schnellp.mycapnutrition.data.Record;
+import net.schnellp.mycapnutrition.data.Unit;
+
+import java.util.ArrayList;
 
 public class RecordView extends AppCompatActivity {
 
@@ -29,8 +32,6 @@ public class RecordView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
         datasource = new FoodDataSource(this);
         datasource.open();
         Intent intent = getIntent();
@@ -39,14 +40,23 @@ public class RecordView extends AppCompatActivity {
 
         TextView tv = (TextView) findViewById(R.id.tvFoodName);
         tv.setText(food.name);
+
+        ArrayList<Unit> units = new ArrayList<>();
+        units.add(Unit.G);
+        // add from db
+        // units.add(Unit.ADD);
+        UnitSpinnerAdapter unitSpinnerAdapter = new UnitSpinnerAdapter(this, units);
+        Spinner spinner = (Spinner) findViewById(R.id.spUnit);
+        spinner.setAdapter(unitSpinnerAdapter);
     }
 
     public void saveRecord(View v) {
         EditText et = (EditText) findViewById(R.id.etRecordServing);
         String date = getIntent().getStringExtra("DATE");
-        IntOrNA amount_mg = (new IntOrNA(et.getText().toString())).multiply(1000);
+        IntOrNA amount = (new IntOrNA(et.getText().toString()));
+        Unit unit = Unit.G;
         datasource.open();
-        Record record = datasource.createRecord(date, food, amount_mg);
+        Record record = datasource.createRecord(date, food, amount, unit);
         datasource.close();
 
         Intent intent = new Intent(this, JournalDayView.class);

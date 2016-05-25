@@ -94,7 +94,8 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         ((TextView) convertView.findViewById(R.id.tvRecordFoodName)).setText(group.record.foodName);
         ((TextView) convertView.findViewById(R.id.tvRecordKcal)).setText(group.record.kcal.toString());
         ((TextView) convertView.findViewById(R.id.tvRecordAmount)).setText(
-                group.record.amount_mg.toDoubleOrNA().divide(1000) + "g");
+                group.record.quantity + " " + group.record.unitName +
+                " (" + group.record.amount_mg.toDoubleOrNA().divide(1000) + " g)");
 
         return convertView;
     }

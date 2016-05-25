@@ -21,16 +21,27 @@ public class DBHelper extends SQLiteOpenHelper {
                     FoodEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
                     FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
 
+    private static final String SQL_CREATE_TABLE_UNIT =
+            "CREATE TABLE " + UnitEntry.TABLE_NAME + " (" +
+                    UnitEntry._ID + " INTEGER PRIMARY KEY, " +
+                    UnitEntry.COLUMN_NAME_FOOD_ID + " INTEGER, " +
+                    UnitEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    UnitEntry.COLUMN_NAME_AMOUNT_MG + " INTEGER, " +
+                    "FOREIGN KEY (" + UnitEntry.COLUMN_NAME_FOOD_ID + ") " +
+                    "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + "))";
+
     private static final String SQL_CREATE_TABLE_RECORD =
             "CREATE TABLE " + RecordEntry.TABLE_NAME + " (" +
                     RecordEntry._ID + " INTEGER PRIMARY KEY, " +
                     RecordEntry.COLUMN_NAME_DATE + " TEXT, " +
                     RecordEntry.COLUMN_NAME_FOOD_NAME + " TEXT, " +
+                    RecordEntry.COLUMN_NAME_QUANTITY + " INTEGER, " +
+                    RecordEntry.COLUMN_NAME_UNIT + " TEXT, " +
                     RecordEntry.COLUMN_NAME_AMOUNT_MG + " INTEGER, " +
-                    FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
-                    FoodEntry.COLUMN_NAME_CARB_MG + " INTEGER, " +
-                    FoodEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
-                    FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
+                    RecordEntry.COLUMN_NAME_KCAL + " INTEGER, " +
+                    RecordEntry.COLUMN_NAME_CARB_MG + " INTEGER, " +
+                    RecordEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
+                    RecordEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " +
@@ -44,6 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_TABLE_FOOD);
+        db.execSQL(SQL_CREATE_TABLE_UNIT);
         db.execSQL(SQL_CREATE_TABLE_RECORD);
     }
 
