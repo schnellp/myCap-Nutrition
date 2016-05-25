@@ -126,6 +126,12 @@ public class FoodDataSource {
                 null);
     }
 
+    public void deleteRecord(Record record) {
+        database.delete(RecordEntry.TABLE_NAME,
+                RecordEntry._ID + " = " + record.DBID,
+                null);
+    }
+
     public List<Food> getAllFoods() {
         List<Food> foods = new ArrayList<>();
 

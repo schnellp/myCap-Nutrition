@@ -9,25 +9,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
 import net.schnellp.mycapnutrition.data.Record;
 
-import org.w3c.dom.Comment;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class JournalDayFragment extends Fragment {
 
     SparseArray<FoodListGroup> groups = new SparseArray<>();
     public FoodDataSource datasource;
     public static final String DAY_NUMBER = "day_number";
+    ExpandableRecordListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,7 +43,7 @@ public class JournalDayFragment extends Fragment {
 
         ExpandableRecordListView listView = (ExpandableRecordListView)
                 rootView.findViewById(R.id.recordListView);
-        ExpandableRecordListAdapter adapter = new ExpandableRecordListAdapter(this.getActivity(), groups);
+        adapter = new ExpandableRecordListAdapter(this.getActivity(), groups);
 
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
@@ -72,11 +68,18 @@ public class JournalDayFragment extends Fragment {
                 // edit stuff here
                 return true;
             case R.id.delete:
-                Toast toast = Toast.makeText(this.getActivity(), "delete", Toast.LENGTH_SHORT);
-                toast.show();
+                deleteRecord(ExpandableListView.getPackedPositionGroup(info.packedPosition));
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    public void deleteRecord(int position) {
+        Record record = ((FoodListGroup) adapter.getGroup(position)).record;
+        datasource.open();
+        datasource.deleteRecord(record);
+        datasource.close();
+        adapter.removeRecord(position);
     }
 }

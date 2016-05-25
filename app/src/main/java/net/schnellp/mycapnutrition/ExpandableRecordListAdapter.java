@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.Record;
 
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
@@ -105,5 +106,10 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
+    }
+
+    public void removeRecord(int position) {
+        groups.removeAt(position);
+        notifyDataSetChanged();
     }
 }
