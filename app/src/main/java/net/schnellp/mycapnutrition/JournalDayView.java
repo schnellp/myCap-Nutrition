@@ -36,7 +36,6 @@ public class JournalDayView extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private int pageCount = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

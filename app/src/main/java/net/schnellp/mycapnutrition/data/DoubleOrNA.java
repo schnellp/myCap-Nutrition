@@ -32,6 +32,10 @@ public class DoubleOrNA {
         return new DoubleOrNA(val / d.val, isNA || d.isNA);
     }
 
+    public DoubleOrNA divide(double d) {
+        return new DoubleOrNA(val / d, isNA);
+    }
+
     public String toString() {
         if (isNA) {
             return "NA";

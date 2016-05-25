@@ -90,7 +90,10 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.recordrow_group, null);
         }
         FoodListGroup group = (FoodListGroup) getGroup(groupPosition);
-        ((TextView) convertView).setText(group.record.foodName);
+        ((TextView) convertView.findViewById(R.id.tvRecordFoodName)).setText(group.record.foodName);
+        ((TextView) convertView.findViewById(R.id.tvRecordKcal)).setText(group.record.kcal.toString());
+        ((TextView) convertView.findViewById(R.id.tvRecordAmount)).setText(
+                group.record.amount_mg.toDoubleOrNA().divide(1000) + "g");
         return convertView;
     }
 

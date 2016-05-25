@@ -29,6 +29,10 @@ public class IntOrNA {
         isNA = doubleOrNA.isNA;
     }
 
+    public DoubleOrNA toDoubleOrNA() {
+        return new DoubleOrNA(this);
+    }
+
     public IntOrNA add(IntOrNA n) {
         return new IntOrNA(val + n.val, isNA | n.isNA);
     }
