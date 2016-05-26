@@ -8,6 +8,8 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.schnellp.mycapnutrition.data.Record;
+
 import java.util.ArrayList;
 
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
@@ -44,20 +46,17 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         FoodListGroup group = (FoodListGroup) getGroup(groupPosition);
 
         text = (TextView) convertView.findViewById(R.id.tvRecordDetails);
-        text.setText(group.record.date);
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, children,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        Record r = group.record;
+        text.setText(r.carb_mg.toDoubleOrNA().divide(1000) + " g carbs | " +
+        r.fat_mg.toDoubleOrNA().divide(1000) + " g fat | " +
+        r.protein_mg.toDoubleOrNA().divide(1000) + " g protein");
+
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return groups.get(groupPosition).children.size();
+        return 1;
     }
 
     @Override

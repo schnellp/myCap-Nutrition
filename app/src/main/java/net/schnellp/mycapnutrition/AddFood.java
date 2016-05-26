@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.data.DoubleOrNA;
 import net.schnellp.mycapnutrition.data.Food;
@@ -20,6 +23,19 @@ public class AddFood extends AppCompatActivity {
         setContentView(R.layout.activity_add_food);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        EditText finalField = (EditText) findViewById(R.id.etProtein);
+
+        finalField.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    addFood(v);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         int dbid = getIntent().getIntExtra("food_dbid", -1);
         if (dbid != -1) {

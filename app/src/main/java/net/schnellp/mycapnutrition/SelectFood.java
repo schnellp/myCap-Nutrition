@@ -98,8 +98,6 @@ public class SelectFood extends AppCompatActivity {
                 return true;
             case R.id.delete:
                 foodSearchAdapter.deleteItem(info.position);
-                Toast toast = Toast.makeText(this, "" + info.position, Toast.LENGTH_SHORT);
-                toast.show();
                 return true;
             default:
                 return super.onContextItemSelected(item);
