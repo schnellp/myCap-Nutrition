@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
@@ -79,6 +78,7 @@ public class AddFood extends AppCompatActivity {
             datasource.close();
 
             Intent intent = new Intent(this, RecordView.class);
+            intent.putExtras(getIntent());
             intent.putExtra("food_dbid", food.DBID);
             startActivity(intent);
         }

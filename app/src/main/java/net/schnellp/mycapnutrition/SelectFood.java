@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 
 public class SelectFood extends AppCompatActivity {
 
-    private EditText editText;
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
 
@@ -46,7 +44,7 @@ public class SelectFood extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        editText = (EditText) findViewById(R.id.editTextFoodSearch);
+        EditText editText = (EditText) findViewById(R.id.editTextFoodSearch);
         listView = (ListView) findViewById(R.id.listViewFoodResults);
 
         // Add Text Change Listener to EditText
