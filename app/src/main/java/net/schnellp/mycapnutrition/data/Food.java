@@ -12,10 +12,35 @@ public class Food {
     public Food(Cursor cursor) {
         DBID = cursor.getInt(0);
         name = cursor.getString(1);
-        referenceServing_mg = new IntOrNA(cursor.getInt(2));
-        kcal = new IntOrNA(cursor.getInt(3));
-        carb_mg = new IntOrNA(cursor.getInt(4));
-        fat_mg = new IntOrNA(cursor.getInt(5));
-        protein_mg = new IntOrNA(cursor.getInt(6));
+        if (cursor.isNull(2)) {
+            referenceServing_mg = new IntOrNA(0, true);
+        } else {
+            referenceServing_mg = new IntOrNA(cursor.getInt(2));
+        }
+        if (cursor.isNull(3)) {
+            kcal = new IntOrNA(0, true);
+        } else {
+            kcal = new IntOrNA(cursor.getInt(3));
+        }
+        if (cursor.isNull(4)) {
+            carb_mg = new IntOrNA(0, true);
+        } else {
+            carb_mg = new IntOrNA(cursor.getInt(4));
+        }
+        if (cursor.isNull(5)) {
+            fat_mg = new IntOrNA(0, true);
+        } else {
+            fat_mg = new IntOrNA(cursor.getInt(5));
+        }
+        if (cursor.isNull(6)) {
+            protein_mg = new IntOrNA(0, true);
+        } else {
+            protein_mg = new IntOrNA(cursor.getInt(6));
+        }
+
+
+
+
+
     }
 }

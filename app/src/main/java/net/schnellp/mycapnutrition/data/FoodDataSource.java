@@ -44,15 +44,25 @@ public class FoodDataSource {
         return Arrays.copyOfRange(foodColNames, 1, foodColNames.length);
     }
 
-    public Food createFood(String name, String referenceServing_mg,
-                           String kcal, String carb_mg, String fat_mg, String protein_mg) {
+    public Food createFood(String name, IntOrNA referenceServing_mg,
+                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
-        values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg);
-        values.put(FoodEntry.COLUMN_NAME_KCAL, kcal);
-        values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg);
-        values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg);
-        values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg);
+        if (!referenceServing_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg.toString());
+        }
+        if (!kcal.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_KCAL, kcal.toString());
+        }
+        if (!carb_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.toString());
+        }
+        if (!fat_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.toString());
+        }
+        if (!protein_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
+        }
 
         long insertID = -1;
         try {
@@ -72,15 +82,25 @@ public class FoodDataSource {
         return newFood;
     }
 
-    public Food updateFood(int dbid, String name, String referenceServing_mg,
-                           String kcal, String carb_mg, String fat_mg, String protein_mg) {
+    public Food updateFood(int dbid, String name, IntOrNA referenceServing_mg,
+                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
-        values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg);
-        values.put(FoodEntry.COLUMN_NAME_KCAL, kcal);
-        values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg);
-        values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg);
-        values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg);
+        if (!referenceServing_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg.toString());
+        }
+        if (!kcal.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_KCAL, kcal.toString());
+        }
+        if (!carb_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.toString());
+        }
+        if (!fat_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.toString());
+        }
+        if (!protein_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
+        }
 
         String[] mutableFoodColNames = getMutableFoodColNames();
 
@@ -104,34 +124,28 @@ public class FoodDataSource {
     public Record createRecord(String date, Food food, IntOrNA amount, Unit unit) {
         DoubleOrNA dAmount_mg = unit.amount_mg.multiply(amount).toDoubleOrNA();
         DoubleOrNA dRefServ_mg = new DoubleOrNA(food.referenceServing_mg);
-        DoubleOrNA dKcal = new DoubleOrNA(food.kcal);
-        DoubleOrNA dCarb_mg = new DoubleOrNA(food.carb_mg);
-        DoubleOrNA dFat_mg = new DoubleOrNA(food.fat_mg);
-        DoubleOrNA dProtein_mg = new DoubleOrNA(food.protein_mg);
-
         DoubleOrNA dServ = dAmount_mg.divide(dRefServ_mg);
 
-        System.out.println("DUMP");
-        System.out.println(amount);
-        System.out.println(unit.amount_mg);
-        System.out.println(dAmount_mg);
-        System.out.println(dServ);
+        DoubleOrNA dKcal = new DoubleOrNA(food.kcal).multiply(dServ);
+        DoubleOrNA dCarb_mg = new DoubleOrNA(food.carb_mg).multiply(dServ);
+        DoubleOrNA dFat_mg = new DoubleOrNA(food.fat_mg).multiply(dServ);
+        DoubleOrNA dProtein_mg = new DoubleOrNA(food.protein_mg).multiply(dServ);
 
-        String sKcal = dKcal.multiply(dServ).round().toDBString();
-        String sCarb_mg = dCarb_mg.multiply(dServ).round().toDBString();
-        String sFat_mg = dFat_mg.multiply(dServ).round().toDBString();
-        String sProtein_mg = dProtein_mg.multiply(dServ).round().toDBString();
+        String sKcal = dKcal.round().toString();
+        String sCarb_mg = dCarb_mg.round().toString();
+        String sFat_mg = dFat_mg.round().toString();
+        String sProtein_mg = dProtein_mg.round().toString();
 
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, date);
         values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, food.name);
-        values.put(RecordEntry.COLUMN_NAME_QUANTITY, amount.toDBString());
+        if (!amount.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, amount.toString()); }
         values.put(RecordEntry.COLUMN_NAME_UNIT, unit.name);
-        values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, dAmount_mg.round().toDBString());
-        values.put(RecordEntry.COLUMN_NAME_KCAL, sKcal);
-        values.put(RecordEntry.COLUMN_NAME_CARB_MG, sCarb_mg);
-        values.put(RecordEntry.COLUMN_NAME_FAT_MG, sFat_mg);
-        values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, sProtein_mg);
+        if (!dAmount_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, dAmount_mg.round().toString()); }
+        if (!dKcal.isNA) { values.put(RecordEntry.COLUMN_NAME_KCAL, sKcal); }
+        if (!dCarb_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_CARB_MG, sCarb_mg); }
+        if (!dFat_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_FAT_MG, sFat_mg); }
+        if (!dProtein_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, sProtein_mg); }
 
         long insertID = -1;
         try {
