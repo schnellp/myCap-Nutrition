@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -22,7 +23,6 @@ import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
@@ -35,6 +35,8 @@ public class SelectFood extends AppCompatActivity {
     private FoodSearchAdapter foodSearchAdapter;
 
     private FoodDataSource datasource;
+
+    private Food tempFood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,19 @@ public class SelectFood extends AppCompatActivity {
                 foodSearchAdapter.editItem(info.position);
                 return true;
             case R.id.delete:
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.clSelectFood), "Food deleted.", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Snackbar snackbar1 = Snackbar.make(findViewById(R.id.clSelectFood),
+                                        "Food is restored!", Snackbar.LENGTH_SHORT);
+                                SelectFood.this.foodSearchAdapter.addItem(tempFood);
+                                snackbar1.show();
+                            }
+                        });
+                snackbar.show();
+                tempFood = (Food) foodSearchAdapter.getItem(info.position);
                 foodSearchAdapter.deleteItem(info.position);
                 return true;
             default:
@@ -140,7 +155,7 @@ public class SelectFood extends AppCompatActivity {
 
         @Override
         public Object getItem(int position) {
-            return position;
+            return foodsDisplayedValues.get(position);
         }
 
         @Override
@@ -155,6 +170,15 @@ public class SelectFood extends AppCompatActivity {
             intent.putExtra("CALLED_FOR_RESULT", true);
             intent.putExtra("food_dbid", food.DBID);
             startActivityForResult(intent, 1);
+        }
+
+        public void addItem(Food food) {
+            datasource.open();
+            datasource.restoreFood(food);
+            datasource.close();
+            foodsOriginalValues.add(food);
+            foodSearchAdapter.getFilter().filter("");
+            notifyDataSetChanged();
         }
 
         public void deleteItem(int position) {

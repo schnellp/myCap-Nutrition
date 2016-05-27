@@ -82,6 +82,35 @@ public class FoodDataSource {
         return newFood;
     }
 
+    public boolean restoreFood(Food food) {
+        ContentValues values = new ContentValues();
+        values.put(FoodEntry.COLUMN_NAME_NAME, food.name);
+        if (!food.referenceServing_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, food.referenceServing_mg.toString());
+        }
+        if (!food.kcal.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_KCAL, food.kcal.toString());
+        }
+        if (!food.carb_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_CARB_MG, food.carb_mg.toString());
+        }
+        if (!food.fat_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_FAT_MG, food.fat_mg.toString());
+        }
+        if (!food.protein_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, food.protein_mg.toString());
+        }
+
+        try {
+            database.insertOrThrow(FoodEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     public Food updateFood(int dbid, String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
         ContentValues values = new ContentValues();
