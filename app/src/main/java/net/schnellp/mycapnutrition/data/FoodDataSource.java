@@ -194,6 +194,29 @@ public class FoodDataSource {
         return newRecord;
     }
 
+    public boolean restoreRecord(Record record) {
+        ContentValues values = new ContentValues();
+        values.put(RecordEntry.COLUMN_NAME_DATE, record.date);
+        values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, record.foodName);
+        if (!record.quantity.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, record.quantity.val); }
+        values.put(RecordEntry.COLUMN_NAME_UNIT, record.unitName);
+        if (!record.amount_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, record.amount_mg.val); }
+        if (!record.kcal.isNA) { values.put(RecordEntry.COLUMN_NAME_KCAL, record.kcal.val); }
+        if (!record.carb_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_CARB_MG, record.carb_mg.val); }
+        if (!record.fat_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_FAT_MG, record.fat_mg.val); }
+        if (!record.protein_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, record.protein_mg.val); }
+
+        long insertID = -1;
+        try {
+            insertID = database.insertOrThrow(RecordEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     public Food getFood(int dbid) {
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
                 FoodEntry._ID + " = " + dbid,

@@ -110,6 +110,11 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    public void addRecord(Record record) {
+        groups.add(new FoodListGroup(record));
+        notifyDataSetChanged();
+    }
+
     public void removeRecord(int position) {
         groups.remove(position);
         notifyDataSetChanged();
