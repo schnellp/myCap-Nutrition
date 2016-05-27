@@ -3,7 +3,6 @@ package net.schnellp.mycapnutrition;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -13,14 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.DataManager;
 import net.schnellp.mycapnutrition.data.Record;
 
 import java.util.ArrayList;
 
 public class JournalDayFragment extends Fragment {
 
-    public FoodDataSource datasource;
+    public DataManager datasource;
     public static final String DATE = "day_number";
     private String date;
     ExpandableRecordListAdapter adapter;
@@ -35,7 +34,7 @@ public class JournalDayFragment extends Fragment {
         date = getArguments().getString(DATE);
         textView.setText(date);
 
-        datasource = new FoodDataSource(this.getContext());
+        datasource = new DataManager(this.getContext());
         datasource.open();
 
         ArrayList<Record> records = new ArrayList<>(datasource.getRecordsFromDate(date));

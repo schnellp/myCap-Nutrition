@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FoodDataSource {
+public class DataManager {
 
     private SQLiteDatabase database;
     private DBHelper dbHelper;
     private String[] foodColNames;
     private String[] recordColNames;
 
-    public FoodDataSource(Context context) {
+    public DataManager(Context context) {
         dbHelper = new DBHelper(context);
     }
 

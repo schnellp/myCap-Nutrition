@@ -25,7 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.data.Food;
-import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.DataManager;
 
 import java.util.ArrayList;
 
@@ -34,7 +34,7 @@ public class SelectFood extends AppCompatActivity {
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
 
-    private FoodDataSource datasource;
+    private DataManager datasource;
 
     private Food tempFood;
 
@@ -77,7 +77,7 @@ public class SelectFood extends AppCompatActivity {
             }
         });
 
-        datasource = new FoodDataSource(this);
+        datasource = new DataManager(this);
 
         registerForContextMenu(listView);
     }
@@ -137,9 +137,9 @@ public class SelectFood extends AppCompatActivity {
         private ArrayList<Food> foodsOriginalValues = new ArrayList<>();
         private ArrayList<Food> foodsDisplayedValues = new ArrayList<>();
         LayoutInflater inflater;
-        FoodDataSource datasource;
+        DataManager datasource;
 
-        public FoodSearchAdapter(Context context, FoodDataSource datasource) {
+        public FoodSearchAdapter(Context context, DataManager datasource) {
             this.datasource = datasource;
             datasource.open();
             foodsOriginalValues.addAll(datasource.getAllFoods());

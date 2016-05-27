@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.data.DoubleOrNA;
 import net.schnellp.mycapnutrition.data.Food;
-import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.DataManager;
 import net.schnellp.mycapnutrition.data.IntOrNA;
 
 public class AddFood extends AppCompatActivity {
@@ -39,7 +39,7 @@ public class AddFood extends AppCompatActivity {
 
         int dbid = getIntent().getIntExtra("food_dbid", -1);
         if (dbid != -1) {
-            FoodDataSource datasource = new FoodDataSource(this);
+            DataManager datasource = new DataManager(this);
             datasource.open();
             Food food = datasource.getFood(dbid);
             datasource.close();
@@ -74,7 +74,7 @@ public class AddFood extends AppCompatActivity {
         IntOrNA iProtein_mg = getDoubleOrNAFromForm(R.id.etProtein).multiply(1000).round();
 
         if (getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
-            FoodDataSource datasource = new FoodDataSource(this);
+            DataManager datasource = new DataManager(this);
             datasource.open();
             datasource.updateFood(getIntent().getIntExtra("food_dbid", -1), name, iRefServing_mg,
                     iKcal, iCarb_mg, iFat_mg, iProtein_mg);
@@ -84,7 +84,7 @@ public class AddFood extends AppCompatActivity {
             setResult(RESULT_OK,intent);
             finish();
         } else {
-            FoodDataSource datasource = new FoodDataSource(this);
+            DataManager datasource = new DataManager(this);
             datasource.open();
             Food food = datasource.createFood(name, iRefServing_mg,
                     iKcal, iCarb_mg, iFat_mg, iProtein_mg);

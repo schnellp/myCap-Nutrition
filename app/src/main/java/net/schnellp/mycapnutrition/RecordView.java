@@ -10,7 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.data.Food;
-import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.DataManager;
 import net.schnellp.mycapnutrition.data.IntOrNA;
 import net.schnellp.mycapnutrition.data.Record;
 import net.schnellp.mycapnutrition.data.Unit;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class RecordView extends AppCompatActivity {
 
-    private FoodDataSource datasource;
+    private DataManager datasource;
     private Food food;
 
     @Override
@@ -32,7 +32,7 @@ public class RecordView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        datasource = new FoodDataSource(this);
+        datasource = new DataManager(this);
         datasource.open();
         Intent intent = getIntent();
         food = datasource.getFood(intent.getIntExtra("food_dbid", -1));
