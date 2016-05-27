@@ -1,5 +1,6 @@
 package net.schnellp.mycapnutrition;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -19,11 +20,11 @@ import java.util.ArrayList;
 
 public class JournalDayFragment extends Fragment {
 
-    ArrayList<FoodListGroup> groups = new ArrayList<>();
     public FoodDataSource datasource;
     public static final String DATE = "day_number";
     private String date;
     ExpandableRecordListAdapter adapter;
+    Record tempRecord;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +39,7 @@ public class JournalDayFragment extends Fragment {
         datasource.open();
 
         ArrayList<Record> records = new ArrayList<>(datasource.getRecordsFromDate(date));
+        ArrayList<FoodListGroup> groups = new ArrayList<>();
 
         for (int i = 0; i < records.size(); i++) {
             groups.add(i, new FoodListGroup(records.get(i)));
@@ -70,6 +72,22 @@ public class JournalDayFragment extends Fragment {
                 // edit stuff here
                 return true;
             case R.id.delete:
+                Snackbar snackbar = Snackbar
+                        .make(getActivity().findViewById(R.id.main_content), "Record deleted.",
+                                Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Snackbar snackbar1 = Snackbar.make(getActivity()
+                                        .findViewById(R.id.main_content),
+                                        "Food is restored!", Snackbar.LENGTH_SHORT);
+                                JournalDayFragment.this.addRecord(tempRecord);
+                                snackbar1.show();
+                            }
+                        });
+                snackbar.show();
+                tempRecord = ((FoodListGroup) adapter.getGroup((int) info.packedPosition))
+                        .record;
                 deleteRecord(ExpandableListView.getPackedPositionGroup(info.packedPosition));
                 return true;
             default:
@@ -87,5 +105,13 @@ public class JournalDayFragment extends Fragment {
         datasource.deleteRecord(record);
         datasource.close();
         adapter.removeRecord(position);
+    }
+
+    public boolean addRecord(Record record) {
+        datasource.open();
+        datasource.restoreRecord(record);
+        datasource.close();
+        adapter.addRecord(record);
+        return true;
     }
 }

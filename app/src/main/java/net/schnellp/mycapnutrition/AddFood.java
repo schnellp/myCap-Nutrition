@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.data.DoubleOrNA;
 import net.schnellp.mycapnutrition.data.Food;
 import net.schnellp.mycapnutrition.data.FoodDataSource;
+import net.schnellp.mycapnutrition.data.IntOrNA;
 
 public class AddFood extends AppCompatActivity {
 
@@ -19,6 +23,19 @@ public class AddFood extends AppCompatActivity {
         setContentView(R.layout.activity_add_food);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        EditText finalField = (EditText) findViewById(R.id.etProtein);
+
+        finalField.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    addFood(v);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         int dbid = getIntent().getIntExtra("food_dbid", -1);
         if (dbid != -1) {
@@ -36,12 +53,12 @@ public class AddFood extends AppCompatActivity {
         }
     }
 
-    private String getNumericStringFromForm(int id) {
+    private DoubleOrNA getDoubleOrNAFromForm(int id) {
         String string = ((EditText) findViewById(id)).getText().toString();
         if (!string.equals("")) {
-            return "" + Math.round(Double.parseDouble(string) * 1000);
+            return new DoubleOrNA(Double.parseDouble(string), false);
         } else {
-            return "null";
+            return new DoubleOrNA(0, true);
         }
     }
 
@@ -50,23 +67,17 @@ public class AddFood extends AppCompatActivity {
 
         String name = ((EditText) findViewById(R.id.etName)).getText().toString();
 
-        String sRefServing_mg = getNumericStringFromForm(R.id.etRefServing);
-
-        String sKcal = ((EditText) findViewById(R.id.etKcal)).getText().toString();
-        if (!sKcal.equals("")) {
-            sKcal = "" + Math.round(Double.parseDouble(sKcal));
-        } else {
-            sKcal = "null";
-        }
-
-        String sCarb_mg = getNumericStringFromForm(R.id.etCarb);
-        String sFat_mg = getNumericStringFromForm(R.id.etFat);
-        String sProtein_mg = getNumericStringFromForm(R.id.etProtein);
+        IntOrNA iRefServing_mg = getDoubleOrNAFromForm(R.id.etRefServing).multiply(1000).round();
+        IntOrNA iKcal = getDoubleOrNAFromForm(R.id.etKcal).round();
+        IntOrNA iCarb_mg = getDoubleOrNAFromForm(R.id.etCarb).multiply(1000).round();
+        IntOrNA iFat_mg = getDoubleOrNAFromForm(R.id.etFat).multiply(1000).round();
+        IntOrNA iProtein_mg = getDoubleOrNAFromForm(R.id.etProtein).multiply(1000).round();
 
         if (getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
             FoodDataSource datasource = new FoodDataSource(this);
             datasource.open();
-            datasource.updateFood(getIntent().getIntExtra("food_dbid", -1), name, sRefServing_mg, sKcal, sCarb_mg, sFat_mg, sProtein_mg);
+            datasource.updateFood(getIntent().getIntExtra("food_dbid", -1), name, iRefServing_mg,
+                    iKcal, iCarb_mg, iFat_mg, iProtein_mg);
             datasource.close();
 
             Intent intent = new Intent(this, SelectFood.class);
@@ -75,10 +86,12 @@ public class AddFood extends AppCompatActivity {
         } else {
             FoodDataSource datasource = new FoodDataSource(this);
             datasource.open();
-            Food food = datasource.createFood(name, sRefServing_mg, sKcal, sCarb_mg, sFat_mg, sProtein_mg);
+            Food food = datasource.createFood(name, iRefServing_mg,
+                    iKcal, iCarb_mg, iFat_mg, iProtein_mg);
             datasource.close();
 
             Intent intent = new Intent(this, RecordView.class);
+            intent.putExtras(getIntent());
             intent.putExtra("food_dbid", food.DBID);
             startActivity(intent);
         }

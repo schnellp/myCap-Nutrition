@@ -13,12 +13,39 @@ public class Record {
         DBID = cursor.getInt(0);
         date = cursor.getString(1);
         foodName = cursor.getString(2);
-        quantity = new IntOrNA(cursor.getInt(3));
+
+        if (cursor.isNull(3)) {
+            quantity = new IntOrNA(0, true);
+        } else {
+            quantity = new IntOrNA(cursor.getInt(3));
+        }
+
         unitName = cursor.getString(4);
-        amount_mg = new IntOrNA(cursor.getInt(5));
-        kcal = new IntOrNA(cursor.getInt(6));
-        carb_mg = new IntOrNA(cursor.getInt(7));
-        fat_mg = new IntOrNA(cursor.getInt(8));
-        protein_mg = new IntOrNA(cursor.getInt(9));
+
+        if (cursor.isNull(5)) {
+            amount_mg = new IntOrNA(0, true);
+        } else {
+            amount_mg = new IntOrNA(cursor.getInt(5));
+        }
+        if (cursor.isNull(6)) {
+            kcal = new IntOrNA(0, true);
+        } else {
+            kcal = new IntOrNA(cursor.getInt(6));
+        }
+        if (cursor.isNull(7)) {
+            carb_mg = new IntOrNA(0, true);
+        } else {
+            carb_mg = new IntOrNA(cursor.getInt(7));
+        }
+        if (cursor.isNull(8)) {
+            fat_mg = new IntOrNA(0, true);
+        } else {
+            fat_mg = new IntOrNA(cursor.getInt(8));
+        }
+        if (cursor.isNull(9)) {
+            protein_mg = new IntOrNA(0, true);
+        } else {
+            protein_mg = new IntOrNA(cursor.getInt(9));
+        }
     }
 }
