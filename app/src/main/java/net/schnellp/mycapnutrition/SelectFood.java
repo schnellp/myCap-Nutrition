@@ -34,8 +34,6 @@ public class SelectFood extends AppCompatActivity {
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
 
-    private DataManager datasource;
-
     private Food tempFood;
 
     @Override
@@ -76,8 +74,6 @@ public class SelectFood extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        datasource = new DataManager(this);
 
         registerForContextMenu(listView);
     }
@@ -123,7 +119,7 @@ public class SelectFood extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        foodSearchAdapter = new FoodSearchAdapter(SelectFood.this, datasource);
+        foodSearchAdapter = new FoodSearchAdapter(SelectFood.this);
         listView.setAdapter(foodSearchAdapter);
     }
 
@@ -139,12 +135,9 @@ public class SelectFood extends AppCompatActivity {
         LayoutInflater inflater;
         DataManager datasource;
 
-        public FoodSearchAdapter(Context context, DataManager datasource) {
-            this.datasource = datasource;
-            datasource.open();
-            foodsOriginalValues.addAll(datasource.getAllFoods());
-            foodsDisplayedValues.addAll(datasource.getAllFoods());
-            datasource.close();
+        public FoodSearchAdapter(Context context) {
+            foodsOriginalValues.addAll(MyCapNutrition.dataManager.getAllFoods());
+            foodsDisplayedValues.addAll(MyCapNutrition.dataManager.getAllFoods());
             inflater = LayoutInflater.from(context);
         }
 
@@ -173,9 +166,7 @@ public class SelectFood extends AppCompatActivity {
         }
 
         public void addItem(Food food) {
-            datasource.open();
-            datasource.restoreFood(food);
-            datasource.close();
+            MyCapNutrition.dataManager.restoreFood(food);
             foodsOriginalValues.add(food);
             foodSearchAdapter.getFilter().filter("");
             notifyDataSetChanged();
@@ -183,9 +174,7 @@ public class SelectFood extends AppCompatActivity {
 
         public void deleteItem(int position) {
             Food food = foodsDisplayedValues.get(position);
-            datasource.open();
-            datasource.deleteFood(food);
-            datasource.close();
+            MyCapNutrition.dataManager.deleteFood(food);
             foodsOriginalValues.remove(position);
             foodSearchAdapter.getFilter().filter("");
             notifyDataSetChanged();

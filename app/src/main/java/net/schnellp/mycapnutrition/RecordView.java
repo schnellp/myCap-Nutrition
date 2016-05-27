@@ -32,11 +32,8 @@ public class RecordView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        datasource = new DataManager(this);
-        datasource.open();
         Intent intent = getIntent();
-        food = datasource.getFood(intent.getIntExtra("food_dbid", -1));
-        datasource.close();
+        food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
 
         TextView tv = (TextView) findViewById(R.id.tvFoodName);
         tv.setText(food.name);
@@ -55,9 +52,7 @@ public class RecordView extends AppCompatActivity {
         String date = getIntent().getStringExtra("DATE");
         IntOrNA amount = (new IntOrNA(et.getText().toString()));
         Unit unit = Unit.G;
-        datasource.open();
-        Record record = datasource.createRecord(date, food, amount, unit);
-        datasource.close();
+        MyCapNutrition.dataManager.createRecord(date, food, amount, unit);
 
         Intent intent = new Intent(this, JournalDayView.class);
         intent.putExtra("DATE", date);
@@ -76,9 +71,7 @@ public class RecordView extends AppCompatActivity {
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                datasource.open();
-                food = datasource.getFood(data.getIntExtra("food_dbid", -1));
-                datasource.close();
+                food = MyCapNutrition.dataManager.getFood(data.getIntExtra("food_dbid", -1));
 
                 TextView tv = (TextView) findViewById(R.id.tvFoodName);
                 tv.setText(food.name);

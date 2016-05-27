@@ -22,9 +22,7 @@ public class DataManager {
 
     public DataManager(Context context) {
         dbHelper = new DBHelper(context);
-    }
 
-    public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
 
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, null, null, null, null, null, null);

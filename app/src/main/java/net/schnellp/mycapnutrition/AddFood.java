@@ -39,10 +39,7 @@ public class AddFood extends AppCompatActivity {
 
         int dbid = getIntent().getIntExtra("food_dbid", -1);
         if (dbid != -1) {
-            DataManager datasource = new DataManager(this);
-            datasource.open();
-            Food food = datasource.getFood(dbid);
-            datasource.close();
+            Food food = MyCapNutrition.dataManager.getFood(dbid);
 
             ((EditText) findViewById(R.id.etName)).setText(food.name);
             ((EditText) findViewById(R.id.etRefServing)).setText(food.referenceServing_mg.toDoubleOrNA().divide(1000).toString());
@@ -74,21 +71,15 @@ public class AddFood extends AppCompatActivity {
         IntOrNA iProtein_mg = getDoubleOrNAFromForm(R.id.etProtein).multiply(1000).round();
 
         if (getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
-            DataManager datasource = new DataManager(this);
-            datasource.open();
-            datasource.updateFood(getIntent().getIntExtra("food_dbid", -1), name, iRefServing_mg,
+            MyCapNutrition.dataManager.updateFood(getIntent().getIntExtra("food_dbid", -1), name, iRefServing_mg,
                     iKcal, iCarb_mg, iFat_mg, iProtein_mg);
-            datasource.close();
 
             Intent intent = new Intent(this, SelectFood.class);
             setResult(RESULT_OK,intent);
             finish();
         } else {
-            DataManager datasource = new DataManager(this);
-            datasource.open();
-            Food food = datasource.createFood(name, iRefServing_mg,
+            Food food = MyCapNutrition.dataManager.createFood(name, iRefServing_mg,
                     iKcal, iCarb_mg, iFat_mg, iProtein_mg);
-            datasource.close();
 
             Intent intent = new Intent(this, RecordView.class);
             intent.putExtras(getIntent());

@@ -34,10 +34,7 @@ public class JournalDayFragment extends Fragment {
         date = getArguments().getString(DATE);
         textView.setText(date);
 
-        datasource = new DataManager(this.getContext());
-        datasource.open();
-
-        ArrayList<Record> records = new ArrayList<>(datasource.getRecordsFromDate(date));
+        ArrayList<Record> records = new ArrayList<>(MyCapNutrition.dataManager.getRecordsFromDate(date));
         ArrayList<FoodListGroup> groups = new ArrayList<>();
 
         for (int i = 0; i < records.size(); i++) {
@@ -100,16 +97,12 @@ public class JournalDayFragment extends Fragment {
 
     public void deleteRecord(int position) {
         Record record = ((FoodListGroup) adapter.getGroup(position)).record;
-        datasource.open();
-        datasource.deleteRecord(record);
-        datasource.close();
+        MyCapNutrition.dataManager.deleteRecord(record);
         adapter.removeRecord(position);
     }
 
     public boolean addRecord(Record record) {
-        datasource.open();
-        datasource.restoreRecord(record);
-        datasource.close();
+        MyCapNutrition.dataManager.restoreRecord(record);
         adapter.addRecord(record);
         return true;
     }
