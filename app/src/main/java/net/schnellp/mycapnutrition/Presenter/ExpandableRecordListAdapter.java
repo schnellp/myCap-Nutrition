@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import net.schnellp.mycapnutrition.data.Record;
+import net.schnellp.mycapnutrition.Model.Record;
+import net.schnellp.mycapnutrition.R;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.View;
 
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -12,8 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.data.DataManager;
-import net.schnellp.mycapnutrition.data.Record;
+import net.schnellp.mycapnutrition.Presenter.FoodListGroup;
+import net.schnellp.mycapnutrition.Model.DataManager;
+import net.schnellp.mycapnutrition.Model.Record;
+import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Presenter.ExpandableRecordListAdapter;
+import net.schnellp.mycapnutrition.R;
 
 import java.util.ArrayList;
 

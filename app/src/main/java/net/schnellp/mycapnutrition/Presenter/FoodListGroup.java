@@ -1,6 +1,6 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.Presenter;
 
-import net.schnellp.mycapnutrition.data.Record;
+import net.schnellp.mycapnutrition.Model.Record;
 
 import java.util.ArrayList;
 import java.util.List;

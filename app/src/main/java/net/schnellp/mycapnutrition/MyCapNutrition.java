@@ -2,7 +2,7 @@ package net.schnellp.mycapnutrition;
 
 import android.app.Application;
 
-import net.schnellp.mycapnutrition.data.DataManager;
+import net.schnellp.mycapnutrition.Model.DataManager;
 
 public class MyCapNutrition extends Application {
 

@@ -1,6 +1,6 @@
-package net.schnellp.mycapnutrition.data;
+package net.schnellp.mycapnutrition.Model;
 
-import net.schnellp.mycapnutrition.data.DBContract.*;
+import net.schnellp.mycapnutrition.Model.DBContract.*;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,14 +1,14 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.data.Unit;
+import net.schnellp.mycapnutrition.Model.Unit;
+import net.schnellp.mycapnutrition.R;
 
 import java.util.ArrayList;
 

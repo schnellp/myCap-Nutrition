@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.data;
+package net.schnellp.mycapnutrition.Model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

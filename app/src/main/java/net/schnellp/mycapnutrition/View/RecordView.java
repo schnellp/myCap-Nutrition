@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.View;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.data.Food;
-import net.schnellp.mycapnutrition.data.DataManager;
-import net.schnellp.mycapnutrition.data.IntOrNA;
-import net.schnellp.mycapnutrition.data.Record;
-import net.schnellp.mycapnutrition.data.Unit;
+import net.schnellp.mycapnutrition.Model.Food;
+import net.schnellp.mycapnutrition.Model.DataManager;
+import net.schnellp.mycapnutrition.Model.IntOrNA;
+import net.schnellp.mycapnutrition.Model.Unit;
+import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.Presenter.UnitSpinnerAdapter;
 
 import java.util.ArrayList;
 

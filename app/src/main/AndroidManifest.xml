@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".JournalDayView"
+            android:name=".View.JournalDayView"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,15 +20,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecordView"
+            android:name=".View.RecordView"
             android:label="@string/title_activity_record_view"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SelectFood"
+            android:name=".View.SelectFood"
             android:label="@string/title_activity_select_food"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AddFood"
+            android:name=".View.AddFood"
             android:label="@string/title_activity_add_food"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysVisible">

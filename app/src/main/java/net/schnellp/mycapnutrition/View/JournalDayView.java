@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.View;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import net.schnellp.mycapnutrition.data.Conversion;
+import net.schnellp.mycapnutrition.Model.Conversion;
+import net.schnellp.mycapnutrition.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

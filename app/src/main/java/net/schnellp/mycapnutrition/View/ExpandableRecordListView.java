@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition;
+package net.schnellp.mycapnutrition.View;
 
 import android.content.Context;
 import android.util.AttributeSet;
