@@ -1,5 +1,7 @@
 package net.schnellp.mycapnutrition.View;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -30,11 +32,12 @@ public class JournalDayFragment extends Fragment {
     private String date;
     ExpandableRecordListAdapter adapter;
     Record tempRecord;
+    View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
+        rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
 
         date = getArguments().getString(DATE);
@@ -49,13 +52,26 @@ public class JournalDayFragment extends Fragment {
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
 
+        buildOrRebuild();
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        buildOrRebuild();
+        super.onResume();
+    }
+
+    private void buildOrRebuild() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        int goalKcal = Integer.parseInt(sharedPref.getString("goal_kcal", "2000"));
         ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         TextView progressText = (TextView) rootView.findViewById(R.id.kcal_label);
         IntOrNA kcal = ObjectMath.kcalSum(adapter.getRecords());
+        progressBar.setMax(goalKcal);
         progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
-        progressText.setText(kcal + " / 2000 kcal");
-
-        return rootView;
+        progressText.setText(kcal + " / " + goalKcal + " kcal");
     }
 
     @Override
