@@ -42,21 +42,27 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         TextView tv = (TextView) findViewById(R.id.tvFoodName);
         tv.setText(food.name);
 
-        ArrayList<Unit> units = new ArrayList<>();
-        units.add(Unit.G);
-        // add from db
-        units.add(Unit.ADD);
-        UnitSpinnerAdapter unitSpinnerAdapter = new UnitSpinnerAdapter(this, units);
+        UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
         Spinner spinner = (Spinner) findViewById(R.id.spUnit);
-        spinner.setAdapter(unitSpinnerAdapter);
+        spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
+        Spinner spinner = (Spinner) findViewById(R.id.spUnit);
+        spinner.setAdapter(adapter);
     }
 
     public void saveRecord(View v) {
         EditText et = (EditText) findViewById(R.id.etRecordServing);
         String date = getIntent().getStringExtra("DATE");
         IntOrNA quantity_cents = (new DoubleOrNA(et.getText().toString())).multiply(100).round();
-        Unit unit = Unit.G;
+        Spinner unitSpinner = (Spinner) findViewById(R.id.spUnit);
+        Unit unit = ((Unit) unitSpinner.getSelectedItem());
         MyCapNutrition.dataManager.createRecord(date, food, quantity_cents, unit);
 
         Intent intent = new Intent(this, JournalDayView.class);
@@ -96,7 +102,10 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
                 tv.setText(food.name);
             }
         } else if (requestCode == ADD_UNIT_RESULT) {
-
+            Unit unit = MyCapNutrition.dataManager.getUnit(data.getIntExtra("unit_dbid", -1));
+            Spinner unitSpinner = (Spinner) findViewById(R.id.spUnit);
+            int spinnerPosition = ((UnitSpinnerAdapter) unitSpinner.getAdapter()).getPosition(unit);
+            unitSpinner.setSelection(spinnerPosition);
         }
     }
 

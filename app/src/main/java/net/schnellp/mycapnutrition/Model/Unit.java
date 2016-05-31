@@ -19,10 +19,10 @@ public class Unit {
         this.amount_mg = new IntOrNA(amount_mg);
     }
 
-    public Unit(Cursor cursor) {
-        DBID = cursor.getInt(0);
-        foodID = cursor.getInt(1);
-        name = cursor.getString(2);
-        amount_mg = new IntOrNA(cursor.getInt(3));
+    public Unit(int DBID, int foodID, String name, IntOrNA amount_mg) {
+        this.DBID = DBID;
+        this.foodID = foodID;
+        this.name = name;
+        this.amount_mg = amount_mg;
     }
 }

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_FOOD =
@@ -28,7 +28,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     UnitEntry.COLUMN_NAME_NAME + " TEXT, " +
                     UnitEntry.COLUMN_NAME_AMOUNT_MG + " INTEGER, " +
                     "FOREIGN KEY (" + UnitEntry.COLUMN_NAME_FOOD_ID + ") " +
-                    "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + "))";
+                    "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + ")" +
+                    "ON DELETE CASCADE)";
 
     private static final String SQL_CREATE_TABLE_RECORD =
             "CREATE TABLE " + RecordEntry.TABLE_NAME + " (" +
@@ -72,5 +73,14 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 }

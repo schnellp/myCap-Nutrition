@@ -19,6 +19,7 @@ public class DataManager {
     private DBHelper dbHelper;
     private String[] foodColNames;
     private String[] recordColNames;
+    private String[] unitColNames;
 
     public DataManager(Context context) {
         dbHelper = new DBHelper(context);
@@ -30,6 +31,9 @@ public class DataManager {
 
         cursor = database.query(RecordEntry.TABLE_NAME, null, null, null, null, null, null);
         recordColNames = cursor.getColumnNames();
+
+        cursor = database.query(UnitEntry.TABLE_NAME, null, null, null, null, null, null);
+        unitColNames = cursor.getColumnNames();
 
         cursor.close();
     }
@@ -273,7 +277,7 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        System.out.println("INSERTID " + insertID);
+        System.out.println("SAVE " + insertID);
 
         return getRecord((int) insertID);
     }
@@ -353,5 +357,60 @@ public class DataManager {
         database.delete(RecordEntry.TABLE_NAME,
                 RecordEntry._ID + " = " + record.DBID,
                 null);
+    }
+
+    public Unit unitFromCursor(Cursor cursor) {
+        int DBID = cursor.getInt(0);
+        int foodID = cursor.getInt(1);
+        String name = cursor.getString(2);
+        IntOrNA amount_mg = new IntOrNA(cursor.getInt(3));
+
+        return new Unit(DBID, foodID, name, amount_mg);
+    }
+
+    public Unit createUnit(Food food, String name, IntOrNA amount_mg) {
+        ContentValues values = new ContentValues();
+        values.put(UnitEntry.COLUMN_NAME_FOOD_ID, food.DBID);
+        values.put(UnitEntry.COLUMN_NAME_NAME, name);
+        if (!amount_mg.isNA) { values.put(UnitEntry.COLUMN_NAME_AMOUNT_MG, amount_mg.val); }
+
+        long insertID = -1;
+        try {
+            insertID = database.insertOrThrow(UnitEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return getUnit((int) insertID);
+    }
+
+    public Unit getUnit(int dbid) {
+        Cursor cursor = database.query(UnitEntry.TABLE_NAME, unitColNames,
+                UnitEntry._ID + " = " + dbid,
+                null, null, null, null);
+        cursor.moveToFirst();
+        Unit newUnit = unitFromCursor(cursor);
+        cursor.close();
+
+        return newUnit;
+    }
+
+    public List<Unit> getUnitsForFood(Food food) {
+        List<Unit> units = new ArrayList<>();
+
+        Cursor cursor = database.query(UnitEntry.TABLE_NAME,
+                unitColNames,
+                UnitEntry.COLUMN_NAME_FOOD_ID + " = ?",
+                new String[] {"" + food.DBID}, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            units.add(unitFromCursor(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return units;
     }
 }

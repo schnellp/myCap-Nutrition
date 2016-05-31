@@ -53,7 +53,7 @@ public class AddFood extends AppCompatActivity {
 
     private DoubleOrNA getDoubleOrNAFromForm(int id) {
         String string = ((EditText) findViewById(id)).getText().toString();
-        if (!string.equals("")) {
+        if (!string.equals("") && !string.equals("NA")) {
             return new DoubleOrNA(Double.parseDouble(string), false);
         } else {
             return new DoubleOrNA(0, true);

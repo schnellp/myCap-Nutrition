@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.Unit;
+import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 
 import java.util.ArrayList;
@@ -18,9 +20,14 @@ public class UnitSpinnerAdapter extends BaseAdapter {
     public LayoutInflater inflater;
     public Activity activity;
 
-    public UnitSpinnerAdapter(Activity act, ArrayList<Unit> units) {
+    public UnitSpinnerAdapter(Activity act, Food food) {
         activity = act;
-        this.units = units;
+
+        units = new ArrayList<>();
+        units.add(Unit.G);
+        units.addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
+        units.add(Unit.ADD);
+
         inflater = act.getLayoutInflater();
     }
 
@@ -65,5 +72,15 @@ public class UnitSpinnerAdapter extends BaseAdapter {
         System.out.println(convertView);
 
         return convertView;
+    }
+
+    public int getPosition(Unit unit) {
+        for (int i = 0; i < units.size(); i++) {
+            Unit testUnit = units.get(i);
+            if (testUnit != null && testUnit.DBID == unit.DBID) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
