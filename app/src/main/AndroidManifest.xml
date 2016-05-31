@@ -31,10 +31,14 @@
             android:name=".View.AddFood"
             android:label="@string/title_activity_add_food"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysVisible"></activity>
+            android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name=".View.AddUnit"
             android:label="@string/title_activity_add_unit"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.UnitList"
+            android:label="@string/title_activity_unit_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
