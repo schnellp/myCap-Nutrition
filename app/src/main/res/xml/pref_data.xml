@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="Food"
+        android:summary="List of all food entries">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="net.schnellp.mycapnutrition"
+            android:targetClass="net.schnellp.mycapnutrition.View.SelectFood"
+            />
+
+    </Preference>
+</PreferenceScreen>
