@@ -3,10 +3,10 @@
     package="net.schnellp.mycapnutrition">
 
     <application
+        android:name=".MyCapNutrition"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:name="net.schnellp.mycapnutrition.MyCapNutrition"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -31,8 +31,11 @@
             android:name=".View.AddFood"
             android:label="@string/title_activity_add_food"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysVisible">
-        </activity>
+            android:windowSoftInputMode="stateAlwaysVisible"></activity>
+        <activity
+            android:name=".View.AddUnit"
+            android:label="@string/title_activity_add_unit"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

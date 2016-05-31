@@ -5,4 +5,5 @@
     <string name="title_activity_record_view">Record Food</string>
     <string name="title_activity_select_food">Select Food</string>
     <string name="title_activity_add_food">Add Food</string>
+    <string name="title_activity_add_unit">Add Unit</string>
 </resources>
