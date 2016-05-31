@@ -110,7 +110,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                 if (((SelectFood) v.getContext()).getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
                     selectFood.setResult(Activity.RESULT_OK, intent);
                     selectFood.finish();
-                } else {
+                } else if (intent.getExtras().containsKey("DATE")) {
                     selectFood.startActivity(intent);
                 }
             }
