@@ -39,7 +39,10 @@
         <activity
             android:name=".View.UnitList"
             android:label="@string/title_activity_unit_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.Settings"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
