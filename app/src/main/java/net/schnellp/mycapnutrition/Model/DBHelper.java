@@ -43,10 +43,12 @@ public class DBHelper extends SQLiteOpenHelper {
                     RecordEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
                     RecordEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
 
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " +
-            FoodEntry.TABLE_NAME + ", " +
-            RecordEntry.TABLE_NAME;
+    private static final String SQL_DELETE_FOOD =
+            "DROP TABLE IF EXISTS " + FoodEntry.TABLE_NAME;
+    private static final String SQL_DELETE_RECORD =
+            "DROP TABLE IF EXISTS " + RecordEntry.TABLE_NAME;
+    private static final String SQL_DELETE_UNIT =
+            "DROP TABLE IF EXISTS " + UnitEntry.TABLE_NAME;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -61,7 +63,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_FOOD);
+        db.execSQL(SQL_DELETE_RECORD);
+        db.execSQL(SQL_DELETE_UNIT);
         onCreate(db);
     }
 

@@ -238,8 +238,9 @@ public class DataManager {
                 amount_mg, kcal, carb_mg, fat_mg, protein_mg);
     }
 
-    public Record createRecord(String date, Food food, IntOrNA amount, Unit unit) {
-        DoubleOrNA dAmount_mg = unit.amount_mg.multiply(amount).toDoubleOrNA();
+    public Record createRecord(String date, Food food, IntOrNA quantity_cents, Unit unit) {
+        DoubleOrNA dQuantity = quantity_cents.toDoubleOrNA().divide(100);
+        DoubleOrNA dAmount_mg = unit.amount_mg.toDoubleOrNA().multiply(dQuantity);
         DoubleOrNA dRefServ_mg = new DoubleOrNA(food.referenceServing_mg);
         DoubleOrNA dServ = dAmount_mg.divide(dRefServ_mg);
 
@@ -256,7 +257,7 @@ public class DataManager {
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, date);
         values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, food.name);
-        if (!amount.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, amount.toString()); }
+        if (!quantity_cents.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, quantity_cents.toString()); }
         values.put(RecordEntry.COLUMN_NAME_UNIT, unit.name);
         if (!dAmount_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, dAmount_mg.round().toString()); }
         if (!dKcal.isNA) { values.put(RecordEntry.COLUMN_NAME_KCAL, sKcal); }
@@ -272,6 +273,8 @@ public class DataManager {
             e.printStackTrace();
         }
 
+        System.out.println("INSERTID " + insertID);
+
         return getRecord((int) insertID);
     }
 
@@ -279,7 +282,7 @@ public class DataManager {
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, record.date);
         values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, record.foodName);
-        if (!record.quantity.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, record.quantity.val); }
+        if (!record.quantity_cents.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, record.quantity_cents.val); }
         values.put(RecordEntry.COLUMN_NAME_UNIT, record.unitName);
         if (!record.amount_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, record.amount_mg.val); }
         if (!record.kcal.isNA) { values.put(RecordEntry.COLUMN_NAME_KCAL, record.kcal.val); }

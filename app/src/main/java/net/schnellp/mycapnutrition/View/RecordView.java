@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.Model.DoubleOrNA;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.DataManager;
 import net.schnellp.mycapnutrition.Model.IntOrNA;
@@ -52,9 +53,9 @@ public class RecordView extends AppCompatActivity {
     public void saveRecord(View v) {
         EditText et = (EditText) findViewById(R.id.etRecordServing);
         String date = getIntent().getStringExtra("DATE");
-        IntOrNA amount = (new IntOrNA(et.getText().toString()));
+        IntOrNA quantity_cents = (new DoubleOrNA(et.getText().toString())).multiply(100).round();
         Unit unit = Unit.G;
-        MyCapNutrition.dataManager.createRecord(date, food, amount, unit);
+        MyCapNutrition.dataManager.createRecord(date, food, quantity_cents, unit);
 
         Intent intent = new Intent(this, JournalDayView.class);
         intent.putExtra("DATE", date);
