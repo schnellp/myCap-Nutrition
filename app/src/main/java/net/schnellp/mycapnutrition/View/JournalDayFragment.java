@@ -10,10 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Presenter.FoodListGroup;
 import net.schnellp.mycapnutrition.Model.DataManager;
+import net.schnellp.mycapnutrition.Model.IntOrNA;
+import net.schnellp.mycapnutrition.Model.ObjectMath;
 import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Presenter.ExpandableRecordListAdapter;
@@ -39,18 +41,19 @@ public class JournalDayFragment extends Fragment {
         textView.setText(date);
 
         ArrayList<Record> records = new ArrayList<>(MyCapNutrition.dataManager.getRecordsFromDate(date));
-        ArrayList<FoodListGroup> groups = new ArrayList<>();
-
-        for (int i = 0; i < records.size(); i++) {
-            groups.add(i, new FoodListGroup(records.get(i)));
-        }
 
         ExpandableRecordListView listView = (ExpandableRecordListView)
                 rootView.findViewById(R.id.recordListView);
-        adapter = new ExpandableRecordListAdapter(this.getActivity(), groups);
+        adapter = new ExpandableRecordListAdapter(this.getActivity(), records);
 
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
+
+        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        TextView progressText = (TextView) rootView.findViewById(R.id.kcal_label);
+        IntOrNA kcal = ObjectMath.kcalSum(adapter.getRecords());
+        progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
+        progressText.setText(kcal + " / 2000 kcal");
 
         return rootView;
     }
@@ -86,8 +89,7 @@ public class JournalDayFragment extends Fragment {
                             }
                         });
                 snackbar.show();
-                tempRecord = ((FoodListGroup) adapter.getGroup((int) info.packedPosition))
-                        .record;
+                tempRecord = (Record) adapter.getGroup((int) info.packedPosition);
                 deleteRecord(ExpandableListView.getPackedPositionGroup(info.packedPosition));
                 return true;
             default:
@@ -100,7 +102,7 @@ public class JournalDayFragment extends Fragment {
     }
 
     public void deleteRecord(int position) {
-        Record record = ((FoodListGroup) adapter.getGroup(position)).record;
+        Record record = (Record) adapter.getGroup(position);
         MyCapNutrition.dataManager.deleteRecord(record);
         adapter.removeRecord(position);
     }
