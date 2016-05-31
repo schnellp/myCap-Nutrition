@@ -188,6 +188,56 @@ public class DataManager {
                 null);
     }
 
+    public Record recordFromCursor(Cursor cursor) {
+        int DBID = cursor.getInt(0);
+        String date = cursor.getString(1);
+        String foodName = cursor.getString(2);
+        String unitName = cursor.getString(4);
+        IntOrNA quantity;
+        IntOrNA amount_mg;
+        IntOrNA kcal;
+        IntOrNA carb_mg;
+        IntOrNA fat_mg;
+        IntOrNA protein_mg;
+
+        if (cursor.isNull(3)) {
+            quantity = new IntOrNA(0, true);
+        } else {
+            quantity = new IntOrNA(cursor.getInt(3));
+        }
+
+
+
+        if (cursor.isNull(5)) {
+            amount_mg = new IntOrNA(0, true);
+        } else {
+            amount_mg = new IntOrNA(cursor.getInt(5));
+        }
+        if (cursor.isNull(6)) {
+            kcal = new IntOrNA(0, true);
+        } else {
+            kcal = new IntOrNA(cursor.getInt(6));
+        }
+        if (cursor.isNull(7)) {
+            carb_mg = new IntOrNA(0, true);
+        } else {
+            carb_mg = new IntOrNA(cursor.getInt(7));
+        }
+        if (cursor.isNull(8)) {
+            fat_mg = new IntOrNA(0, true);
+        } else {
+            fat_mg = new IntOrNA(cursor.getInt(8));
+        }
+        if (cursor.isNull(9)) {
+            protein_mg = new IntOrNA(0, true);
+        } else {
+            protein_mg = new IntOrNA(cursor.getInt(9));
+        }
+
+        return new Record(DBID, date, foodName, unitName, quantity,
+                amount_mg, kcal, carb_mg, fat_mg, protein_mg);
+    }
+
     public Record createRecord(String date, Food food, IntOrNA amount, Unit unit) {
         DoubleOrNA dAmount_mg = unit.amount_mg.multiply(amount).toDoubleOrNA();
         DoubleOrNA dRefServ_mg = new DoubleOrNA(food.referenceServing_mg);
@@ -222,14 +272,7 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        Cursor cursor = database.query(RecordEntry.TABLE_NAME, recordColNames,
-                RecordEntry._ID + " = " + insertID,
-                null, null, null, null);
-        cursor.moveToFirst();
-        Record newRecord = new Record(cursor);
-        cursor.close();
-
-        return newRecord;
+        return getRecord((int) insertID);
     }
 
     public boolean restoreRecord(Record record) {
@@ -255,10 +298,15 @@ public class DataManager {
         return true;
     }
 
-    public void deleteRecord(Record record) {
-        database.delete(RecordEntry.TABLE_NAME,
-                RecordEntry._ID + " = " + record.DBID,
-                null);
+    public Record getRecord(int dbid) {
+        Cursor cursor = database.query(RecordEntry.TABLE_NAME, recordColNames,
+                RecordEntry._ID + " = " + dbid,
+                null, null, null, null);
+        cursor.moveToFirst();
+        Record newRecord = recordFromCursor(cursor);
+        cursor.close();
+
+        return newRecord;
     }
 
     public List<Record> getAllRecords() {
@@ -269,7 +317,7 @@ public class DataManager {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Record record = new Record(cursor);
+            Record record = recordFromCursor(cursor);
             records.add(record);
             cursor.moveToNext();
         }
@@ -288,7 +336,7 @@ public class DataManager {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Record record = new Record(cursor);
+            Record record = recordFromCursor(cursor);
             records.add(record);
             cursor.moveToNext();
         }
@@ -296,5 +344,11 @@ public class DataManager {
         cursor.close();
 
         return records;
+    }
+
+    public void deleteRecord(Record record) {
+        database.delete(RecordEntry.TABLE_NAME,
+                RecordEntry._ID + " = " + record.DBID,
+                null);
     }
 }
