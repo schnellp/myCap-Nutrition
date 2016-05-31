@@ -14,19 +14,19 @@ import java.util.ArrayList;
 
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
-    public final ArrayList<FoodListGroup> groups;
+    public final ArrayList<Record> records;
     public LayoutInflater inflater;
     public Activity activity;
 
-    public ExpandableRecordListAdapter(Activity act, ArrayList<FoodListGroup> groups) {
+    public ExpandableRecordListAdapter(Activity act, ArrayList<Record> records) {
         activity = act;
-        this.groups = groups;
+        this.records = records;
         inflater = act.getLayoutInflater();
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return groups.get(groupPosition).children.get(childPosition);
+        return "placeholder";
     }
 
     @Override
@@ -43,13 +43,12 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.recordrow_details, null);
         }
 
-        FoodListGroup group = (FoodListGroup) getGroup(groupPosition);
+        Record record = (Record) getGroup(groupPosition);
 
         text = (TextView) convertView.findViewById(R.id.tvRecordDetails);
-        Record r = group.record;
-        text.setText(r.carb_mg.toDoubleOrNA().divide(1000) + " g carbs | " +
-        r.fat_mg.toDoubleOrNA().divide(1000) + " g fat | " +
-        r.protein_mg.toDoubleOrNA().divide(1000) + " g protein");
+        text.setText(record.carb_mg.toDoubleOrNA().divide(1000) + " g carbs | " +
+                record.fat_mg.toDoubleOrNA().divide(1000) + " g fat | " +
+                record.protein_mg.toDoubleOrNA().divide(1000) + " g protein");
 
         return convertView;
     }
@@ -61,12 +60,12 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return groups.get(groupPosition);
+        return records.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return groups.size();
+        return records.size();
     }
 
     @Override
@@ -90,12 +89,12 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.recordrow_group, null);
         }
-        FoodListGroup group = (FoodListGroup) getGroup(groupPosition);
-        ((TextView) convertView.findViewById(R.id.tvRecordFoodName)).setText(group.record.foodName);
-        ((TextView) convertView.findViewById(R.id.tvRecordKcal)).setText(group.record.kcal.toString());
+        Record record = (Record) getGroup(groupPosition);
+        ((TextView) convertView.findViewById(R.id.tvRecordFoodName)).setText(record.foodName);
+        ((TextView) convertView.findViewById(R.id.tvRecordKcal)).setText(record.kcal.toString());
         ((TextView) convertView.findViewById(R.id.tvRecordAmount)).setText(
-                group.record.quantity_cents.toDoubleOrNA().divide(100) + " " + group.record.unitName +
-                " (" + group.record.amount_mg.toDoubleOrNA().divide(1000) + " g)");
+                record.quantity_cents.toDoubleOrNA().divide(100) + " " + record.unitName +
+                " (" + record.amount_mg.toDoubleOrNA().divide(1000) + " g)");
 
         return convertView;
     }
@@ -111,12 +110,16 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
     }
 
     public void addRecord(Record record) {
-        groups.add(new FoodListGroup(record));
+        records.add(record);
         notifyDataSetChanged();
     }
 
+    public ArrayList<Record> getRecords() {
+        return records;
+    }
+
     public void removeRecord(int position) {
-        groups.remove(position);
+        records.remove(position);
         notifyDataSetChanged();
     }
 }
