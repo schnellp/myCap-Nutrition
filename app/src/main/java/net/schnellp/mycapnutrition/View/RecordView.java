@@ -72,7 +72,8 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
 
     public void switchFood(View v) {
         Intent intent = new Intent(this, SelectFood.class);
-        intent.putExtra("CALLED_FOR_RESULT", true);
+        intent.putExtra(SelectFood.Purpose.INTENT_EXTRA_NAME,
+                SelectFood.Purpose.SWITCH_RECORD_FOOD);
         startActivityForResult(intent, SELECT_FOOD_RESULT);
     }
 
@@ -101,7 +102,9 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
                 TextView tv = (TextView) findViewById(R.id.tvFoodName);
                 tv.setText(food.name);
             }
-        } else if (requestCode == ADD_UNIT_RESULT) {
+        } else if (requestCode == ADD_UNIT_RESULT &&
+                data != null &&
+                data.hasExtra("unit_dbid")) {
             Unit unit = MyCapNutrition.dataManager.getUnit(data.getIntExtra("unit_dbid", -1));
             Spinner unitSpinner = (Spinner) findViewById(R.id.spUnit);
             int spinnerPosition = ((UnitSpinnerAdapter) unitSpinner.getAdapter()).getPosition(unit);

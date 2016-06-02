@@ -2,8 +2,6 @@ package net.schnellp.mycapnutrition.View;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -21,8 +19,6 @@ import net.schnellp.mycapnutrition.R;
 
 public class AddUnit extends AppCompatActivity {
 
-    private Food food;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +27,7 @@ public class AddUnit extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
+        Food food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
         TextView tv = (TextView) findViewById(R.id.tvUnitFoodName);
         tv.setText(food.name);
 

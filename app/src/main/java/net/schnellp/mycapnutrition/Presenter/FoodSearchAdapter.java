@@ -18,6 +18,7 @@ import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
+import net.schnellp.mycapnutrition.View.UnitList;
 
 import java.util.ArrayList;
 
@@ -102,15 +103,33 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
         holder.llContainer.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                Intent intent = new Intent(selectFood, RecordView.class);
-                Food food = foodsDisplayedValues.get(position);
-                intent.putExtra("food_dbid", food.DBID);
-                intent.putExtras(((SelectFood) v.getContext()).getIntent());
+                Intent foundingIntent = ((SelectFood) v.getContext()).getIntent();
+                Intent intent;
 
-                if (((SelectFood) v.getContext()).getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
+                switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
+                    case SelectFood.Purpose.FILTER_UNITS:
+                        intent = new Intent(selectFood, UnitList.class);
+                        break;
+                    case SelectFood.Purpose.SWITCH_RECORD_FOOD:
+                        intent = new Intent(selectFood, RecordView.class);
+                        break;
+                    case SelectFood.Purpose.CREATE_RECORD:
+                        intent = new Intent(selectFood, RecordView.class);
+                        break;
+                    default:
+                        return;
+                }
+
+                Food food = foodsDisplayedValues.get(position);
+                intent.putExtras(((SelectFood) v.getContext()).getIntent());
+                intent.putExtra("food_dbid", food.DBID);
+
+                if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
+                        .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
                     selectFood.setResult(Activity.RESULT_OK, intent);
                     selectFood.finish();
-                } else if (intent.getExtras().containsKey("DATE")) {
+                } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
+                        .equals(SelectFood.Purpose.LIST)) {
                     selectFood.startActivity(intent);
                 }
             }

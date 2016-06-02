@@ -79,7 +79,7 @@ public class JournalDayFragment extends Fragment {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId()==R.id.recordListView) {
             MenuInflater inflater = this.getActivity().getMenuInflater();
-            inflater.inflate(R.menu.menu_context_recordrow_group, menu);
+            inflater.inflate(R.menu.menu_context_generic_delete, menu);
         }
     }
 

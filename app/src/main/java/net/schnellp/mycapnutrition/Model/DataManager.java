@@ -10,19 +10,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DataManager {
 
     private SQLiteDatabase database;
-    private DBHelper dbHelper;
     private String[] foodColNames;
     private String[] recordColNames;
     private String[] unitColNames;
 
     public DataManager(Context context) {
-        dbHelper = new DBHelper(context);
+        DBHelper dbHelper = new DBHelper(context);
 
         database = dbHelper.getWritableDatabase();
 
@@ -36,14 +34,6 @@ public class DataManager {
         unitColNames = cursor.getColumnNames();
 
         cursor.close();
-    }
-
-    public void close() {
-        dbHelper.close();
-    }
-
-    private String[] getMutableFoodColNames() {
-        return Arrays.copyOfRange(foodColNames, 1, foodColNames.length);
     }
 
     public Food foodFromCursor(Cursor cursor) {
@@ -112,9 +102,7 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        Food newFood = getFood((int) insertID);
-
-        return newFood;
+        return getFood((int) insertID);
     }
 
     public boolean restoreFood(Food food) {
@@ -144,8 +132,6 @@ public class DataManager {
             values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
         }
 
-        String[] mutableFoodColNames = getMutableFoodColNames();
-
         try {
             database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + dbid, null);
         } catch(SQLException e) {
@@ -153,9 +139,7 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        Food newFood = getFood(dbid);
-
-        return newFood;
+        return getFood(dbid);
     }
 
     public Food getFood(int dbid) {
@@ -294,9 +278,8 @@ public class DataManager {
         if (!record.fat_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_FAT_MG, record.fat_mg.val); }
         if (!record.protein_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, record.protein_mg.val); }
 
-        long insertID = -1;
         try {
-            insertID = database.insertOrThrow(RecordEntry.TABLE_NAME, null, values);
+            database.insertOrThrow(RecordEntry.TABLE_NAME, null, values);
         } catch(SQLException e) {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
@@ -363,7 +346,12 @@ public class DataManager {
         int DBID = cursor.getInt(0);
         int foodID = cursor.getInt(1);
         String name = cursor.getString(2);
-        IntOrNA amount_mg = new IntOrNA(cursor.getInt(3));
+        IntOrNA amount_mg;
+        if (cursor.isNull(3)) {
+            amount_mg = new IntOrNA(0, true);
+        } else {
+            amount_mg = new IntOrNA(cursor.getInt(3));
+        }
 
         return new Unit(DBID, foodID, name, amount_mg);
     }
@@ -412,5 +400,27 @@ public class DataManager {
         cursor.close();
 
         return units;
+    }
+
+    public void deleteUnit(Unit unit) {
+        database.delete(UnitEntry.TABLE_NAME,
+                UnitEntry._ID + " = " + unit.DBID,
+                null);
+    }
+
+    public boolean restoreUnit(Unit unit) {
+        ContentValues values = new ContentValues();
+        values.put(UnitEntry.COLUMN_NAME_NAME, unit.name);
+        values.put(UnitEntry.COLUMN_NAME_FOOD_ID, unit.foodID);
+        if (!unit.amount_mg.isNA) { values.put(UnitEntry.COLUMN_NAME_AMOUNT_MG, unit.amount_mg.val); }
+
+        try {
+            database.insertOrThrow(UnitEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return true;
     }
 }

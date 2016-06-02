@@ -8,8 +8,24 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="net.schnellp.mycapnutrition"
-            android:targetClass="net.schnellp.mycapnutrition.View.SelectFood"
-            />
+            android:targetClass="net.schnellp.mycapnutrition.View.SelectFood">
+
+            <extra android:name="SELECT_FOOD_PURPOSE" android:value="LIST" />
+        </intent>
+
+    </Preference>
+
+    <Preference
+        android:title="Units"
+        android:summary="List of all unit entries">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="net.schnellp.mycapnutrition"
+            android:targetClass="net.schnellp.mycapnutrition.View.SelectFood">
+
+            <extra android:name="SELECT_FOOD_PURPOSE" android:value="FILTER_UNITS" />
+        </intent>
 
     </Preference>
 </PreferenceScreen>

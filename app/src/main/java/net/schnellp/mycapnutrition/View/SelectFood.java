@@ -22,6 +22,15 @@ import net.schnellp.mycapnutrition.R;
 
 public class SelectFood extends AppCompatActivity {
 
+    public static class Purpose {
+        public static final String INTENT_EXTRA_NAME = "SELECT_FOOD_PURPOSE";
+
+        public static final String SWITCH_RECORD_FOOD = "SWITCH_RECORD_FOOD";
+        public static final String FILTER_UNITS = "FILTER_UNITS";
+        public static final String LIST = "LIST";
+        public static final String CREATE_RECORD = "CREATE_RECORD";
+    }
+
     private ListView listView;
     private FoodSearchAdapter foodSearchAdapter;
 
@@ -74,7 +83,7 @@ public class SelectFood extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId()==R.id.listViewFoodResults) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_context_select_food_view, menu);
+            inflater.inflate(R.menu.menu_context_generic_edit_delete, menu);
         }
     }
 
