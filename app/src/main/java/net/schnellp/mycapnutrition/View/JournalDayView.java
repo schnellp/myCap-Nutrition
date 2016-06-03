@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import net.schnellp.mycapnutrition.Model.Conversion;
+import net.schnellp.mycapnutrition.Model.ExportManager;
 import net.schnellp.mycapnutrition.R;
 
 import java.text.SimpleDateFormat;
@@ -96,6 +97,8 @@ public class JournalDayView extends AppCompatActivity {
             Intent intent = new Intent(this, Settings.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_export) {
+            ExportManager.exportData();
         }
 
         return super.onOptionsItemSelected(item);

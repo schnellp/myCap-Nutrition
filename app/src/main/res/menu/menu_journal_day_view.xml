@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".View.JournalDayView">
+
+    <item
+        android:id="@+id/action_export"
+        android:orderInCategory="90"
+        android:title="Export data"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
