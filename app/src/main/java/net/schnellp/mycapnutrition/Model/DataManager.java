@@ -36,6 +36,53 @@ public class DataManager {
         cursor.close();
     }
 
+    public String tableToString(String tableName, boolean headers) {
+        Cursor cursor = database.query(tableName, null, null, null, null, null, null);
+
+        int ncol = cursor.getColumnCount();
+        cursor.moveToFirst();
+
+        StringBuilder tableString = new StringBuilder();
+
+        if (headers) {
+            String[] colnames = cursor.getColumnNames();
+            for (int j = 0; j < ncol; j++) {
+                tableString.append(colnames[j]);
+
+                if (j < ncol - 1) {
+                    tableString.append(",");
+                } else {
+                    tableString.append("\n");
+                }
+            }
+        }
+
+        while (!cursor.isAfterLast()) {
+            for(int j = 0; j < ncol; j++) {
+                if (cursor.isNull(j)) {
+
+                } else if (cursor.getType(j) == Cursor.FIELD_TYPE_STRING) {
+                    tableString.append("\"");
+                    tableString.append(cursor.getString(j).replace("\"", "\"\""));
+                    tableString.append("\"");
+                } else {
+                    tableString.append(cursor.getString(j));
+                }
+
+                if (j < ncol - 1) {
+                    tableString.append(",");
+                } else {
+                    tableString.append("\n");
+                }
+            }
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return tableString.toString();
+    }
+
     public Food foodFromCursor(Cursor cursor) {
         int DBID = cursor.getInt(0);
         String name = cursor.getString(2);

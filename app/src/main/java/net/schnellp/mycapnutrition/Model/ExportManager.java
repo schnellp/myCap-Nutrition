@@ -3,6 +3,8 @@ package net.schnellp.mycapnutrition.Model;
 import android.os.Environment;
 import android.util.Log;
 
+import net.schnellp.mycapnutrition.MyCapNutrition;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,18 +16,27 @@ import java.io.PrintWriter;
 public class ExportManager {
 
     public static boolean exportData() {
-        System.out.println("External storage mounted: " + isExternalStorageWritable());
 
         //TODO: check for & request external storage permission
 
         File dir = getDataStorageDir();
-        File file = new File(dir, "myData.txt");
+        File file = new File(dir, "myCap Nutrition data.txt");
+
+        String[] tables = new String[] {
+                DBContract.FoodEntry.TABLE_NAME,
+                DBContract.UnitEntry.TABLE_NAME,
+                DBContract.RecordEntry.TABLE_NAME
+        };
 
         try {
             FileOutputStream f = new FileOutputStream(file);
             PrintWriter pw = new PrintWriter(f);
-            pw.println("Hi , How are you");
-            pw.println("Hello");
+
+            for (String tableName : tables) {
+                pw.println(tableName);
+                pw.println(MyCapNutrition.dataManager.tableToString(tableName, true));
+            }
+
             pw.flush();
             pw.close();
             f.close();
@@ -36,9 +47,6 @@ public class ExportManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("\n\nFile written to "+file);
-
-        readRaw();
 
         return true;
     }
