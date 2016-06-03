@@ -1,5 +1,6 @@
 package net.schnellp.mycapnutrition.Model;
 
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -11,11 +12,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 public class ExportManager {
 
-    public static boolean exportData() {
+    private MyCapNutrition app;
+
+    public ExportManager(MyCapNutrition app) {
+        this.app = app;
+    }
+
+    public boolean exportData() {
 
         //TODO: check for & request external storage permission
 
@@ -51,7 +60,7 @@ public class ExportManager {
         return true;
     }
 
-    private static boolean isExternalStorageWritable() {
+    private boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             return true;
@@ -59,25 +68,30 @@ public class ExportManager {
         return false;
     }
 
-    private static File getDataStorageDir() {
+    private File getDataStorageDir() {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS), "/");
         return file;
     }
 
-    private static void readRaw(){
-        final File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS)
-                .getAbsolutePath(), "myData.txt");
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+    public void importData(Uri uri){
+        System.out.println("Importing...");
+        try {
+            InputStream inputStream = app.getContentResolver().openInputStream(uri);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    inputStream));
+            StringBuilder stringBuilder = new StringBuilder();
             String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append("\n");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            inputStream.close();
+
+            System.out.println(stringBuilder.toString());
+        } catch (IOException e) {
+            System.out.println(e);
         }
     }
 }
