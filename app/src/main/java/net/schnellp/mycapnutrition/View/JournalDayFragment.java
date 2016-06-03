@@ -87,9 +87,6 @@ public class JournalDayFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
-            case R.id.edit:
-                // edit stuff here
-                return true;
             case R.id.delete:
                 Snackbar snackbar = Snackbar
                         .make(getActivity().findViewById(R.id.main_content), "Record deleted.",
@@ -100,12 +97,13 @@ public class JournalDayFragment extends Fragment {
                                 Snackbar snackbar1 = Snackbar.make(getActivity()
                                         .findViewById(R.id.main_content),
                                         "Food is restored!", Snackbar.LENGTH_SHORT);
-                                JournalDayFragment.this.addRecord(tempRecord);
+                                JournalDayFragment.this.adapter.restoreRecord(tempRecord);
                                 snackbar1.show();
                             }
                         });
                 snackbar.show();
-                tempRecord = (Record) adapter.getGroup((int) info.packedPosition);
+                tempRecord = (Record) adapter.getGroup(
+                        ExpandableListView.getPackedPositionGroup(info.packedPosition));
                 deleteRecord(ExpandableListView.getPackedPositionGroup(info.packedPosition));
                 return true;
             default:
@@ -118,14 +116,6 @@ public class JournalDayFragment extends Fragment {
     }
 
     public void deleteRecord(int position) {
-        Record record = (Record) adapter.getGroup(position);
-        MyCapNutrition.dataManager.deleteRecord(record);
         adapter.removeRecord(position);
-    }
-
-    public boolean addRecord(Record record) {
-        MyCapNutrition.dataManager.restoreRecord(record);
-        adapter.addRecord(record);
-        return true;
     }
 }

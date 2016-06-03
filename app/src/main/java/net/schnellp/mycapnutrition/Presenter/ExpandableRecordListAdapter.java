@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Record;
+import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 
 import java.util.ArrayList;
@@ -119,7 +120,14 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
     }
 
     public void removeRecord(int position) {
+        MyCapNutrition.dataManager.deactivateRecord(records.get(position));
         records.remove(position);
+        notifyDataSetChanged();
+    }
+
+    public void restoreRecord(Record record) {
+        MyCapNutrition.dataManager.restoreRecord(record);
+        records.add(record);
         notifyDataSetChanged();
     }
 }

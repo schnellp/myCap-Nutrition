@@ -102,7 +102,7 @@ public class SelectFood extends AppCompatActivity {
                             public void onClick(View view) {
                                 Snackbar snackbar1 = Snackbar.make(findViewById(R.id.clSelectFood),
                                         "Food is restored!", Snackbar.LENGTH_SHORT);
-                                SelectFood.this.foodSearchAdapter.addItem(tempFood);
+                                SelectFood.this.foodSearchAdapter.restoreItem(tempFood);
                                 snackbar1.show();
                             }
                         });

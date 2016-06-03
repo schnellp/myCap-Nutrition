@@ -38,37 +38,37 @@ public class DataManager {
 
     public Food foodFromCursor(Cursor cursor) {
         int DBID = cursor.getInt(0);
-        String name = cursor.getString(1);
+        String name = cursor.getString(2);
         IntOrNA referenceServing_mg;
         IntOrNA kcal;
         IntOrNA carb_mg;
         IntOrNA fat_mg;
         IntOrNA protein_mg;
 
-        if (cursor.isNull(2)) {
+        if (cursor.isNull(3)) {
             referenceServing_mg = new IntOrNA(0, true);
         } else {
-            referenceServing_mg = new IntOrNA(cursor.getInt(2));
-        }
-        if (cursor.isNull(3)) {
-            kcal = new IntOrNA(0, true);
-        } else {
-            kcal = new IntOrNA(cursor.getInt(3));
+            referenceServing_mg = new IntOrNA(cursor.getInt(3));
         }
         if (cursor.isNull(4)) {
-            carb_mg = new IntOrNA(0, true);
+            kcal = new IntOrNA(0, true);
         } else {
-            carb_mg = new IntOrNA(cursor.getInt(4));
+            kcal = new IntOrNA(cursor.getInt(4));
         }
         if (cursor.isNull(5)) {
-            fat_mg = new IntOrNA(0, true);
+            carb_mg = new IntOrNA(0, true);
         } else {
-            fat_mg = new IntOrNA(cursor.getInt(5));
+            carb_mg = new IntOrNA(cursor.getInt(5));
         }
         if (cursor.isNull(6)) {
+            fat_mg = new IntOrNA(0, true);
+        } else {
+            fat_mg = new IntOrNA(cursor.getInt(6));
+        }
+        if (cursor.isNull(7)) {
             protein_mg = new IntOrNA(0, true);
         } else {
-            protein_mg = new IntOrNA(cursor.getInt(6));
+            protein_mg = new IntOrNA(cursor.getInt(7));
         }
 
         return new Food(DBID, name, referenceServing_mg, kcal, carb_mg, fat_mg, protein_mg);
@@ -106,8 +106,20 @@ public class DataManager {
     }
 
     public boolean restoreFood(Food food) {
-        createFood(food.name, food.referenceServing_mg, food.kcal,
-                food.carb_mg, food.fat_mg, food.protein_mg);
+        ContentValues values = new ContentValues();
+        values.put(FoodEntry._ACTIVE, 1);
+
+        try {
+            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + food.DBID, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        List<Unit> units = getUnitsForFood(food, true);
+        for (Unit unit : units) {
+            restoreUnit(unit);
+        }
 
         return true;
     }
@@ -157,7 +169,9 @@ public class DataManager {
         List<Food> foods = new ArrayList<>();
 
         Cursor cursor = database.query(FoodEntry.TABLE_NAME,
-                foodColNames, null, null, null, null, null);
+                foodColNames,
+                FoodEntry._ACTIVE + " = 1",
+                null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -170,7 +184,24 @@ public class DataManager {
         return foods;
     }
 
-    public void deleteFood(Food food) {
+    public void deactivateFood(Food food) {
+        ContentValues values = new ContentValues();
+        values.put(FoodEntry._ACTIVE, 0);
+
+        try {
+            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + food.DBID, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        List<Unit> units = getUnitsForFood(food, true);
+        for (Unit unit : units) {
+            deactivateUnit(unit);
+        }
+    }
+
+    private void deleteFood(Food food) {
         database.delete(FoodEntry.TABLE_NAME,
                 FoodEntry._ID + " = " + food.DBID,
                 null);
@@ -178,80 +209,48 @@ public class DataManager {
 
     public Record recordFromCursor(Cursor cursor) {
         int DBID = cursor.getInt(0);
-        String date = cursor.getString(1);
-        String foodName = cursor.getString(2);
-        String unitName = cursor.getString(4);
-        IntOrNA quantity;
-        IntOrNA amount_mg;
-        IntOrNA kcal;
-        IntOrNA carb_mg;
-        IntOrNA fat_mg;
-        IntOrNA protein_mg;
+        String date = cursor.getString(2);
 
-        if (cursor.isNull(3)) {
-            quantity = new IntOrNA(0, true);
+        int foodID = cursor.getInt(3);
+        Food food = getFood(foodID);
+
+        int unitID;
+        if (cursor.isNull(4)) {
+            unitID = -1;
         } else {
-            quantity = new IntOrNA(cursor.getInt(3));
+            unitID = cursor.getInt(4);
         }
+        Unit unit = getUnit(unitID);
 
-
-
+        IntOrNA quantity_cents;
         if (cursor.isNull(5)) {
-            amount_mg = new IntOrNA(0, true);
+            quantity_cents = new IntOrNA(0, true);
         } else {
-            amount_mg = new IntOrNA(cursor.getInt(5));
-        }
-        if (cursor.isNull(6)) {
-            kcal = new IntOrNA(0, true);
-        } else {
-            kcal = new IntOrNA(cursor.getInt(6));
-        }
-        if (cursor.isNull(7)) {
-            carb_mg = new IntOrNA(0, true);
-        } else {
-            carb_mg = new IntOrNA(cursor.getInt(7));
-        }
-        if (cursor.isNull(8)) {
-            fat_mg = new IntOrNA(0, true);
-        } else {
-            fat_mg = new IntOrNA(cursor.getInt(8));
-        }
-        if (cursor.isNull(9)) {
-            protein_mg = new IntOrNA(0, true);
-        } else {
-            protein_mg = new IntOrNA(cursor.getInt(9));
+            quantity_cents = new IntOrNA(cursor.getInt(5));
         }
 
-        return new Record(DBID, date, foodName, unitName, quantity,
-                amount_mg, kcal, carb_mg, fat_mg, protein_mg);
+        String foodName = food.name;
+        String unitName = unit.name;
+
+        IntOrNA amount_mg = unit.amount_mg.toDoubleOrNA().multiply(quantity_cents.toDoubleOrNA().divide(100)).round();
+        DoubleOrNA servings = amount_mg.toDoubleOrNA().divide(food.referenceServing_mg.toDoubleOrNA());
+        DoubleOrNA dKcal = servings.multiply(food.kcal.toDoubleOrNA());
+        DoubleOrNA dCarb_mg = servings.multiply(food.carb_mg.toDoubleOrNA());
+        DoubleOrNA dFat_mg = servings.multiply(food.fat_mg.toDoubleOrNA());
+        DoubleOrNA dProtein_mg = servings.multiply(food.protein_mg.toDoubleOrNA());
+
+        return new Record(DBID, date, foodID, unitID, foodName, unitName, quantity_cents,
+                amount_mg, dKcal.round(), dCarb_mg.round(), dFat_mg.round(), dProtein_mg.round());
     }
 
     public Record createRecord(String date, Food food, IntOrNA quantity_cents, Unit unit) {
-        DoubleOrNA dQuantity = quantity_cents.toDoubleOrNA().divide(100);
-        DoubleOrNA dAmount_mg = unit.amount_mg.toDoubleOrNA().multiply(dQuantity);
-        DoubleOrNA dRefServ_mg = new DoubleOrNA(food.referenceServing_mg);
-        DoubleOrNA dServ = dAmount_mg.divide(dRefServ_mg);
-
-        DoubleOrNA dKcal = new DoubleOrNA(food.kcal).multiply(dServ);
-        DoubleOrNA dCarb_mg = new DoubleOrNA(food.carb_mg).multiply(dServ);
-        DoubleOrNA dFat_mg = new DoubleOrNA(food.fat_mg).multiply(dServ);
-        DoubleOrNA dProtein_mg = new DoubleOrNA(food.protein_mg).multiply(dServ);
-
-        String sKcal = dKcal.round().toString();
-        String sCarb_mg = dCarb_mg.round().toString();
-        String sFat_mg = dFat_mg.round().toString();
-        String sProtein_mg = dProtein_mg.round().toString();
-
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, date);
-        values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, food.name);
-        if (!quantity_cents.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, quantity_cents.toString()); }
-        values.put(RecordEntry.COLUMN_NAME_UNIT, unit.name);
-        if (!dAmount_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, dAmount_mg.round().toString()); }
-        if (!dKcal.isNA) { values.put(RecordEntry.COLUMN_NAME_KCAL, sKcal); }
-        if (!dCarb_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_CARB_MG, sCarb_mg); }
-        if (!dFat_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_FAT_MG, sFat_mg); }
-        if (!dProtein_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, sProtein_mg); }
+        values.put(RecordEntry.COLUMN_NAME_FOOD_ID, food.DBID);
+        if (!quantity_cents.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY_CENTS, quantity_cents.toString()); }
+        if (unit.DBID != -1) {
+            values.put(RecordEntry.COLUMN_NAME_UNIT_ID, unit.DBID);
+        }
 
         long insertID = -1;
         try {
@@ -268,18 +267,11 @@ public class DataManager {
 
     public boolean restoreRecord(Record record) {
         ContentValues values = new ContentValues();
-        values.put(RecordEntry.COLUMN_NAME_DATE, record.date);
-        values.put(RecordEntry.COLUMN_NAME_FOOD_NAME, record.foodName);
-        if (!record.quantity_cents.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY, record.quantity_cents.val); }
-        values.put(RecordEntry.COLUMN_NAME_UNIT, record.unitName);
-        if (!record.amount_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_AMOUNT_MG, record.amount_mg.val); }
-        if (!record.kcal.isNA) { values.put(RecordEntry.COLUMN_NAME_KCAL, record.kcal.val); }
-        if (!record.carb_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_CARB_MG, record.carb_mg.val); }
-        if (!record.fat_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_FAT_MG, record.fat_mg.val); }
-        if (!record.protein_mg.isNA) { values.put(RecordEntry.COLUMN_NAME_PROTEIN_MG, record.protein_mg.val); }
+        values.put(RecordEntry._ACTIVE, 1);
 
         try {
-            database.insertOrThrow(RecordEntry.TABLE_NAME, null, values);
+            database.update(RecordEntry.TABLE_NAME, values,
+                    RecordEntry._ID + " = " + record.DBID, null);
         } catch(SQLException e) {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
@@ -303,7 +295,9 @@ public class DataManager {
         List<Record> records = new ArrayList<>();
 
         Cursor cursor = database.query(RecordEntry.TABLE_NAME,
-                recordColNames, null, null, null, null, null);
+                recordColNames,
+                RecordEntry._ACTIVE + " = 1",
+                null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -321,7 +315,8 @@ public class DataManager {
 
         Cursor cursor = database.query(RecordEntry.TABLE_NAME,
                 recordColNames,
-                RecordEntry.COLUMN_NAME_DATE + " = ?",
+                RecordEntry.COLUMN_NAME_DATE + " = ? AND " +
+                RecordEntry._ACTIVE + " = 1",
                 new String[] {date}, null, null, null);
 
         cursor.moveToFirst();
@@ -336,7 +331,20 @@ public class DataManager {
         return records;
     }
 
-    public void deleteRecord(Record record) {
+    public void deactivateRecord(Record record) {
+        ContentValues values = new ContentValues();
+        values.put(RecordEntry._ACTIVE, 0);
+
+        try {
+            database.update(RecordEntry.TABLE_NAME, values,
+                    RecordEntry._ID + " = " + record.DBID, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteRecord(Record record) {
         database.delete(RecordEntry.TABLE_NAME,
                 RecordEntry._ID + " = " + record.DBID,
                 null);
@@ -344,13 +352,13 @@ public class DataManager {
 
     public Unit unitFromCursor(Cursor cursor) {
         int DBID = cursor.getInt(0);
-        int foodID = cursor.getInt(1);
-        String name = cursor.getString(2);
+        int foodID = cursor.getInt(2);
+        String name = cursor.getString(3);
         IntOrNA amount_mg;
-        if (cursor.isNull(3)) {
+        if (cursor.isNull(4)) {
             amount_mg = new IntOrNA(0, true);
         } else {
-            amount_mg = new IntOrNA(cursor.getInt(3));
+            amount_mg = new IntOrNA(cursor.getInt(4));
         }
 
         return new Unit(DBID, foodID, name, amount_mg);
@@ -374,6 +382,10 @@ public class DataManager {
     }
 
     public Unit getUnit(int dbid) {
+        if (dbid == -1) {
+            return Unit.G;
+        }
+
         Cursor cursor = database.query(UnitEntry.TABLE_NAME, unitColNames,
                 UnitEntry._ID + " = " + dbid,
                 null, null, null, null);
@@ -385,12 +397,25 @@ public class DataManager {
     }
 
     public List<Unit> getUnitsForFood(Food food) {
+        return getUnitsForFood(food, false);
+    }
+
+    public List<Unit> getUnitsForFood(Food food, boolean includeHidden) {
         List<Unit> units = new ArrayList<>();
 
-        Cursor cursor = database.query(UnitEntry.TABLE_NAME,
-                unitColNames,
-                UnitEntry.COLUMN_NAME_FOOD_ID + " = ?",
-                new String[] {"" + food.DBID}, null, null, null);
+        Cursor cursor;
+        if (includeHidden) {
+            cursor = database.query(UnitEntry.TABLE_NAME,
+                    unitColNames,
+                    UnitEntry.COLUMN_NAME_FOOD_ID + " = ?",
+                    new String[] {"" + food.DBID}, null, null, null);
+        } else {
+            cursor = database.query(UnitEntry.TABLE_NAME,
+                    unitColNames,
+                    UnitEntry.COLUMN_NAME_FOOD_ID + " = ? AND " +
+                    UnitEntry._ACTIVE + " = 1",
+                    new String[] {"" + food.DBID}, null, null, null);
+        }
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -402,7 +427,20 @@ public class DataManager {
         return units;
     }
 
-    public void deleteUnit(Unit unit) {
+    public void deactivateUnit(Unit unit) {
+        ContentValues values = new ContentValues();
+        values.put(UnitEntry._ACTIVE, 0);
+
+        try {
+            database.update(UnitEntry.TABLE_NAME, values,
+                    UnitEntry._ID + " = " + unit.DBID, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteUnit(Unit unit) {
         database.delete(UnitEntry.TABLE_NAME,
                 UnitEntry._ID + " = " + unit.DBID,
                 null);
@@ -410,12 +448,11 @@ public class DataManager {
 
     public boolean restoreUnit(Unit unit) {
         ContentValues values = new ContentValues();
-        values.put(UnitEntry.COLUMN_NAME_NAME, unit.name);
-        values.put(UnitEntry.COLUMN_NAME_FOOD_ID, unit.foodID);
-        if (!unit.amount_mg.isNA) { values.put(UnitEntry.COLUMN_NAME_AMOUNT_MG, unit.amount_mg.val); }
+        values.put(UnitEntry._ACTIVE, 1);
 
         try {
-            database.insertOrThrow(UnitEntry.TABLE_NAME, null, values);
+            database.update(UnitEntry.TABLE_NAME, values,
+                    UnitEntry._ID + " = " + unit.DBID, null);
         } catch(SQLException e) {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();

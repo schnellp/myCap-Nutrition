@@ -60,7 +60,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
         selectFood.startActivityForResult(intent, 1);
     }
 
-    public void addItem(Food food) {
+    public void restoreItem(Food food) {
         MyCapNutrition.dataManager.restoreFood(food);
         foodsOriginalValues.add(food);
         getFilter().filter("");
@@ -69,7 +69,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
 
     public void deleteItem(int position) {
         Food food = foodsDisplayedValues.get(position);
-        MyCapNutrition.dataManager.deleteFood(food);
+        MyCapNutrition.dataManager.deactivateFood(food);
         foodsOriginalValues.remove(position);
         getFilter().filter("");
         notifyDataSetChanged();

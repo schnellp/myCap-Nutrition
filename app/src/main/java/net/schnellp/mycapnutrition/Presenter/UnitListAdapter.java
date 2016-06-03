@@ -42,7 +42,7 @@ public class UnitListAdapter extends BaseAdapter {
 
     public void deleteItem(int position) {
         Unit unit = units.get(position);
-        MyCapNutrition.dataManager.deleteUnit(unit);
+        MyCapNutrition.dataManager.deactivateUnit(unit);
         units.remove(position);
         notifyDataSetChanged();
     }
