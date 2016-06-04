@@ -1,6 +1,7 @@
 package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
+import android.app.admin.SystemUpdatePolicy;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +13,17 @@ import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
 
-    public final ArrayList<Record> records;
+    public final List<Record> records;
     public LayoutInflater inflater;
     public Activity activity;
 
-    public ExpandableRecordListAdapter(Activity act, ArrayList<Record> records) {
+    public ExpandableRecordListAdapter(Activity act, String date) {
         activity = act;
-        this.records = records;
+        this.records = MyCapNutrition.dataManager.getRecordsFromDate(date);
         inflater = act.getLayoutInflater();
     }
 
@@ -115,7 +117,7 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
     }
 
-    public ArrayList<Record> getRecords() {
+    public List<Record> getRecords() {
         return records;
     }
 

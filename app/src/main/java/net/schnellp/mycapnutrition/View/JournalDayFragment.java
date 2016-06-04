@@ -15,19 +15,15 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Model.DataManager;
 import net.schnellp.mycapnutrition.Model.IntOrNA;
 import net.schnellp.mycapnutrition.Model.ObjectMath;
 import net.schnellp.mycapnutrition.Model.Record;
-import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Presenter.ExpandableRecordListAdapter;
 import net.schnellp.mycapnutrition.R;
 
-import java.util.ArrayList;
 
 public class JournalDayFragment extends Fragment {
 
-    public DataManager datasource;
     public static final String DATE = "day_number";
     private String date;
     public ExpandableRecordListAdapter adapter;
@@ -43,14 +39,21 @@ public class JournalDayFragment extends Fragment {
         date = getArguments().getString(DATE);
         textView.setText(date);
 
-        ArrayList<Record> records = new ArrayList<>(MyCapNutrition.dataManager.getRecordsFromDate(date));
-
         ExpandableRecordListView listView = (ExpandableRecordListView)
                 rootView.findViewById(R.id.recordListView);
-        adapter = new ExpandableRecordListAdapter(this.getActivity(), records);
+        adapter = new ExpandableRecordListAdapter(this.getActivity(), date);
 
         listView.setAdapter(adapter);
         registerForContextMenu(listView);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        int goalKcal = Integer.parseInt(sharedPref.getString("goal_kcal", "2000"));
+        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        TextView progressText = (TextView) rootView.findViewById(R.id.kcal_label);
+        IntOrNA kcal = ObjectMath.kcalSum(adapter.getRecords());
+        progressBar.setMax(goalKcal);
+        progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
+        progressText.setText(kcal + " / " + goalKcal + " kcal");
 
         buildOrRebuild();
 
@@ -64,18 +67,12 @@ public class JournalDayFragment extends Fragment {
     }
 
     private void buildOrRebuild() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        int goalKcal = Integer.parseInt(sharedPref.getString("goal_kcal", "2000"));
-        ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        TextView progressText = (TextView) rootView.findViewById(R.id.kcal_label);
-        IntOrNA kcal = ObjectMath.kcalSum(adapter.getRecords());
-        progressBar.setMax(goalKcal);
-        progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
-        progressText.setText(kcal + " / " + goalKcal + " kcal");
+
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        System.out.println("created from " + date);
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId()==R.id.recordListView) {
             MenuInflater inflater = this.getActivity().getMenuInflater();
@@ -85,30 +82,35 @@ public class JournalDayFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
-            case R.id.delete:
-                Snackbar snackbar = Snackbar
-                        .make(getActivity().findViewById(R.id.main_content), "Record deleted.",
-                                Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Snackbar snackbar1 = Snackbar.make(getActivity()
-                                        .findViewById(R.id.main_content),
-                                        "Food is restored!", Snackbar.LENGTH_SHORT);
-                                JournalDayFragment.this.adapter.restoreRecord(tempRecord);
-                                snackbar1.show();
-                            }
-                        });
-                snackbar.show();
-                tempRecord = (Record) adapter.getGroup(
-                        ExpandableListView.getPackedPositionGroup(info.packedPosition));
-                deleteRecord(ExpandableListView.getPackedPositionGroup(info.packedPosition));
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+        if (getUserVisibleHint()) {
+            ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+            switch(item.getItemId()) {
+                case R.id.delete:
+                    Snackbar snackbar = Snackbar
+                            .make(getActivity().findViewById(R.id.main_content), "Record deleted.",
+                                    Snackbar.LENGTH_LONG)
+                            .setAction("UNDO", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Snackbar snackbar1 = Snackbar.make(getActivity()
+                                                    .findViewById(R.id.main_content),
+                                            "Food is restored!", Snackbar.LENGTH_SHORT);
+                                    JournalDayFragment.this.adapter.restoreRecord(tempRecord);
+                                    snackbar1.show();
+                                }
+                            });
+                    snackbar.show();
+                    tempRecord = (Record) adapter.getGroup(
+                            ExpandableListView.getPackedPositionGroup(info.packedPosition));
+                    deleteRecord(ExpandableListView.getPackedPositionGroup(info.packedPosition));
+                    return true;
+                default:
+                    return super.onContextItemSelected(item);
+            }
+        } else {
+            return false;
         }
+
     }
 
     public String getDate() {

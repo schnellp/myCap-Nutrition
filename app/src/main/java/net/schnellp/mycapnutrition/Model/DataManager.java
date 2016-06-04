@@ -204,7 +204,7 @@ public class DataManager {
 
     public void touchFood(int dbid) {
         ContentValues values = new ContentValues();
-        values.put(FoodEntry.COLUMN_NAME_LAST_USED, (new Date()).getTime() / 24 / 60 / 60 / 1000);
+        values.put(FoodEntry.COLUMN_NAME_LAST_USED, (new Date()).getTime() / 1000);
         try {
             database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + dbid, null);
         } catch(SQLException e) {
