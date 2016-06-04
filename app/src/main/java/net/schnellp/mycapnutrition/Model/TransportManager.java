@@ -2,7 +2,6 @@ package net.schnellp.mycapnutrition.Model;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -37,7 +36,7 @@ public class TransportManager {
         if (!dir.exists()) {
             dir.mkdir();
         }
-        File file = new File(dir, "MyCap Nutrition data.txt");
+        File file = new File(dir, "MyCap Nutrition data.mccsv");
 
         String[] tables = new String[] {
                 DBContract.FoodEntry.TABLE_NAME,
