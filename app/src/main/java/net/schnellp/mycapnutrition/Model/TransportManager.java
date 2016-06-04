@@ -131,8 +131,12 @@ public class TransportManager {
             curChar = line.charAt(i);
             switch (curChar) {
                 case ',':
-                    entries.add(builder.toString());
-                    builder.delete(0, builder.length());
+                    if (inQuotes) {
+                        builder.append(curChar);
+                    } else {
+                        entries.add(builder.toString());
+                        builder.delete(0, builder.length());
+                    }
                     break;
                 case '"':
                     inQuotes = !inQuotes;
@@ -199,47 +203,33 @@ public class TransportManager {
 
                     // Replace IDs in file with database IDs
                     if (table.equals(DBContract.UnitEntry.TABLE_NAME)) {
-                        int foodDBIDCol = Integer.parseInt(lineEntries.get(
-                                colnames.indexOf(DBContract.UnitEntry.COLUMN_NAME_FOOD_ID)));
+                        int foodDBIDCol = colnames.indexOf(DBContract.UnitEntry.COLUMN_NAME_FOOD_ID);
                         int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
                         lineEntries.set(foodDBIDCol,
                                 dm.getFood(foodDBIDFromFileID.get(foodFileID)).DBID + "");
                     } else if (table.equals(DBContract.RecordEntry.TABLE_NAME)) {
                         int foodDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_FOOD_ID);
-                        System.out.println("Record foodDBIDCol = " + foodDBIDCol);
                         int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
-                        System.out.println("Record foodFileID = " + foodFileID);
                         Food food = dm.getFood(foodDBIDFromFileID.get(foodFileID));
-                        System.out.println("Got food " + food.name);
                         lineEntries.set(foodDBIDCol, food.DBID + "");
-                        System.out.println("New ID: " + lineEntries.get(foodDBIDCol));
 
                         int unitDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_UNIT_ID);
-                        System.out.println("unitDBIDCol: " + unitDBIDCol);
-                        System.out.println("raw: " + lineEntries.get(foodDBIDCol));
                         if (!lineEntries.get(unitDBIDCol).equals("")) {
                             int unitFileID = Integer.parseInt(lineEntries.get(unitDBIDCol));
-                            System.out.println("unitFileID: " + unitFileID);
                             lineEntries.set(unitDBIDCol,
                                     dm.getFood(unitDBIDFromFileID.get(unitFileID)).DBID + "");
                         }
                     }
 
                     // Write to database
-                    System.out.println("Importing record; columns: " + ncol);
-                    for (int j = 0; j < ncol; j++) {
-                        System.out.println(lineEntries.get(j));
-                    }
                     int fileID = Integer.parseInt(lineEntries.get(idcol));
                     ContentValues values = contentValuesFromLineEntries(colnames, lineEntries);
                     int dbid = dm.directInsert(table, values);
 
                     // Update maps from file IDs to database IDs
                     if (table.equals(DBContract.FoodEntry.TABLE_NAME)) {
-                        System.out.println("Food " + fileID + " maps to " + dbid);
                         foodDBIDFromFileID.put(fileID, dbid);
                     } else if (table.equals(DBContract.UnitEntry.TABLE_NAME)) {
-                        System.out.println("Unit " + fileID + " maps to " + dbid);
                         unitDBIDFromFileID.put(fileID, dbid);
                     }
                 }
