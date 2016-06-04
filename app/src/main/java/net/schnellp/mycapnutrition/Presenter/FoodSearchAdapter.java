@@ -97,7 +97,9 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.tvName.setText(foodsDisplayedValues.get(position).name);
-        holder.tvDetails.setText(foodsDisplayedValues.get(position).kcal + "");
+        holder.tvDetails.setText(foodsDisplayedValues.get(position).kcal + " kcal / " +
+        foodsDisplayedValues.get(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
+        " g");
 
 
         holder.llContainer.setOnClickListener(new View.OnClickListener() {

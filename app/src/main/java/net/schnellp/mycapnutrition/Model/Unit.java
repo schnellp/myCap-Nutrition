@@ -1,10 +1,8 @@
 package net.schnellp.mycapnutrition.Model;
 
-import android.database.Cursor;
-
 public class Unit {
 
-    public static final Unit G = new Unit("g", 1000);
+    public static final Unit G = new Unit("1 g", 1000);
     public static final Unit ADD = new Unit("- New Unit -", 0);
 
     public final int DBID;

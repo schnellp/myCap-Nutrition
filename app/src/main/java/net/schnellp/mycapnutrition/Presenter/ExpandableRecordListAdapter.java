@@ -47,9 +47,9 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         Record record = (Record) getGroup(groupPosition);
 
         text = (TextView) convertView.findViewById(R.id.tvRecordDetails);
-        text.setText(record.carb_mg.toDoubleOrNA().divide(1000) + " g carbs | " +
-                record.fat_mg.toDoubleOrNA().divide(1000) + " g fat | " +
-                record.protein_mg.toDoubleOrNA().divide(1000) + " g protein");
+        text.setText(record.carb_mg.toDoubleOrNA().divide(1000).round() + " g carbs | " +
+                record.fat_mg.toDoubleOrNA().divide(1000).round() + " g fat | " +
+                record.protein_mg.toDoubleOrNA().divide(1000).round() + " g protein");
 
         return convertView;
     }
@@ -94,8 +94,8 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         ((TextView) convertView.findViewById(R.id.tvRecordFoodName)).setText(record.foodName);
         ((TextView) convertView.findViewById(R.id.tvRecordKcal)).setText(record.kcal.toString());
         ((TextView) convertView.findViewById(R.id.tvRecordAmount)).setText(
-                record.quantity_cents.toDoubleOrNA().divide(100) + " " + record.unitName +
-                " (" + record.amount_mg.toDoubleOrNA().divide(1000) + " g)");
+                record.quantity_cents.toDoubleOrNA().divide(100) + " x " + record.unitName +
+                " (" + record.amount_mg.toDoubleOrNA().divide(1000).round() + " g)");
 
         return convertView;
     }
