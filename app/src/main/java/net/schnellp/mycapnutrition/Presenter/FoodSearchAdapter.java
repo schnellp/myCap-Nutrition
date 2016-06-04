@@ -186,7 +186,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                     constraint = constraint.toString().toLowerCase();
                     for (int i = 0; i < foodsOriginalValues.size(); i++) {
                         String data = foodsOriginalValues.get(i).name;
-                        if (data.toLowerCase().startsWith(constraint.toString())) {
+                        if (matches(data, constraint.toString())) {
                             FilteredArrList.add(foodsOriginalValues.get(i));
                         }
                     }
@@ -195,6 +195,10 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                     results.values = FilteredArrList;
                 }
                 return results;
+            }
+
+            protected boolean matches(String target, String query) {
+                return target.toLowerCase().contains(query);
             }
         };
         return filter;
