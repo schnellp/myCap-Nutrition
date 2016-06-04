@@ -165,7 +165,6 @@ public class TransportManager {
     }
 
     public void importData(Uri uri){
-        System.out.println("Importing...");
 
         try {
             InputStream inputStream = app.getContentResolver().openInputStream(uri);
@@ -184,8 +183,6 @@ public class TransportManager {
             String line;
             ArrayList<String> lineEntries;
             while ((line = reader.readLine()) != null) {
-
-                System.out.println(line);
 
                 if (line.equals("")) {
                     if (!reader.ready()) {

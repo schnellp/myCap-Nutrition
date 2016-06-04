@@ -3,6 +3,7 @@ package net.schnellp.mycapnutrition.View;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.NotificationCompat;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -177,12 +179,32 @@ public class Settings extends AppCompatPreferenceActivity {
                 // Instead, a URI to that document will be contained in the return intent
                 // provided to this method as a parameter.
                 // Pull that URI using resultData.getData().
-                Uri uri = null;
+                final Uri uri;
                 if (resultData != null) {
                     uri = resultData.getData();
-                    MyCapNutrition.transportManager.importData(uri);
-                    Toast.makeText(getActivity(), "Data imported.",
-                            Toast.LENGTH_SHORT).show();
+                    final int id = 1;
+
+                    final NotificationManager mNotifyManager =
+                            (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                    final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
+                    mBuilder.setContentTitle("Data import")
+                            .setContentText("Data import in progress")
+                            .setSmallIcon(R.drawable.ic_sync_black_24dp);
+
+                    new Thread(
+                            new Runnable() {
+                                @Override
+                                public void run() {
+                                    mBuilder.setProgress(0, 0, true);
+                                    mNotifyManager.notify(id, mBuilder.build());
+                                    MyCapNutrition.transportManager.importData(uri);
+                                    mBuilder.setContentText("Data import complete")
+                                            // Removes the progress bar
+                                            .setProgress(0,0,false);
+                                    mNotifyManager.notify(id, mBuilder.build());
+                                }
+                            }
+                    ).start();
                 }
             }
         }
