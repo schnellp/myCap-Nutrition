@@ -507,4 +507,21 @@ public class DataManager {
 
         return true;
     }
+
+    public int directInsert(String tableName, ContentValues values) {
+        long insertID = -1;
+        try {
+            insertID = database.insertOrThrow(tableName, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+        return (int) insertID;
+    }
+
+    public void clearData() {
+        database.delete(RecordEntry.TABLE_NAME, null, null);
+        database.delete(UnitEntry.TABLE_NAME, null, null);
+        database.delete(FoodEntry.TABLE_NAME, null, null);
+    }
 }

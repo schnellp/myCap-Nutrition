@@ -13,14 +13,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import net.schnellp.mycapnutrition.Model.Conversion;
-import net.schnellp.mycapnutrition.Model.ExportManager;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 
@@ -44,19 +41,9 @@ public class JournalDayView extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journal_day_view);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+    private void buildPagerAdapter() {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
@@ -64,6 +51,18 @@ public class JournalDayView extends AppCompatActivity {
         String strDate = sdfDate.format(now);
 
         mViewPager.setCurrentItem(Conversion.dateToDayNumber(strDate) + 1, false);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_journal_day_view);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        buildPagerAdapter();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,9 +102,12 @@ public class JournalDayView extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.action_export) {
-            MyCapNutrition.exportManager.exportData();
+            MyCapNutrition.transportManager.exportData();
         } else if (id == R.id.action_import) {
             performFileSearch();
+        } else if (id == R.id.action_clear_data) {
+            MyCapNutrition.dataManager.clearData();
+            buildPagerAdapter();
         }
 
         return super.onOptionsItemSelected(item);
@@ -177,7 +179,8 @@ public class JournalDayView extends AppCompatActivity {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-                MyCapNutrition.exportManager.importData(uri);
+                MyCapNutrition.transportManager.importData(uri);
+                buildPagerAdapter();
             }
         }
     }

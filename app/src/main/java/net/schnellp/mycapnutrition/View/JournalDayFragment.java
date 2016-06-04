@@ -30,7 +30,7 @@ public class JournalDayFragment extends Fragment {
     public DataManager datasource;
     public static final String DATE = "day_number";
     private String date;
-    ExpandableRecordListAdapter adapter;
+    public ExpandableRecordListAdapter adapter;
     Record tempRecord;
     View rootView;
 
