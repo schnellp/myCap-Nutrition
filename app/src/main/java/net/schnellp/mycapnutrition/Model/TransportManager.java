@@ -2,9 +2,11 @@ package net.schnellp.mycapnutrition.Model;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -30,10 +32,12 @@ public class TransportManager {
 
     public Uri exportData(Activity sender) {
 
-        //TODO: check for & request external storage permission
-
-        File dir = getDataStorageDir();
-        File file = new File(dir, "myCap Nutrition data.txt");
+        String dirPath = sender.getFilesDir().getAbsolutePath() + File.separator + "publicdata";
+        File dir = new File(dirPath);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        File file = new File(dir, "MyCap Nutrition data.txt");
 
         String[] tables = new String[] {
                 DBContract.FoodEntry.TABLE_NAME,
@@ -61,9 +65,35 @@ public class TransportManager {
             e.printStackTrace();
         }
 
+        Uri fileUri = null;
+
+        try {
+            fileUri = FileProvider.getUriForFile(
+                    sender,
+                    "net.schnellp.mycapnutrition.fileprovider",
+                    file);
+        } catch (IllegalArgumentException e) {
+            Log.e("File Selector",
+                    "The selected file can't be shared: " +
+                            file.getAbsolutePath());
+        }
+
         Intent shareIntent = new Intent();
+
+        if (fileUri != null) {
+            // Grant temporary read permission to the content URI
+            shareIntent.addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Put the Uri and MIME type in the result Intent
+            shareIntent.setDataAndType(
+                    fileUri,
+                    sender.getContentResolver().getType(fileUri));
+        }
+
+
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
         shareIntent.setType("text/plain");
         sender.startActivity(Intent.createChooser(shareIntent, "Export to"));
 
@@ -76,13 +106,6 @@ public class TransportManager {
             return true;
         }
         return false;
-    }
-
-    private File getDataStorageDir() {
-        // Get the directory for the user's public pictures directory.
-        File file = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS), "/");
-        return file;
     }
 
     private boolean hasEnclosingDoubleQuotes(String string) {
