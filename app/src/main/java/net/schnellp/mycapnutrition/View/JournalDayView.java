@@ -102,7 +102,7 @@ public class JournalDayView extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (id == R.id.action_export) {
-            MyCapNutrition.transportManager.exportData();
+            MyCapNutrition.transportManager.exportData(this);
         } else if (id == R.id.action_import) {
             performFileSearch();
         } else if (id == R.id.action_clear_data) {

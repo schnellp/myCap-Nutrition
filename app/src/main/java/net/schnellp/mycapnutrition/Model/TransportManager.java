@@ -1,10 +1,10 @@
 package net.schnellp.mycapnutrition.Model;
 
+import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -28,7 +28,7 @@ public class TransportManager {
         this.app = app;
     }
 
-    public boolean exportData() {
+    public Uri exportData(Activity sender) {
 
         //TODO: check for & request external storage permission
 
@@ -61,7 +61,13 @@ public class TransportManager {
             e.printStackTrace();
         }
 
-        return true;
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        shareIntent.setType("text/plain");
+        sender.startActivity(Intent.createChooser(shareIntent, "Export to"));
+
+        return Uri.fromFile(file);
     }
 
     private boolean isExternalStorageWritable() {
