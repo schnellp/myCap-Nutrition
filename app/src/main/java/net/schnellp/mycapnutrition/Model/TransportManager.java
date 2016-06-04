@@ -122,9 +122,7 @@ public class TransportManager {
                                                        ArrayList<String> lineEntries) {
         ContentValues values = new ContentValues();
         for (int j = 0; j < colnames.size(); j++) {
-            if (colnames.get(j).equals(DBContract._ID)) {
-                values.put(DBContract._ACTIVE, 1);
-            } else {
+            if (!colnames.get(j).equals(DBContract._ID)) {
                 String entry = stripEnclosingDoubleQuotes(lineEntries.get(j));
                 if (!entry.equals("")) {
                     values.put(colnames.get(j), entry);
