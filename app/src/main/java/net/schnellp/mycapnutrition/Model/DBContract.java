@@ -18,6 +18,7 @@ public final class DBContract {
         public static final String COLUMN_NAME_CARB_MG = "carb_mg";
         public static final String COLUMN_NAME_FAT_MG = "fat_mg";
         public static final String COLUMN_NAME_PROTEIN_MG = "protein_mg";
+        public static final String COLUMN_NAME_LAST_USED = "last_used";
     }
 
     public static abstract class UnitEntry implements BaseColumns {

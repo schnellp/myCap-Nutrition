@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DataManager {
@@ -201,6 +202,17 @@ public class DataManager {
         return getFood(dbid);
     }
 
+    public void touchFood(int dbid) {
+        ContentValues values = new ContentValues();
+        values.put(FoodEntry.COLUMN_NAME_LAST_USED, (new Date()).getTime() / 24 / 60 / 60 / 1000);
+        try {
+            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + dbid, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
     public Food getFood(int dbid) {
         Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
                 FoodEntry._ID + " = " + dbid,
@@ -218,7 +230,10 @@ public class DataManager {
         Cursor cursor = database.query(FoodEntry.TABLE_NAME,
                 foodColNames,
                 FoodEntry._ACTIVE + " = 1",
-                null, null, null, null);
+                null, // selection args
+                null, // group by
+                null, // having
+                FoodEntry.COLUMN_NAME_LAST_USED + " DESC"); // order by
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -291,6 +306,8 @@ public class DataManager {
     }
 
     public Record createRecord(String date, Food food, IntOrNA quantity_cents, Unit unit) {
+        touchFood(food.DBID);
+
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, date);
         values.put(RecordEntry.COLUMN_NAME_FOOD_ID, food.DBID);

@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_FOOD =
@@ -20,7 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
                     FoodEntry.COLUMN_NAME_CARB_MG + " INTEGER, " +
                     FoodEntry.COLUMN_NAME_FAT_MG + " INTEGER, " +
-                    FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER)";
+                    FoodEntry.COLUMN_NAME_PROTEIN_MG + " INTEGER, " +
+                    FoodEntry.COLUMN_NAME_LAST_USED + " INTEGER DEFAULT 0)";
 
     private static final String SQL_CREATE_TABLE_UNIT =
             "CREATE TABLE " + UnitEntry.TABLE_NAME + " (" +
