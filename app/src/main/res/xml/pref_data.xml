@@ -3,13 +3,25 @@
 
     <Preference
         android:title="Export data"
-        android:summary="Save database as CSV files in Google Drive">
+        android:summary="Export entire database as mccsv (csv-like) file."
+        android:key="export_data">
+    </Preference>
 
+    <Preference
+        android:title="Import data"
+        android:summary="Import data from mccsv (csv-like) file."
+        android:key="import_data">
+    </Preference>
+
+    <Preference
+        android:title="Clear data"
+        android:summary="Clear entire database."
+        android:key="clear_data">
     </Preference>
 
     <Preference
         android:title="Food"
-        android:summary="List of all food entries">
+        android:summary="List of all food entries.">
 
         <intent
             android:action="android.intent.action.VIEW"
@@ -23,7 +35,7 @@
 
     <Preference
         android:title="Units"
-        android:summary="List of all unit entries">
+        android:summary="List of all unit entries.">
 
         <intent
             android:action="android.intent.action.VIEW"

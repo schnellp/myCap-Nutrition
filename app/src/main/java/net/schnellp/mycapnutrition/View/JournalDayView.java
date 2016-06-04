@@ -1,8 +1,6 @@
 package net.schnellp.mycapnutrition.View;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import net.schnellp.mycapnutrition.Model.Conversion;
-import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +39,12 @@ public class JournalDayView extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private void buildPagerAdapter() {
+        setContentView(R.layout.activity_journal_day_view);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -51,18 +54,6 @@ public class JournalDayView extends AppCompatActivity {
         String strDate = sdfDate.format(now);
 
         mViewPager.setCurrentItem(Conversion.dateToDayNumber(strDate) + 1, false);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_journal_day_view);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        buildPagerAdapter();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -74,11 +65,20 @@ public class JournalDayView extends AppCompatActivity {
                         SelectFood.Purpose.CREATE_RECORD);
                 intent.putExtra("DATE", date);
                 startActivity(intent);
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
             }
         });
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        buildPagerAdapter();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        buildPagerAdapter();
     }
 
 
@@ -101,13 +101,6 @@ public class JournalDayView extends AppCompatActivity {
             Intent intent = new Intent(this, Settings.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.action_export) {
-            MyCapNutrition.transportManager.exportData(this);
-        } else if (id == R.id.action_import) {
-            performFileSearch();
-        } else if (id == R.id.action_clear_data) {
-            MyCapNutrition.dataManager.clearData();
-            buildPagerAdapter();
         }
 
         return super.onOptionsItemSelected(item);
@@ -150,38 +143,6 @@ public class JournalDayView extends AppCompatActivity {
                     return "SECTION 3";
             }
             return null;
-        }
-    }
-
-    private static final int READ_REQUEST_CODE = 42;
-
-    private void performFileSearch() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/plain");
-
-        startActivityForResult(intent, READ_REQUEST_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent resultData) {
-
-        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
-        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
-        // response to some other intent, and the code below shouldn't run at all.
-
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            // The document selected by the user won't be returned in the intent.
-            // Instead, a URI to that document will be contained in the return intent
-            // provided to this method as a parameter.
-            // Pull that URI using resultData.getData().
-            Uri uri = null;
-            if (resultData != null) {
-                uri = resultData.getData();
-                MyCapNutrition.transportManager.importData(uri);
-                buildPagerAdapter();
-            }
         }
     }
 }

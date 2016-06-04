@@ -2,9 +2,12 @@ package net.schnellp.mycapnutrition.View;
 
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -12,8 +15,11 @@ import android.preference.PreferenceActivity;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 
 import java.util.List;
@@ -147,11 +153,84 @@ public class Settings extends AppCompatPreferenceActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class DataPreferenceFragment extends PreferenceFragment {
+
+        private static final int READ_REQUEST_CODE = 42;
+
+        private void performFileSearch() {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/plain");
+
+            startActivityForResult(intent, READ_REQUEST_CODE);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode,
+                                     Intent resultData) {
+
+            // The ACTION_OPEN_DOCUMENT intent was sent with the request code
+            // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
+            // response to some other intent, and the code below shouldn't run at all.
+
+            if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+                // The document selected by the user won't be returned in the intent.
+                // Instead, a URI to that document will be contained in the return intent
+                // provided to this method as a parameter.
+                // Pull that URI using resultData.getData().
+                Uri uri = null;
+                if (resultData != null) {
+                    uri = resultData.getData();
+                    MyCapNutrition.transportManager.importData(uri);
+                    Toast.makeText(getActivity(), "Data imported.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_data);
             setHasOptionsMenu(true);
+
+            Preference myPref = findPreference("export_data");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    MyCapNutrition.transportManager.exportData(getActivity());
+                    return true;
+                }
+            });
+
+            myPref = findPreference("import_data");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    performFileSearch();
+                    return true;
+                }
+            });
+
+            myPref = findPreference("clear_data");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("This action cannot be undone!")
+                            .setTitle("Clear database?")
+                            .setPositiveButton("Clear Data", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    MyCapNutrition.dataManager.clearData();
+                                    Toast.makeText(getActivity(), "Database cleared.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Toast.makeText(getActivity(), "Database preserved.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                        });
+                    builder.create().show();
+                    return true;
+                }
+            });
         }
 
         @Override
