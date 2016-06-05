@@ -60,4 +60,22 @@ public abstract class MultiSelectAdapter<T> extends BaseAdapter {
     public boolean isItemChecked(int position) {
         return items.get(position).isChecked;
     }
+
+    public ArrayList<T> getCheckedItems() {
+        ArrayList<T> checkedItems = new ArrayList<>();
+        for (int i : getCheckedPositions()) {
+            checkedItems.add(items.get(i).object);
+        }
+        return checkedItems;
+    }
+
+    public ArrayList<Integer> getCheckedPositions() {
+        ArrayList<Integer> checkedPositions = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).isChecked) {
+                checkedPositions.add(i);
+            }
+        }
+        return checkedPositions;
+    }
 }

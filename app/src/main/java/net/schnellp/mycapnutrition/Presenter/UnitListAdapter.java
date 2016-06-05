@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
@@ -16,6 +15,7 @@ import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectInputListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class UnitListAdapter extends MultiSelectAdapter<Unit> {
 
@@ -33,10 +33,24 @@ public class UnitListAdapter extends MultiSelectAdapter<Unit> {
         notifyDataSetChanged();
     }
 
+    public void deleteCheckedItems() {
+        ArrayList<Integer> checkedPositions = getCheckedPositions();
+        Collections.sort(checkedPositions, Collections.<Integer>reverseOrder());
+        for (Integer i : checkedPositions) {
+            deleteItem(i);
+        }
+    }
+
     public void restoreItem(Unit unit) {
         MyCapNutrition.dataManager.restoreUnit(unit);
         items.add(new CheckableObject<>(unit));
         notifyDataSetChanged();
+    }
+
+    public void restoreItems(ArrayList<Unit> units) {
+        for (Unit unit : units) {
+            restoreItem(unit);
+        }
     }
 
     private class ViewHolder {
@@ -66,6 +80,7 @@ public class UnitListAdapter extends MultiSelectAdapter<Unit> {
         MultiSelectInputListener listener = new MultiSelectInputListener(this, position);
         holder.llContainer.setOnClickListener(listener);
         holder.llContainer.setOnLongClickListener(listener);
+        holder.llContainer.setChecked(isItemChecked(position));
 
         return convertView;
     }
