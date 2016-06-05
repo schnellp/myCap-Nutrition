@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Conversion;
 import net.schnellp.mycapnutrition.R;
@@ -33,6 +34,10 @@ public class JournalDayView extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    public void updateAdapter() {
+        mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -48,6 +53,15 @@ public class JournalDayView extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            public void onPageSelected(int position) {
+                TextView pagerTitle = (TextView) findViewById(R.id.pager_title);
+                pagerTitle.setText(Conversion.dayNumberToLongDate(position));
+            }
+        });
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
         Date now = new Date();
@@ -133,16 +147,14 @@ public class JournalDayView extends AppCompatActivity {
         }
 
         @Override
+        public int getItemPosition(Object item) {
+            return POSITION_NONE;
+        }
+
+        @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+            return Conversion.dayNumberToDate(position);
+            // return ((JournalDayFragment) getItem(position)).getDate();
         }
     }
 }

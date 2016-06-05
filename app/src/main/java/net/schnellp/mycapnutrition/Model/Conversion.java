@@ -38,4 +38,19 @@ public abstract class Conversion {
 
         return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
+
+    public static String dayNumberToLongDate(int day) {
+        String dt = "Thursday, January 1, 1970";  // Start date
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(sdf.parse(dt));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+
+        c.add(Calendar.DATE, day);  // number of days to add
+        dt = sdf.format(c.getTime());  // dt is now the new date
+        return dt;
+    }
 }

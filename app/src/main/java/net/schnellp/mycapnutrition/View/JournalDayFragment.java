@@ -34,10 +34,8 @@ public class JournalDayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_journal_day_view, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
 
         date = getArguments().getString(DATE);
-        textView.setText(date);
 
         ExpandableRecordListView listView = (ExpandableRecordListView)
                 rootView.findViewById(R.id.recordListView);
@@ -56,6 +54,8 @@ public class JournalDayFragment extends Fragment {
         progressText.setText(kcal + " / " + goalKcal + " kcal");
 
         buildOrRebuild();
+
+        // ((JournalDayView) getActivity()).updateAdapter();
 
         return rootView;
     }
