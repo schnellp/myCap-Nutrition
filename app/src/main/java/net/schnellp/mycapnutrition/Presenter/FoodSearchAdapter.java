@@ -15,6 +15,7 @@ import android.widget.TextView;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.View.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
@@ -76,7 +77,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
     }
 
     private class ViewHolder {
-        LinearLayout llContainer;
+        ActivatedLinearLayout llContainer;
         TextView tvName, tvDetails;
     }
 
@@ -89,7 +90,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
 
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.foodrow, null);
-            holder.llContainer = (LinearLayout) convertView.findViewById(R.id.selectfoodrow);
+            holder.llContainer = (ActivatedLinearLayout) convertView.findViewById(R.id.selectfoodrow);
             holder.tvName = (TextView) convertView.findViewById(R.id.foodrowName);
             holder.tvDetails = (TextView) convertView.findViewById(R.id.foodrowDetails);
             convertView.setTag(holder);

@@ -33,7 +33,7 @@ public class UnitList extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         listView = (ListView) findViewById(R.id.lvUnits);
-        registerForContextMenu(listView);
+        // registerForContextMenu(listView);
 
         food = MyCapNutrition.dataManager.getFood(getIntent().getIntExtra("food_dbid", -1));
     }

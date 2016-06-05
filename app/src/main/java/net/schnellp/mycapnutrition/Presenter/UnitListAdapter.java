@@ -12,6 +12,7 @@ import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.View.ActivatedLinearLayout;
 
 import java.util.ArrayList;
 
@@ -54,7 +55,7 @@ public class UnitListAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        LinearLayout llContainer;
+        ActivatedLinearLayout llContainer;
         TextView tvName, tvDetails;
     }
 
@@ -66,7 +67,7 @@ public class UnitListAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.foodrow, null);
-            holder.llContainer = (LinearLayout) convertView.findViewById(R.id.selectfoodrow);
+            holder.llContainer = (ActivatedLinearLayout) convertView.findViewById(R.id.selectfoodrow);
             holder.tvName = (TextView) convertView.findViewById(R.id.foodrowName);
             holder.tvDetails = (TextView) convertView.findViewById(R.id.foodrowDetails);
             convertView.setTag(holder);
@@ -76,6 +77,12 @@ public class UnitListAdapter extends BaseAdapter {
         holder.tvName.setText(units.get(position).name);
         holder.tvDetails.setText(units.get(position).amount_mg.toDoubleOrNA().divide(1000).round()
                 + " g");
+
+        holder.llContainer.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ((ActivatedLinearLayout) v).toggle();
+            }
+        });
 
         return convertView;
     }
