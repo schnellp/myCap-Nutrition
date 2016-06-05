@@ -12,12 +12,12 @@ import net.schnellp.mycapnutrition.Model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelect;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectInputListener;
 
 import java.util.ArrayList;
 
-public class UnitListAdapter extends BaseAdapter implements MultiSelect {
+public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
 
     private ArrayList<Unit> units = new ArrayList<>();
     private int nChecked = 0;

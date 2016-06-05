@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
 
-import net.schnellp.mycapnutrition.Presenter.BooleanRef;
 import net.schnellp.mycapnutrition.R;
 
 public class ActivatedLinearLayout extends LinearLayout implements Checkable {

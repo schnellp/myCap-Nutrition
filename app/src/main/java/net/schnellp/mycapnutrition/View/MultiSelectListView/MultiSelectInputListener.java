@@ -1,13 +1,18 @@
 package net.schnellp.mycapnutrition.View.MultiSelectListView;
 
+import android.content.Context;
 import android.view.View;
 
 public class MultiSelectInputListener implements View.OnClickListener, View.OnLongClickListener {
 
-    private MultiSelect ms;
+    private MultiSelectAdapter ms;
 
-    public MultiSelectInputListener(MultiSelect ms) {
+    public MultiSelectInputListener(MultiSelectAdapter ms) {
         this.ms = ms;
+    }
+
+    private void showMenuGroupIfApplicable(Context context) {
+        ((MultiSelectActivity) context).setMultiSelectOptionsMenuVisible(ms.getNumChecked() > 0);
     }
 
     @Override
@@ -21,6 +26,7 @@ public class MultiSelectInputListener implements View.OnClickListener, View.OnLo
                 ms.setNumChecked(ms.getNumChecked() + 1);
             }
         }
+        showMenuGroupIfApplicable(v.getContext());
     }
 
     @Override
@@ -32,6 +38,7 @@ public class MultiSelectInputListener implements View.OnClickListener, View.OnLo
             ((ActivatedLinearLayout) v).setChecked(true);
             ms.setNumChecked(ms.getNumChecked() + 1);
         }
+        showMenuGroupIfApplicable(v.getContext());
         return true;
     }
 }

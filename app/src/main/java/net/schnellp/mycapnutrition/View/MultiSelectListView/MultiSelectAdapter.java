@@ -1,6 +1,6 @@
 package net.schnellp.mycapnutrition.View.MultiSelectListView;
 
-public interface MultiSelect {
+public interface MultiSelectAdapter {
 
     int getNumChecked();
 
