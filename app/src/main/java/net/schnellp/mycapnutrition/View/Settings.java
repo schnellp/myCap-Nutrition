@@ -189,7 +189,7 @@ public class Settings extends AppCompatPreferenceActivity {
                     final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
                     mBuilder.setContentTitle("Data import")
                             .setContentText("Data import in progress")
-                            .setSmallIcon(R.drawable.ic_sync_black_24dp);
+                            .setSmallIcon(R.drawable.ic_import_export_black_24dp);
 
                     new Thread(
                             new Runnable() {

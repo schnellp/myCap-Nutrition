@@ -13,16 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&lt;"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:background="@color/colorPrimaryDark"
-            android:textAppearance="@style/PagerTabStripText"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"/>
+            android:tint="@color/colorPrimaryContrast"
+            android:src="@drawable/ic_chevron_left_black_24dp"
+            android:onClick="pageBack"/>
 
         <TextView
             android:id="@+id/pager_title"
@@ -38,16 +37,15 @@
             android:gravity="center_horizontal"
             android:text="Test" />
 
-        <TextView
+        <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="&gt;"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:background="@color/colorPrimaryDark"
-            android:textAppearance="@style/PagerTabStripText"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"/>
+            android:tint="@color/colorPrimaryContrast"
+            android:src="@drawable/ic_chevron_right_black_24dp"
+            android:onClick="pageForward"/>
 
     </LinearLayout>
 
