@@ -39,6 +39,25 @@ public abstract class Conversion {
         return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
+    public static String dayNumberToLongRelativeDate(int day) {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+
+        int relativeDay = day - dateToDayNumber(strDate) - 1;
+
+        switch (relativeDay) {
+            case -1:
+                return "Yesterday";
+            case 0:
+                return "Today";
+            case 1:
+                return "Tomorrow";
+            default:
+                return dayNumberToLongDate(day);
+        }
+    }
+
     public static String dayNumberToLongDate(int day) {
         String dt = "Thursday, January 1, 1970";  // Start date
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, MMMM d, yyyy");

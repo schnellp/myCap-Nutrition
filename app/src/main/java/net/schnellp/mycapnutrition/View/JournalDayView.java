@@ -59,7 +59,7 @@ public class JournalDayView extends AppCompatActivity {
 
             public void onPageSelected(int position) {
                 TextView pagerTitle = (TextView) findViewById(R.id.pager_title);
-                pagerTitle.setText(Conversion.dayNumberToLongDate(position));
+                pagerTitle.setText(Conversion.dayNumberToLongRelativeDate(position));
             }
         });
 
