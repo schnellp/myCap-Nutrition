@@ -20,11 +20,14 @@ import java.util.ArrayList;
 public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
 
     private ArrayList<Unit> units = new ArrayList<>();
-    private int nChecked = 0;
+    private ArrayList<Boolean> checks = new ArrayList<>();
     private LayoutInflater inflater;
 
     public UnitListAdapter(Context context, Food food) {
         units.addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
+        for (Unit unit : units) {
+            checks.add(false);
+        }
         inflater = LayoutInflater.from(context);
     }
 
@@ -47,12 +50,14 @@ public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
         Unit unit = units.get(position);
         MyCapNutrition.dataManager.deactivateUnit(unit);
         units.remove(position);
+        checks.remove(position);
         notifyDataSetChanged();
     }
 
     public void restoreItem(Unit unit) {
         MyCapNutrition.dataManager.restoreUnit(unit);
         units.add(unit);
+        checks.add(false);
         notifyDataSetChanged();
     }
 
@@ -80,18 +85,31 @@ public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
         holder.tvDetails.setText(units.get(position).amount_mg.toDoubleOrNA().divide(1000).round()
                 + " g");
 
-        MultiSelectInputListener listener = new MultiSelectInputListener(this);
+        MultiSelectInputListener listener = new MultiSelectInputListener(this, position);
         holder.llContainer.setOnClickListener(listener);
         holder.llContainer.setOnLongClickListener(listener);
 
         return convertView;
     }
 
+    @Override
     public int getNumChecked() {
-        return nChecked;
+        int checked = 0;
+        for (int i = 0; i < checks.size(); i++) {
+            if (checks.get(i)) {
+                checked++;
+            }
+        }
+        return checked;
     };
 
-    public void setNumChecked(int numChecked) {
-        nChecked = numChecked;
+    @Override
+    public void setItemChecked(int position, boolean checked) {
+        checks.set(position, checked);
+    }
+
+    @Override
+    public boolean isItemChecked(int position) {
+        return checks.get(position);
     }
 }

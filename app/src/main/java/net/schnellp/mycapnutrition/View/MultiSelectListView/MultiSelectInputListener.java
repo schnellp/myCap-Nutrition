@@ -6,9 +6,11 @@ import android.view.View;
 public class MultiSelectInputListener implements View.OnClickListener, View.OnLongClickListener {
 
     private MultiSelectAdapter ms;
+    private int position;
 
-    public MultiSelectInputListener(MultiSelectAdapter ms) {
+    public MultiSelectInputListener(MultiSelectAdapter ms, int position) {
         this.ms = ms;
+        this.position = position;
     }
 
     private void showMenuGroupIfApplicable(Context context) {
@@ -20,10 +22,10 @@ public class MultiSelectInputListener implements View.OnClickListener, View.OnLo
         if (ms.getNumChecked() > 0) {
             if (((ActivatedLinearLayout) v).isChecked()) {
                 ((ActivatedLinearLayout) v).setChecked(false);
-                ms.setNumChecked(ms.getNumChecked() - 1);
+                ms.setItemChecked(position, false);
             } else {
                 ((ActivatedLinearLayout) v).setChecked(true);
-                ms.setNumChecked(ms.getNumChecked() + 1);
+                ms.setItemChecked(position, true);
             }
         }
         showMenuGroupIfApplicable(v.getContext());
@@ -33,10 +35,10 @@ public class MultiSelectInputListener implements View.OnClickListener, View.OnLo
     public boolean onLongClick(View v) {
         if (((ActivatedLinearLayout) v).isChecked()) {
             ((ActivatedLinearLayout) v).setChecked(false);
-            ms.setNumChecked(ms.getNumChecked() - 1);
+            ms.setItemChecked(position, false);
         } else {
             ((ActivatedLinearLayout) v).setChecked(true);
-            ms.setNumChecked(ms.getNumChecked() + 1);
+            ms.setItemChecked(position, true);
         }
         showMenuGroupIfApplicable(v.getContext());
         return true;

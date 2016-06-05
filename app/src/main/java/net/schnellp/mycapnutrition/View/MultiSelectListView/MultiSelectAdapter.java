@@ -4,5 +4,7 @@ public interface MultiSelectAdapter {
 
     int getNumChecked();
 
-    void setNumChecked(int numChecked);
+    void setItemChecked(int position, boolean checked);
+
+    boolean isItemChecked(int position);
 }
