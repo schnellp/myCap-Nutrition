@@ -17,47 +17,25 @@ import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectInputList
 
 import java.util.ArrayList;
 
-public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
+public class UnitListAdapter extends MultiSelectAdapter<Unit> {
 
-    private ArrayList<Unit> units = new ArrayList<>();
-    private ArrayList<Boolean> checks = new ArrayList<>();
     private LayoutInflater inflater;
 
     public UnitListAdapter(Context context, Food food) {
-        units.addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
-        for (Unit unit : units) {
-            checks.add(false);
-        }
+        addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
         inflater = LayoutInflater.from(context);
     }
 
-    @Override
-    public int getCount() {
-        return units.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return units.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
     public void deleteItem(int position) {
-        Unit unit = units.get(position);
+        Unit unit = getTypedItem(position);
         MyCapNutrition.dataManager.deactivateUnit(unit);
-        units.remove(position);
-        checks.remove(position);
+        items.remove(position);
         notifyDataSetChanged();
     }
 
     public void restoreItem(Unit unit) {
         MyCapNutrition.dataManager.restoreUnit(unit);
-        units.add(unit);
-        checks.add(false);
+        items.add(new CheckableObject<>(unit));
         notifyDataSetChanged();
     }
 
@@ -81,8 +59,8 @@ public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvName.setText(units.get(position).name);
-        holder.tvDetails.setText(units.get(position).amount_mg.toDoubleOrNA().divide(1000).round()
+        holder.tvName.setText(getTypedItem(position).name);
+        holder.tvDetails.setText(getTypedItem(position).amount_mg.toDoubleOrNA().divide(1000).round()
                 + " g");
 
         MultiSelectInputListener listener = new MultiSelectInputListener(this, position);
@@ -90,26 +68,5 @@ public class UnitListAdapter extends BaseAdapter implements MultiSelectAdapter {
         holder.llContainer.setOnLongClickListener(listener);
 
         return convertView;
-    }
-
-    @Override
-    public int getNumChecked() {
-        int checked = 0;
-        for (int i = 0; i < checks.size(); i++) {
-            if (checks.get(i)) {
-                checked++;
-            }
-        }
-        return checked;
-    };
-
-    @Override
-    public void setItemChecked(int position, boolean checked) {
-        checks.set(position, checked);
-    }
-
-    @Override
-    public boolean isItemChecked(int position) {
-        return checks.get(position);
     }
 }

@@ -1,10 +1,63 @@
 package net.schnellp.mycapnutrition.View.MultiSelectListView;
 
-public interface MultiSelectAdapter {
+import android.widget.BaseAdapter;
 
-    int getNumChecked();
+import java.util.ArrayList;
+import java.util.List;
 
-    void setItemChecked(int position, boolean checked);
+public abstract class MultiSelectAdapter<T> extends BaseAdapter {
 
-    boolean isItemChecked(int position);
+    protected static class CheckableObject<T> {
+        public final T object;
+        public boolean isChecked = false;
+
+        public CheckableObject(T object) {
+            this.object = object;
+        }
+    }
+
+    protected ArrayList<CheckableObject<T>> items = new ArrayList<>();
+
+    public void addAll(List<T> list) {
+        for (T item : list) {
+            items.add(new CheckableObject<T>(item));
+        }
+    }
+
+    public int getNumChecked() {
+        int numChecked = 0;
+        for (CheckableObject item : items) {
+            if (item.isChecked) {
+                numChecked++;
+            }
+        }
+        return numChecked;
+    }
+
+    @Override
+    public int getCount() {
+        return items.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return getTypedItem(position);
+    }
+
+    public T getTypedItem(int position) {
+        return (T) items.get(position).object;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public void setItemChecked(int position, boolean checked) {
+        items.get(position).isChecked = checked;
+    }
+
+    public boolean isItemChecked(int position) {
+        return items.get(position).isChecked;
+    }
 }
