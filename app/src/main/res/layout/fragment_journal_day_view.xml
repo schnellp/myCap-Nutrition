@@ -15,7 +15,8 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:gravity="center_horizontal"
-        android:text="0 / 2000 kcal"/>
+        android:textStyle="bold"
+        android:text="0 / 2000 kcal" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
