@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class UnitListAdapter extends BaseAdapter {
 
     private ArrayList<Unit> units = new ArrayList<>();
+    private int nChecked = 0;
     private LayoutInflater inflater;
 
     public UnitListAdapter(Context context, Food food) {
@@ -62,7 +63,7 @@ public class UnitListAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder = null;
+        ViewHolder holder;
 
         if (convertView == null) {
             holder = new ViewHolder();
@@ -79,8 +80,31 @@ public class UnitListAdapter extends BaseAdapter {
                 + " g");
 
         holder.llContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                ((ActivatedLinearLayout) v).toggle();
+                if (UnitListAdapter.this.nChecked > 0) {
+                    if (((ActivatedLinearLayout) v).isChecked()) {
+                        ((ActivatedLinearLayout) v).setChecked(false);
+                        UnitListAdapter.this.nChecked--;
+                    } else {
+                        ((ActivatedLinearLayout) v).setChecked(true);
+                        UnitListAdapter.this.nChecked++;
+                    }
+                }
+            }
+        });
+        holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (((ActivatedLinearLayout) v).isChecked()) {
+                    ((ActivatedLinearLayout) v).setChecked(false);
+                    UnitListAdapter.this.nChecked--;
+                } else {
+                    ((ActivatedLinearLayout) v).setChecked(true);
+                    UnitListAdapter.this.nChecked++;
+                }
+
+                return true;
             }
         });
 

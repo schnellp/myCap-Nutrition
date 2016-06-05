@@ -1,14 +1,12 @@
 package net.schnellp.mycapnutrition.View;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
 
+import net.schnellp.mycapnutrition.Presenter.BooleanRef;
 import net.schnellp.mycapnutrition.R;
 
 public class ActivatedLinearLayout extends LinearLayout implements Checkable {
