@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -16,63 +15,64 @@ import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectAdapter;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectInputListener;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class FoodSearchAdapter extends BaseAdapter implements Filterable {
+public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filterable {
 
     private SelectFood selectFood;
-    private ArrayList<Food> foodsOriginalValues = new ArrayList<>();
-    private ArrayList<Food> foodsDisplayedValues = new ArrayList<>();
+    private ArrayList<CheckableObject<Food>> originalItems = new ArrayList<>();
     LayoutInflater inflater;
 
     public FoodSearchAdapter(SelectFood selectFood, Context context) {
         this.selectFood = selectFood;
-        foodsOriginalValues.addAll(MyCapNutrition.dataManager.getAllFoods());
-        foodsDisplayedValues.addAll(MyCapNutrition.dataManager.getAllFoods());
+        addAll(MyCapNutrition.dataManager.getAllFoods());
+        originalItems.addAll(items);
         inflater = LayoutInflater.from(context);
-    }
-
-    @Override
-    public int getCount() {
-        return foodsDisplayedValues.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return foodsDisplayedValues.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     public void editItem(int position) {
         SelectFood context = selectFood;
-        Food food = foodsDisplayedValues.get(position);
+        Food food = getTypedItem(position);
         Intent intent = new Intent(context, AddFood.class);
         intent.putExtra("CALLED_FOR_RESULT", true);
         intent.putExtra("food_dbid", food.DBID);
         selectFood.startActivityForResult(intent, 1);
     }
 
-    public void restoreItem(Food food) {
-        MyCapNutrition.dataManager.restoreFood(food);
-        foodsOriginalValues.add(food);
+    public void deleteItem(int position) {
+        Food food = getTypedItem(position);
+        MyCapNutrition.dataManager.deactivateFood(food);
+        originalItems.remove(position);
         getFilter().filter("");
         notifyDataSetChanged();
     }
 
-    public void deleteItem(int position) {
-        Food food = foodsDisplayedValues.get(position);
-        MyCapNutrition.dataManager.deactivateFood(food);
-        foodsOriginalValues.remove(position);
+    public void deleteCheckedItems() {
+        ArrayList<Integer> checkedPositions = getCheckedPositions();
+        Collections.sort(checkedPositions, Collections.<Integer>reverseOrder());
+        for (Integer i : checkedPositions) {
+            deleteItem(i);
+        }
+    }
+
+    public void restoreItem(Food food, int position) {
+        MyCapNutrition.dataManager.restoreFood(food);
+        originalItems.add(position, new CheckableObject<>(food));
         getFilter().filter("");
         notifyDataSetChanged();
+    }
+
+    public void restoreItems(ArrayList<Food> foods, ArrayList<Integer> positions) {
+        for (int i = 0; i < foods.size(); i++) {
+            restoreItem(foods.get(i), positions.get(i));
+        }
     }
 
     private class ViewHolder {
@@ -86,7 +86,6 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
         ViewHolder holder = null;
 
         if (convertView == null) {
-
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.foodrow, null);
             holder.llContainer = (ActivatedLinearLayout) convertView.findViewById(R.id.selectfoodrow);
@@ -96,12 +95,17 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvName.setText(foodsDisplayedValues.get(position).name);
-        holder.tvDetails.setText(foodsDisplayedValues.get(position).kcal + " kcal / " +
-        foodsDisplayedValues.get(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
+        holder.tvName.setText(getTypedItem(position).name);
+        holder.tvDetails.setText(getTypedItem(position).kcal + " kcal / " +
+        getTypedItem(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
         " g");
 
-
+        MultiSelectFoodSearchInputListener listener =
+                new MultiSelectFoodSearchInputListener(this, position);
+        holder.llContainer.setOnClickListener(listener);
+        holder.llContainer.setOnLongClickListener(listener);
+        holder.llContainer.setChecked(isItemChecked(position));
+        /*
         holder.llContainer.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
@@ -122,7 +126,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                         return;
                 }
 
-                Food food = foodsDisplayedValues.get(position);
+                Food food = getTypedItem(position);
                 intent.putExtras(((SelectFood) v.getContext()).getIntent());
                 intent.putExtra("food_dbid", food.DBID);
 
@@ -136,6 +140,7 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                 }
             }
         });
+        */
 
         /*
         holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
@@ -160,17 +165,17 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
-                foodsDisplayedValues = (ArrayList<Food>) results.values; // has the filtered values
+                items = (ArrayList<CheckableObject<Food>>) results.values; // has the filtered values
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                ArrayList<Food> FilteredArrList = new ArrayList<>();
+                ArrayList<CheckableObject<Food>> FilteredArrList = new ArrayList<>();
 
-                if (foodsOriginalValues == null) {
-                    foodsOriginalValues = new ArrayList<>(foodsDisplayedValues); // saves the original data in mOriginalValues
+                if (originalItems == null) {
+                    originalItems = new ArrayList<>(items); // saves the original data in mOriginalValues
                 }
 
                 /********
@@ -182,14 +187,14 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                 if (constraint == null || constraint.length() == 0) {
 
                     // set the Original result to return
-                    results.count = foodsOriginalValues.size();
-                    results.values = foodsOriginalValues;
+                    results.count = originalItems.size();
+                    results.values = originalItems;
                 } else {
                     constraint = constraint.toString().toLowerCase();
-                    for (int i = 0; i < foodsOriginalValues.size(); i++) {
-                        String data = foodsOriginalValues.get(i).name;
+                    for (int i = 0; i < originalItems.size(); i++) {
+                        String data = (originalItems.get(i).object).name;
                         if (matches(data, constraint.toString())) {
-                            FilteredArrList.add(foodsOriginalValues.get(i));
+                            FilteredArrList.add(originalItems.get(i));
                         }
                     }
                     // set the Filtered result to return
@@ -204,6 +209,50 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
             }
         };
         return filter;
+    }
+
+    private class MultiSelectFoodSearchInputListener extends MultiSelectInputListener {
+
+        public MultiSelectFoodSearchInputListener(MultiSelectAdapter ms, int position) {
+            super(ms, position);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (ms.getNumChecked() > 0) {
+                super.onClick(v);
+            } else {
+                Intent foundingIntent = ((SelectFood) v.getContext()).getIntent();
+                Intent intent;
+
+                switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
+                    case SelectFood.Purpose.FILTER_UNITS:
+                        intent = new Intent(selectFood, UnitList.class);
+                        break;
+                    case SelectFood.Purpose.SWITCH_RECORD_FOOD:
+                        intent = new Intent(selectFood, RecordView.class);
+                        break;
+                    case SelectFood.Purpose.CREATE_RECORD:
+                        intent = new Intent(selectFood, RecordView.class);
+                        break;
+                    default:
+                        return;
+                }
+
+                Food food = getTypedItem(position);
+                intent.putExtras(((SelectFood) v.getContext()).getIntent());
+                intent.putExtra("food_dbid", food.DBID);
+
+                if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
+                        .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
+                    selectFood.setResult(Activity.RESULT_OK, intent);
+                    selectFood.finish();
+                } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
+                        .equals(SelectFood.Purpose.LIST)) {
+                    selectFood.startActivity(intent);
+                }
+            }
+        }
     }
 
 }

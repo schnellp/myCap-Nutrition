@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +20,11 @@ import android.widget.ListView;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Presenter.FoodSearchAdapter;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectActivity;
 
-public class SelectFood extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class SelectFood extends AppCompatActivity implements MultiSelectActivity {
 
     public static class Purpose {
         public static final String INTENT_EXTRA_NAME = "SELECT_FOOD_PURPOSE";
@@ -32,9 +36,11 @@ public class SelectFood extends AppCompatActivity {
     }
 
     private ListView listView;
-    private FoodSearchAdapter foodSearchAdapter;
+    private FoodSearchAdapter adapter;
+    private Menu optionsMenu;
 
-    private Food tempFood;
+    private ArrayList<Food> tempFoods;
+    private ArrayList<Integer> tempPositions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class SelectFood extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Call back the Adapter with current character to Filter
-                foodSearchAdapter.getFilter().filter(s.toString());
+                adapter.getFilter().filter(s.toString());
             }
 
             @Override
@@ -75,43 +81,54 @@ public class SelectFood extends AppCompatActivity {
             }
         });
 
-        registerForContextMenu(listView);
+        // registerForContextMenu(listView);
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.listViewFoodResults) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_context_generic_edit_delete, menu);
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
+        this.optionsMenu = menu;
+        setSingleSelectOptionsMenuVisible(false);
+        setMultiSelectOptionsMenuVisible(false);
+        return true;
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
+    }
+
+    @Override
+    public void setMultiSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.edit:
-                foodSearchAdapter.editItem(info.position);
-                return true;
-            case R.id.delete:
+            case R.id.action_delete:
                 Snackbar snackbar = Snackbar
-                        .make(findViewById(R.id.clSelectFood), "Food deleted.", Snackbar.LENGTH_LONG)
+                        .make(listView, "Food(s) deleted.", Snackbar.LENGTH_LONG)
                         .setAction("UNDO", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Snackbar snackbar1 = Snackbar.make(findViewById(R.id.clSelectFood),
-                                        "Food is restored!", Snackbar.LENGTH_SHORT);
-                                SelectFood.this.foodSearchAdapter.restoreItem(tempFood);
+                                Snackbar snackbar1 = Snackbar.make(listView,
+                                        "Food(s) restored!", Snackbar.LENGTH_SHORT);
+                                SelectFood.this.adapter.restoreItems(tempFoods, tempPositions);
                                 snackbar1.show();
                             }
                         });
+                tempFoods = adapter.getCheckedItems();
+                tempPositions = adapter.getCheckedPositions();
+                adapter.deleteCheckedItems();
                 snackbar.show();
-                tempFood = (Food) foodSearchAdapter.getItem(info.position);
-                foodSearchAdapter.deleteItem(info.position);
+                return true;
+            case R.id.action_edit:
+                adapter.editItem(adapter.getCheckedPositions().get(0));
                 return true;
             default:
-                return super.onContextItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -119,8 +136,8 @@ public class SelectFood extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        foodSearchAdapter = new FoodSearchAdapter(this, SelectFood.this);
-        listView.setAdapter(foodSearchAdapter);
+        adapter = new FoodSearchAdapter(this, SelectFood.this);
+        listView.setAdapter(adapter);
     }
 
     @Override

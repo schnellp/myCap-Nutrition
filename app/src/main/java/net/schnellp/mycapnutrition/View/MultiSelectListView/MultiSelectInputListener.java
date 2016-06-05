@@ -5,8 +5,8 @@ import android.view.View;
 
 public class MultiSelectInputListener implements View.OnClickListener, View.OnLongClickListener {
 
-    private MultiSelectAdapter ms;
-    private int position;
+    protected MultiSelectAdapter ms;
+    protected int position;
 
     public MultiSelectInputListener(MultiSelectAdapter ms, int position) {
         this.ms = ms;
