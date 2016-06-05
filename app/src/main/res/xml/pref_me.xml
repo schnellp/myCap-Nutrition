@@ -9,6 +9,6 @@
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="Daily kcal goal" />
+        android:title="@string/pref_title_daily_kcal_goal" />
 
 </PreferenceScreen>

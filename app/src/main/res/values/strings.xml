@@ -11,59 +11,48 @@
 
     <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <!-- Me settings -->
+    <string name="pref_header_me">Me</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
+    <string name="pref_title_daily_kcal_goal">Daily Calorie (kcal) goal</string>
+
+    <!-- Data settings -->
+    <string name="pref_header_data">Data</string>
+
+    <string name="pref_title_data_export">Export data</string>
+    <string name="pref_summary_data_export">
+        Export entire database as mccsv (csv-like) file.
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_data_import">Import data</string>
+    <string name="pref_summary_data_import">Import data from mccsv (csv-like) file.</string>
+    <!-- also see data import notification -->
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
+    <string name="pref_title_data_clear">Clear data</string>
+    <string name="pref_summary_data_clear">Clear entire database.</string>
+    <!-- also see data import alert -->
 
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_title_data_food">Food</string>
+    <string name="pref_summary_data_food">List of all food entries.</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
+    <string name="pref_title_data_unit">Units</string>
+    <string name="pref_summary_data_unit">List of all unit entries.</string>
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <!-- Strings related to Notifications -->
 
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
+    <!-- Data import -->
+    <string name="notify_title_data_import">Data import</string>
+    <string name="notify_text_data_import_progress">Data import in progress</string>
+    <string name="notify_text_data_import_complete">Data import complete</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <!-- Strings related to Alerts -->
 
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
+    <!-- Data clear -->
+    <string name="alert_title_clear_data">Clear database?</string>
+    <string name="alert_message_clear_data">This action cannot be undone!</string>
+    <string name="alert_positive_clear_data">Clear Data</string>
+    <string name="alert_negative_clear_data">Cancel</string>
+    <string name="alert_positive_toast_clear_data">Database cleared.</string>
+    <string name="alert_negative_toast_clear_data">Database preserved.</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>

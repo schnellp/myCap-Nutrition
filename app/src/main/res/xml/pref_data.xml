@@ -2,26 +2,26 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        android:title="Export data"
-        android:summary="Export entire database as mccsv (csv-like) file."
+        android:title="@string/pref_title_data_export"
+        android:summary="@string/pref_summary_data_export"
         android:key="export_data">
     </Preference>
 
     <Preference
-        android:title="Import data"
-        android:summary="Import data from mccsv (csv-like) file."
+        android:title="@string/pref_title_data_import"
+        android:summary="@string/pref_summary_data_import"
         android:key="import_data">
     </Preference>
 
     <Preference
-        android:title="Clear data"
-        android:summary="Clear entire database."
+        android:title="@string/pref_title_data_clear"
+        android:summary="@string/pref_summary_data_clear"
         android:key="clear_data">
     </Preference>
 
     <Preference
-        android:title="Food"
-        android:summary="List of all food entries.">
+        android:title="@string/pref_title_data_food"
+        android:summary="@string/pref_summary_data_food">
 
         <intent
             android:action="android.intent.action.VIEW"
@@ -34,8 +34,8 @@
     </Preference>
 
     <Preference
-        android:title="Units"
-        android:summary="List of all unit entries.">
+        android:title="@string/pref_title_data_unit"
+        android:summary="@string/pref_summary_data_unit">
 
         <intent
             android:action="android.intent.action.VIEW"

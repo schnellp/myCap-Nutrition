@@ -3,11 +3,11 @@
     <header
         android:fragment="net.schnellp.mycapnutrition.View.Settings$PersonalPreferenceFragment"
         android:icon="@drawable/ic_account_circle_black_24dp"
-        android:title="Me" />
+        android:title="@string/pref_header_me" />
 
     <header
         android:fragment="net.schnellp.mycapnutrition.View.Settings$DataPreferenceFragment"
         android:icon="@drawable/ic_storage_black_24dp"
-        android:title="Data" />
+        android:title="@string/pref_header_data" />
 
 </preference-headers>

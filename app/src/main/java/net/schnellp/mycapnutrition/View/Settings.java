@@ -187,8 +187,8 @@ public class Settings extends AppCompatPreferenceActivity {
                     final NotificationManager mNotifyManager =
                             (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                     final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
-                    mBuilder.setContentTitle("Data import")
-                            .setContentText("Data import in progress")
+                    mBuilder.setContentTitle(getString(R.string.notify_title_data_import))
+                            .setContentText(getString(R.string.notify_text_data_import_progress))
                             .setSmallIcon(R.drawable.ic_import_export_black_24dp);
 
                     new Thread(
@@ -198,7 +198,7 @@ public class Settings extends AppCompatPreferenceActivity {
                                     mBuilder.setProgress(0, 0, true);
                                     mNotifyManager.notify(id, mBuilder.build());
                                     MyCapNutrition.transportManager.importData(uri);
-                                    mBuilder.setContentText("Data import complete")
+                                    mBuilder.setContentText(getString(R.string.notify_text_data_import_complete))
                                             // Removes the progress bar
                                             .setProgress(0,0,false);
                                     mNotifyManager.notify(id, mBuilder.build());
@@ -235,17 +235,17 @@ public class Settings extends AppCompatPreferenceActivity {
             myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage("This action cannot be undone!")
-                            .setTitle("Clear database?")
-                            .setPositiveButton("Clear Data", new DialogInterface.OnClickListener() {
+                    builder.setMessage(getString(R.string.alert_message_clear_data))
+                            .setTitle(getString(R.string.alert_title_clear_data))
+                            .setPositiveButton(getString(R.string.alert_positive_clear_data), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     MyCapNutrition.dataManager.clearData();
-                                    Toast.makeText(getActivity(), "Database cleared.",
+                                    Toast.makeText(getActivity(), getString(R.string.alert_positive_toast_clear_data),
                                             Toast.LENGTH_SHORT).show();
                                 }
-                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(getString(R.string.alert_negative_clear_data), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    Toast.makeText(getActivity(), "Database preserved.",
+                                    Toast.makeText(getActivity(), getString(R.string.alert_negative_toast_clear_data),
                                             Toast.LENGTH_SHORT).show();
                                 }
                         });
