@@ -5,18 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.View.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelect;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectInputListener;
 
 import java.util.ArrayList;
 
-public class UnitListAdapter extends BaseAdapter {
+public class UnitListAdapter extends BaseAdapter implements MultiSelect {
 
     private ArrayList<Unit> units = new ArrayList<>();
     private int nChecked = 0;
@@ -79,35 +80,18 @@ public class UnitListAdapter extends BaseAdapter {
         holder.tvDetails.setText(units.get(position).amount_mg.toDoubleOrNA().divide(1000).round()
                 + " g");
 
-        holder.llContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (UnitListAdapter.this.nChecked > 0) {
-                    if (((ActivatedLinearLayout) v).isChecked()) {
-                        ((ActivatedLinearLayout) v).setChecked(false);
-                        UnitListAdapter.this.nChecked--;
-                    } else {
-                        ((ActivatedLinearLayout) v).setChecked(true);
-                        UnitListAdapter.this.nChecked++;
-                    }
-                }
-            }
-        });
-        holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (((ActivatedLinearLayout) v).isChecked()) {
-                    ((ActivatedLinearLayout) v).setChecked(false);
-                    UnitListAdapter.this.nChecked--;
-                } else {
-                    ((ActivatedLinearLayout) v).setChecked(true);
-                    UnitListAdapter.this.nChecked++;
-                }
-
-                return true;
-            }
-        });
+        MultiSelectInputListener listener = new MultiSelectInputListener(this);
+        holder.llContainer.setOnClickListener(listener);
+        holder.llContainer.setOnLongClickListener(listener);
 
         return convertView;
+    }
+
+    public int getNumChecked() {
+        return nChecked;
+    };
+
+    public void setNumChecked(int numChecked) {
+        nChecked = numChecked;
     }
 }

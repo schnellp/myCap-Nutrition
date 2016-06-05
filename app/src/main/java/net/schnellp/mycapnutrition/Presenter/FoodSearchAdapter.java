@@ -9,13 +9,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.View.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
