@@ -120,6 +120,14 @@ public class JournalDayView extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void pageBack(View v) {
+        mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+    }
+
+    public void pageForward(View v) {
+        mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
