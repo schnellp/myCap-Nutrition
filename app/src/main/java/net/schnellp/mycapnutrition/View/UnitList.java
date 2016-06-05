@@ -47,8 +47,15 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
-        this.optionsMenu = menu;setMultiSelectOptionsMenuVisible(false);
+        this.optionsMenu = menu;
+        setSingleSelectOptionsMenuVisible(false);
+        setMultiSelectOptionsMenuVisible(false);
         return true;
+    }
+
+    @Override
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
     }
 
     @Override

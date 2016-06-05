@@ -15,6 +15,7 @@ public class MultiSelectInputListener implements View.OnClickListener, View.OnLo
 
     private void showMenuGroupIfApplicable(Context context) {
         ((MultiSelectActivity) context).setMultiSelectOptionsMenuVisible(ms.getNumChecked() > 0);
+        ((MultiSelectActivity) context).setSingleSelectOptionsMenuVisible(ms.getNumChecked() == 1);
     }
 
     @Override

@@ -11,6 +11,7 @@
     <!-- Strings related to Options Menus -->
     <string name="action_settings">Settings</string>
     <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
 
     <!-- Strings related to Settings -->
 
