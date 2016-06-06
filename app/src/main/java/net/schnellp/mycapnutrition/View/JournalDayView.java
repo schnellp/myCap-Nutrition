@@ -2,6 +2,7 @@ package net.schnellp.mycapnutrition.View;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,12 +18,21 @@ import android.view.View;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Conversion;
+import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class JournalDayView extends AppCompatActivity {
+public class JournalDayView extends AppCompatActivity implements MultiSelectActivity {
+
+    private Menu optionsMenu;
+
+    private JournalDayFragment tempFragment;
+    private ArrayList<Record> tempRecords;
+    private ArrayList<Integer> tempPositions;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -98,7 +108,8 @@ public class JournalDayView extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        this.optionsMenu =menu;
+        // Inflate the optionsMenu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_journal_day_view, menu);
         return true;
     }
@@ -108,16 +119,36 @@ public class JournalDayView extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, Settings.class);
-            startActivity(intent);
-            return true;
+        switch(item.getItemId()) {
+            case R.id.action_delete:
+                Snackbar snackbar = Snackbar
+                        .make(mViewPager, "Record(s) deleted.", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Snackbar snackbar1 = Snackbar.make(mViewPager,
+                                        "Record(s) restored!", Snackbar.LENGTH_SHORT);
+                                tempFragment.adapter.restoreItems(tempRecords);
+                                snackbar1.show();
+                            }
+                        });
+
+                tempFragment = (JournalDayFragment) mSectionsPagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                System.out.println(mViewPager.getCurrentItem());
+                System.out.println(tempFragment.date);
+                tempRecords = tempFragment.adapter.getCheckedItems();
+                tempPositions = tempFragment.adapter.getCheckedPositions();
+                tempFragment.adapter.deleteCheckedItems();
+                snackbar.show();
+                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, Settings.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void pageBack(View v) {
@@ -126,6 +157,16 @@ public class JournalDayView extends AppCompatActivity {
 
     public void pageForward(View v) {
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+    }
+
+    @Override
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
+    }
+
+    @Override
+    public void setMultiSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
 
     /**

@@ -1,29 +1,31 @@
 package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
-import android.app.admin.SystemUpdatePolicy;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.CheckableObject;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.ExpandableMultiSelectAdapter;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.ExpandableMultiSelectInputListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
-public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
+public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Record> {
 
-    public final List<Record> records;
     public LayoutInflater inflater;
     public Activity activity;
 
     public ExpandableRecordListAdapter(Activity act, String date) {
         activity = act;
-        this.records = MyCapNutrition.dataManager.getRecordsFromDate(date);
+        addAll(MyCapNutrition.dataManager.getRecordsFromDate(date));
         inflater = act.getLayoutInflater();
     }
 
@@ -40,7 +42,6 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final String children = (String) getChild(groupPosition, childPosition);
         TextView text = null;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.recordrow_details, null);
@@ -54,21 +55,6 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
                 record.protein_mg.toDoubleOrNA().divide(1000).round() + " g protein");
 
         return convertView;
-    }
-
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        return 1;
-    }
-
-    @Override
-    public Object getGroup(int groupPosition) {
-        return records.get(groupPosition);
-    }
-
-    @Override
-    public int getGroupCount() {
-        return records.size();
     }
 
     @Override
@@ -99,6 +85,15 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
                 record.quantity_cents.toDoubleOrNA().divide(100) + " x " + record.unitName +
                 " (" + record.amount_mg.toDoubleOrNA().divide(1000).round() + " g)");
 
+        ExpandableMultiSelectInputListener listener = new ExpandableMultiSelectInputListener(this, groupPosition);
+
+        ActivatedLinearLayout llContainer = (ActivatedLinearLayout)
+                convertView.findViewById(R.id.ll_record_row_group);
+
+        llContainer.setOnClickListener(listener);
+        llContainer.setOnLongClickListener(listener);
+        llContainer.setChecked(isItemChecked(groupPosition));
+
         return convertView;
     }
 
@@ -112,24 +107,37 @@ public class ExpandableRecordListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
-    public void addRecord(Record record) {
-        records.add(record);
+    public void deleteItem(int position) {
+        MyCapNutrition.dataManager.deactivateRecord(getTypedGroup(position));
+        items.remove(position);
         notifyDataSetChanged();
     }
 
-    public List<Record> getRecords() {
-        return records;
+    public void deleteCheckedItems() {
+        ArrayList<Integer> checkedPositions = getCheckedPositions();
+        Collections.sort(checkedPositions, Collections.<Integer>reverseOrder());
+        for (Integer i : checkedPositions) {
+            deleteItem(i);
+        }
     }
 
-    public void removeRecord(int position) {
-        MyCapNutrition.dataManager.deactivateRecord(records.get(position));
-        records.remove(position);
-        notifyDataSetChanged();
-    }
-
-    public void restoreRecord(Record record) {
+    public void restoreItem(Record record) {
         MyCapNutrition.dataManager.restoreRecord(record);
-        records.add(record);
+        items.add(new CheckableObject<>(record));
         notifyDataSetChanged();
+    }
+
+    public void restoreItems(ArrayList<Record> records) {
+        for (Record record : records) {
+            restoreItem(record);
+        }
+    }
+
+    public ArrayList<Record> getRecords() {
+        ArrayList<Record> records = new ArrayList<>();
+        for (CheckableObject<Record> o : items) {
+            records.add(o.object);
+        }
+        return records;
     }
 }

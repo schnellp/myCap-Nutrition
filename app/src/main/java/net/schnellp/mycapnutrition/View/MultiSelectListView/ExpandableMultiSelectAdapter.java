@@ -1,11 +1,12 @@
 package net.schnellp.mycapnutrition.View.MultiSelectListView;
 
-import android.widget.BaseAdapter;
+import android.content.Context;
+import android.widget.BaseExpandableListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MultiSelectAdapter<T> extends BaseAdapter {
+public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableListAdapter {
 
     protected ArrayList<CheckableObject<T>> items = new ArrayList<>();
 
@@ -23,25 +24,6 @@ public abstract class MultiSelectAdapter<T> extends BaseAdapter {
             }
         }
         return numChecked;
-    }
-
-    @Override
-    public int getCount() {
-        return items.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return getTypedItem(position);
-    }
-
-    public T getTypedItem(int position) {
-        return (T) items.get(position).object;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     public void setItemChecked(int position, boolean checked) {
@@ -68,5 +50,39 @@ public abstract class MultiSelectAdapter<T> extends BaseAdapter {
             }
         }
         return checkedPositions;
+    }
+
+    @Override
+    public int getGroupCount() {
+        return items.size();
+    }
+
+    @Override
+    public int getChildrenCount(int groupPosition) {
+        return 1;
+    }
+
+    @Override
+    public Object getGroup(int groupPosition) {
+        return getTypedGroup(groupPosition);
+    }
+
+    public T getTypedGroup(int groupPosition) {
+        return items.get(groupPosition).object;
+    }
+
+    @Override
+    public Object getChild(int groupPosition, int childPosition) {
+        return null;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return false;
+    }
+
+    public void showMenuGroupIfApplicable(Context context) {
+        ((MultiSelectActivity) context).setMultiSelectOptionsMenuVisible(getNumChecked() > 0);
+        ((MultiSelectActivity) context).setSingleSelectOptionsMenuVisible(getNumChecked() == 1);
     }
 }

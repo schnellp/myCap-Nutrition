@@ -25,7 +25,7 @@ import net.schnellp.mycapnutrition.R;
 public class JournalDayFragment extends Fragment {
 
     public static final String DATE = "day_number";
-    private String date;
+    public String date;
     public ExpandableRecordListAdapter adapter;
     Record tempRecord;
     View rootView;
@@ -53,21 +53,12 @@ public class JournalDayFragment extends Fragment {
         progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
         progressText.setText(kcal + " / " + goalKcal + " kcal");
 
-        buildOrRebuild();
-
-        // ((JournalDayView) getActivity()).updateAdapter();
-
         return rootView;
     }
 
     @Override
     public void onResume() {
-        buildOrRebuild();
         super.onResume();
-    }
-
-    private void buildOrRebuild() {
-
     }
 
     @Override
@@ -95,7 +86,7 @@ public class JournalDayFragment extends Fragment {
                                     Snackbar snackbar1 = Snackbar.make(getActivity()
                                                     .findViewById(R.id.main_content),
                                             "Food is restored!", Snackbar.LENGTH_SHORT);
-                                    JournalDayFragment.this.adapter.restoreRecord(tempRecord);
+                                    JournalDayFragment.this.adapter.restoreItem(tempRecord);
                                     snackbar1.show();
                                 }
                             });
@@ -113,11 +104,7 @@ public class JournalDayFragment extends Fragment {
 
     }
 
-    public String getDate() {
-        return date;
-    }
-
     public void deleteRecord(int position) {
-        adapter.removeRecord(position);
+        adapter.deleteItem(position);
     }
 }

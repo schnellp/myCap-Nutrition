@@ -15,6 +15,7 @@ import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
+import net.schnellp.mycapnutrition.View.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectInputListener;
 import net.schnellp.mycapnutrition.View.RecordView;
@@ -105,54 +106,6 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
         holder.llContainer.setOnClickListener(listener);
         holder.llContainer.setOnLongClickListener(listener);
         holder.llContainer.setChecked(isItemChecked(position));
-        /*
-        holder.llContainer.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                Intent foundingIntent = ((SelectFood) v.getContext()).getIntent();
-                Intent intent;
-
-                switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
-                    case SelectFood.Purpose.FILTER_UNITS:
-                        intent = new Intent(selectFood, UnitList.class);
-                        break;
-                    case SelectFood.Purpose.SWITCH_RECORD_FOOD:
-                        intent = new Intent(selectFood, RecordView.class);
-                        break;
-                    case SelectFood.Purpose.CREATE_RECORD:
-                        intent = new Intent(selectFood, RecordView.class);
-                        break;
-                    default:
-                        return;
-                }
-
-                Food food = getTypedItem(position);
-                intent.putExtras(((SelectFood) v.getContext()).getIntent());
-                intent.putExtra("food_dbid", food.DBID);
-
-                if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                        .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
-                    selectFood.setResult(Activity.RESULT_OK, intent);
-                    selectFood.finish();
-                } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                        .equals(SelectFood.Purpose.LIST)) {
-                    selectFood.startActivity(intent);
-                }
-            }
-        });
-        */
-
-        /*
-        holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                v.setBackgroundColor(ContextCompat.getColor(v.getContext(), android.R.color.holo_purple));
-
-                return true;
-            }
-        });
-        */
 
         return convertView;
     }

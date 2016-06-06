@@ -63,7 +63,6 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch(item.getItemId()) {
             case R.id.action_delete:
                 Snackbar snackbar = Snackbar
