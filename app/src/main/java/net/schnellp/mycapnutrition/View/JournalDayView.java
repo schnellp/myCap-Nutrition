@@ -111,6 +111,8 @@ public class JournalDayView extends AppCompatActivity implements MultiSelectActi
         this.optionsMenu =menu;
         // Inflate the optionsMenu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_journal_day_view, menu);
+        setMultiSelectOptionsMenuVisible(false);
+        setSingleSelectOptionsMenuVisible(false);
         return true;
     }
 
