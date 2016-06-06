@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View.MultiSelectListView;
+package net.schnellp.mycapnutrition.MultiSelectListView;
 
 import android.content.Context;
 import android.widget.BaseExpandableListAdapter;

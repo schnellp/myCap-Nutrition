@@ -20,7 +20,7 @@ import android.widget.TextView;
 import net.schnellp.mycapnutrition.Model.Conversion;
 import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectActivity;
+import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

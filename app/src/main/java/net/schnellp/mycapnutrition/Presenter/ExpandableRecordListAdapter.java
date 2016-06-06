@@ -1,7 +1,6 @@
 package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,10 @@ import android.widget.TextView;
 import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.ActivatedLinearLayout;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.CheckableObject;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.ExpandableMultiSelectAdapter;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.ExpandableMultiSelectInputListener;
+import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
+import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectAdapter;
+import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectInputListener;
 
 import java.util.ArrayList;
 import java.util.Collections;

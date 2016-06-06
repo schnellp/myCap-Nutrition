@@ -1,6 +1,5 @@
-package net.schnellp.mycapnutrition.View.MultiSelectListView;
+package net.schnellp.mycapnutrition.MultiSelectListView;
 
-import android.content.Context;
 import android.view.View;
 
 public class ExpandableMultiSelectInputListener implements View.OnClickListener, View.OnLongClickListener {

@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.Model.Food;
@@ -15,7 +14,7 @@ import net.schnellp.mycapnutrition.Model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Presenter.UnitListAdapter;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectActivity;
+import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
 
 import java.util.ArrayList;
 

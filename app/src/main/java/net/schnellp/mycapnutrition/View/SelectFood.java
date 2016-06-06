@@ -8,19 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ContextMenu;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Presenter.FoodSearchAdapter;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.View.MultiSelectListView.MultiSelectActivity;
+import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
 
 import java.util.ArrayList;
 
