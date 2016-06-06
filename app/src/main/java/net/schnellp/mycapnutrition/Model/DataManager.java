@@ -445,6 +445,22 @@ public class DataManager {
         return getUnit((int) insertID);
     }
 
+    public Unit updateUnit(int dbid, Food food, String name, IntOrNA amount_mg) {
+        ContentValues values = new ContentValues();
+        values.put(UnitEntry.COLUMN_NAME_FOOD_ID, food.DBID);
+        values.put(UnitEntry.COLUMN_NAME_NAME, name);
+        if (!amount_mg.isNA) { values.put(UnitEntry.COLUMN_NAME_AMOUNT_MG, amount_mg.val); }
+
+        try {
+            database.update(UnitEntry.TABLE_NAME, values, UnitEntry._ID + " = " + dbid, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return getUnit(dbid);
+    }
+
     public Unit getUnit(int dbid) {
         if (dbid == -1) {
             return Unit.G;

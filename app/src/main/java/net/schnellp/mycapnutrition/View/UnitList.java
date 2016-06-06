@@ -79,6 +79,9 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
                 adapter.deleteCheckedItems();
                 snackbar.show();
                 return true;
+            case R.id.action_edit:
+                adapter.editItem(adapter.getCheckedPositions().get(0));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

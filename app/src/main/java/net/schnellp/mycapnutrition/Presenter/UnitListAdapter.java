@@ -1,6 +1,7 @@
 package net.schnellp.mycapnutrition.Presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +15,30 @@ import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectInputListener;
+import net.schnellp.mycapnutrition.View.AddUnit;
+import net.schnellp.mycapnutrition.View.UnitList;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class UnitListAdapter extends MultiSelectAdapter<Unit> {
 
+    private UnitList unitList;
     private LayoutInflater inflater;
 
     public UnitListAdapter(Context context, Food food) {
         addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
         inflater = LayoutInflater.from(context);
+        unitList = (UnitList) context;
+    }
+
+    public void editItem(int position) {
+        UnitList context = unitList;
+        Unit unit = getTypedItem(position);
+        Intent intent = new Intent(context, AddUnit.class);
+        intent.putExtra("CALLED_FOR_RESULT", true);
+        intent.putExtra("unit_dbid", unit.DBID);
+        unitList.startActivityForResult(intent, 1);
     }
 
     public void deleteItem(int position) {
