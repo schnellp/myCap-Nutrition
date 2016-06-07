@@ -93,6 +93,8 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
 
         adapter = new UnitListAdapter(UnitList.this, food);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(adapter);
+        listView.setOnItemLongClickListener(adapter);
     }
 
     @Override

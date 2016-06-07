@@ -135,6 +135,8 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
 
         adapter = new FoodSearchAdapter(this, SelectFood.this);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(adapter);
+        listView.setOnItemLongClickListener(adapter);
     }
 
     @Override

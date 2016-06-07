@@ -14,7 +14,6 @@ import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
-import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectInputListener;
 import net.schnellp.mycapnutrition.View.AddUnit;
 import net.schnellp.mycapnutrition.View.UnitList;
 
@@ -92,9 +91,6 @@ public class UnitListAdapter extends MultiSelectAdapter<Unit> {
         holder.tvDetails.setText(getTypedItem(position).amount_mg.toDoubleOrNA().divide(1000).round()
                 + " g");
 
-        MultiSelectInputListener listener = new MultiSelectInputListener(this, position);
-        holder.llContainer.setOnClickListener(listener);
-        holder.llContainer.setOnLongClickListener(listener);
         holder.llContainer.setChecked(isItemChecked(position));
 
         return convertView;

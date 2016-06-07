@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
@@ -17,7 +18,6 @@ import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
-import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectInputListener;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;
@@ -101,10 +101,6 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
         getTypedItem(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
         " g");
 
-        MultiSelectFoodSearchInputListener listener =
-                new MultiSelectFoodSearchInputListener(this, position);
-        holder.llContainer.setOnClickListener(listener);
-        holder.llContainer.setOnLongClickListener(listener);
         holder.llContainer.setChecked(isItemChecked(position));
 
         return convertView;
@@ -164,46 +160,39 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
         return filter;
     }
 
-    private class MultiSelectFoodSearchInputListener extends MultiSelectInputListener {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (getNumChecked() > 0) {
+            super.onItemClick(parent, view, position, id);
+        } else {
+            Intent foundingIntent = ((SelectFood) view.getContext()).getIntent();
+            Intent intent;
 
-        public MultiSelectFoodSearchInputListener(MultiSelectAdapter ms, int position) {
-            super(ms, position);
-        }
+            switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
+                case SelectFood.Purpose.FILTER_UNITS:
+                    intent = new Intent(selectFood, UnitList.class);
+                    break;
+                case SelectFood.Purpose.SWITCH_RECORD_FOOD:
+                    intent = new Intent(selectFood, RecordView.class);
+                    break;
+                case SelectFood.Purpose.CREATE_RECORD:
+                    intent = new Intent(selectFood, RecordView.class);
+                    break;
+                default:
+                    return;
+            }
 
-        @Override
-        public void onClick(View v) {
-            if (ms.getNumChecked() > 0) {
-                super.onClick(v);
-            } else {
-                Intent foundingIntent = ((SelectFood) v.getContext()).getIntent();
-                Intent intent;
+            Food food = getTypedItem(position);
+            intent.putExtras(((SelectFood) view.getContext()).getIntent());
+            intent.putExtra("food_dbid", food.DBID);
 
-                switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
-                    case SelectFood.Purpose.FILTER_UNITS:
-                        intent = new Intent(selectFood, UnitList.class);
-                        break;
-                    case SelectFood.Purpose.SWITCH_RECORD_FOOD:
-                        intent = new Intent(selectFood, RecordView.class);
-                        break;
-                    case SelectFood.Purpose.CREATE_RECORD:
-                        intent = new Intent(selectFood, RecordView.class);
-                        break;
-                    default:
-                        return;
-                }
-
-                Food food = getTypedItem(position);
-                intent.putExtras(((SelectFood) v.getContext()).getIntent());
-                intent.putExtra("food_dbid", food.DBID);
-
-                if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                        .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
-                    selectFood.setResult(Activity.RESULT_OK, intent);
-                    selectFood.finish();
-                } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                        .equals(SelectFood.Purpose.LIST)) {
-                    selectFood.startActivity(intent);
-                }
+            if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
+                    .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
+                selectFood.setResult(Activity.RESULT_OK, intent);
+                selectFood.finish();
+            } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
+                    .equals(SelectFood.Purpose.LIST)) {
+                selectFood.startActivity(intent);
             }
         }
     }
