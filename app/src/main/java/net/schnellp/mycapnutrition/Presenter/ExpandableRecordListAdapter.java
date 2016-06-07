@@ -13,7 +13,6 @@ import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectAdapter;
-import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectInputListener;
 import net.schnellp.mycapnutrition.View.JournalDayView;
 import net.schnellp.mycapnutrition.View.RecordView;
 
@@ -87,13 +86,11 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
                 record.quantity_cents.toDoubleOrNA().divide(100) + " x " + record.unitName +
                 " (" + record.amount_mg.toDoubleOrNA().divide(1000).round() + " g)");
 
-        ExpandableMultiSelectInputListener listener = new ExpandableMultiSelectInputListener(this, groupPosition);
-
         ActivatedLinearLayout llContainer = (ActivatedLinearLayout)
                 convertView.findViewById(R.id.ll_record_row_group);
 
-        convertView.setOnClickListener(listener);
-        convertView.setOnLongClickListener(listener);
+        //convertView.setOnClickListener(listener);
+        //convertView.setOnLongClickListener(listener);
         llContainer.setChecked(isItemChecked(groupPosition));
 
         return convertView;

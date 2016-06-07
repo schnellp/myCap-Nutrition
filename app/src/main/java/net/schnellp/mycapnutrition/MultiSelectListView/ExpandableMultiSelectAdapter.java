@@ -1,12 +1,16 @@
 package net.schnellp.mycapnutrition.MultiSelectListView;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableListAdapter {
+public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableListAdapter
+    implements ExpandableListView.OnGroupClickListener, AdapterView.OnItemLongClickListener {
 
     protected ArrayList<CheckableObject<T>> items = new ArrayList<>();
 
@@ -84,5 +88,38 @@ public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableList
     public void showMenuGroupIfApplicable(Context context) {
         ((MultiSelectActivity) context).setMultiSelectOptionsMenuVisible(getNumChecked() > 0);
         ((MultiSelectActivity) context).setSingleSelectOptionsMenuVisible(getNumChecked() == 1);
+    }
+
+    @Override
+    public boolean onGroupClick(ExpandableListView parent, View view, int position, long id) {
+        if (getNumChecked() > 0) {
+            if (((ActivatedLinearLayout) view).isChecked()) {
+                ((ActivatedLinearLayout) view).setChecked(false);
+                setItemChecked(position, false);
+            } else {
+                ((ActivatedLinearLayout) view).setChecked(true);
+                setItemChecked(position, true);
+            }
+            showMenuGroupIfApplicable(view.getContext());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        for (int i = 0; i < getGroupCount(); i++) {
+            ((ExpandableListView) parent).collapseGroup(i);
+        }
+
+        if (((ActivatedLinearLayout) view).isChecked()) {
+            ((ActivatedLinearLayout) view).setChecked(false);
+            setItemChecked(position, false);
+        } else {
+            ((ActivatedLinearLayout) view).setChecked(true);
+            setItemChecked(position, true);
+        }
+        showMenuGroupIfApplicable(view.getContext());
+        return true;
     }
 }

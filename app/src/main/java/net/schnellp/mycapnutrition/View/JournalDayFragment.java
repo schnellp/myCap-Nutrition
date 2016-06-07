@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,7 +43,9 @@ public class JournalDayFragment extends Fragment {
         adapter = new ExpandableRecordListAdapter(this.getActivity(), date);
 
         listView.setAdapter(adapter);
-        registerForContextMenu(listView);
+        listView.setOnGroupClickListener(adapter);
+        listView.setOnItemLongClickListener(adapter);
+        //registerForContextMenu(listView);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
         int goalKcal = Integer.parseInt(sharedPref.getString("goal_kcal", "2000"));
