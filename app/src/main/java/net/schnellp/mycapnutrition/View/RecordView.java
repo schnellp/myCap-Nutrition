@@ -111,6 +111,7 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         if (unit == Unit.ADD) {
             Intent intent = new Intent(this, AddUnit.class);
             intent.putExtras(getIntent());
+            intent.putExtra("food_dbid", food.DBID);
             startActivityForResult(intent, ADD_UNIT_RESULT);
         }
     }
