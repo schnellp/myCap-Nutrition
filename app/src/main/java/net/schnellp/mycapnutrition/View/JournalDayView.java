@@ -26,7 +26,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class JournalDayView extends AppCompatActivity implements MultiSelectActivity {
+public class JournalDayView extends AppCompatActivity
+        implements MultiSelectActivity, ViewPager.OnPageChangeListener {
 
     private Menu optionsMenu;
 
@@ -63,15 +64,7 @@ public class JournalDayView extends AppCompatActivity implements MultiSelectActi
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {}
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-            public void onPageSelected(int position) {
-                TextView pagerTitle = (TextView) findViewById(R.id.pager_title);
-                pagerTitle.setText(Conversion.dayNumberToLongRelativeDate(position));
-            }
-        });
+        mViewPager.addOnPageChangeListener(this);
 
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
         Date now = new Date();
@@ -166,13 +159,42 @@ public class JournalDayView extends AppCompatActivity implements MultiSelectActi
 
     @Override
     public void setSingleSelectOptionsMenuVisible(boolean visible) {
-        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
+        if (optionsMenu != null) {
+            optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
+        }
     }
 
     @Override
     public void setMultiSelectOptionsMenuVisible(boolean visible) {
-        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
+        if (optionsMenu != null) {
+            optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
+        }
     }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+    @Override
+    public void onPageSelected(int position) {
+        TextView pagerTitle = (TextView) findViewById(R.id.pager_title);
+        pagerTitle.setText(Conversion.dayNumberToLongRelativeDate(position));
+
+        JournalDayFragment offScreenFragment = (JournalDayFragment) mSectionsPagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem() + 1);
+        if (offScreenFragment != null && offScreenFragment.adapter != null) {
+            offScreenFragment.adapter.uncheckAll();
+        }
+
+        offScreenFragment = (JournalDayFragment) mSectionsPagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem() - 1);
+        if (offScreenFragment != null && offScreenFragment.adapter != null) {
+            offScreenFragment.adapter.uncheckAll();
+        }
+
+        setSingleSelectOptionsMenuVisible(false);
+        setMultiSelectOptionsMenuVisible(false);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {}
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

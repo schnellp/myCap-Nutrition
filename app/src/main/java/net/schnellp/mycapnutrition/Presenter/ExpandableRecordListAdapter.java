@@ -131,6 +131,13 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
         }
     }
 
+    public void uncheckAll() {
+        for (int i = 0; i < getGroupCount(); i++) {
+            setItemChecked(i, false);
+        }
+        notifyDataSetChanged();
+    }
+
     public void restoreItem(Record record) {
         MyCapNutrition.dataManager.restoreRecord(record);
         items.add(new CheckableObject<>(record));
