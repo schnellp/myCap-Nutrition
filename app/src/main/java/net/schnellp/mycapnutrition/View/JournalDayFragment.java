@@ -1,6 +1,7 @@
 package net.schnellp.mycapnutrition.View;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -44,8 +45,11 @@ public class JournalDayFragment extends Fragment {
         TextView progressText = (TextView) rootView.findViewById(R.id.kcal_label);
         IntOrNA kcal = ObjectMath.kcalSum(adapter.getRecords());
         progressBar.setMax(goalKcal);
+
+        Resources resources = getContext().getResources();
+        String progressString = kcal + " / " + goalKcal + " " + resources.getString(R.string.kcal);
         progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
-        progressText.setText(kcal + " / " + goalKcal + " kcal");
+        progressText.setText(progressString);
 
         return rootView;
     }

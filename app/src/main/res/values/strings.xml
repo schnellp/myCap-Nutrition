@@ -59,4 +59,8 @@
     <string name="alert_positive_toast_clear_data">Database cleared.</string>
     <string name="alert_negative_toast_clear_data">Database preserved.</string>
 
+    <!-- Strings related to displaying numbers -->
+
+    <string name="kcal">kcal</string>
+
 </resources>
