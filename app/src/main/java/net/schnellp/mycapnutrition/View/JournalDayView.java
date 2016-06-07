@@ -123,6 +123,11 @@ public class JournalDayView extends AppCompatActivity implements MultiSelectActi
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch(item.getItemId()) {
+            case R.id.action_edit:
+                JournalDayFragment fragment = (JournalDayFragment) mSectionsPagerAdapter
+                        .instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                fragment.adapter.editItem(fragment.adapter.getCheckedPositions().get(0));
+                return true;
             case R.id.action_delete:
                 Snackbar snackbar = Snackbar
                         .make(mViewPager, "Record(s) deleted.", Snackbar.LENGTH_LONG)
@@ -137,8 +142,6 @@ public class JournalDayView extends AppCompatActivity implements MultiSelectActi
                         });
 
                 tempFragment = (JournalDayFragment) mSectionsPagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem());
-                System.out.println(mViewPager.getCurrentItem());
-                System.out.println(tempFragment.date);
                 tempRecords = tempFragment.adapter.getCheckedItems();
                 tempPositions = tempFragment.adapter.getCheckedPositions();
                 tempFragment.adapter.deleteCheckedItems();

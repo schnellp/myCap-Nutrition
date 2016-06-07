@@ -329,6 +329,26 @@ public class DataManager {
         return getRecord((int) insertID);
     }
 
+    public Record updateRecord(int dbid, Food food, IntOrNA quantity_cents, Unit unit) {
+
+        ContentValues values = new ContentValues();
+        values.put(RecordEntry.COLUMN_NAME_FOOD_ID, food.DBID);
+        if (!quantity_cents.isNA) { values.put(RecordEntry.COLUMN_NAME_QUANTITY_CENTS, quantity_cents.toString()); }
+        if (unit.DBID != -1) {
+            values.put(RecordEntry.COLUMN_NAME_UNIT_ID, unit.DBID);
+        }
+
+        long insertID = -1;
+        try {
+            database.update(RecordEntry.TABLE_NAME, values, RecordEntry._ID + " = " + dbid, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return getRecord(dbid);
+    }
+
     public boolean restoreRecord(Record record) {
         ContentValues values = new ContentValues();
         values.put(RecordEntry._ACTIVE, 1);

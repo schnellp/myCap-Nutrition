@@ -1,6 +1,7 @@
 package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectAdapter;
 import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectInputListener;
+import net.schnellp.mycapnutrition.View.JournalDayView;
+import net.schnellp.mycapnutrition.View.RecordView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,8 +92,8 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
         ActivatedLinearLayout llContainer = (ActivatedLinearLayout)
                 convertView.findViewById(R.id.ll_record_row_group);
 
-        llContainer.setOnClickListener(listener);
-        llContainer.setOnLongClickListener(listener);
+        convertView.setOnClickListener(listener);
+        convertView.setOnLongClickListener(listener);
         llContainer.setChecked(isItemChecked(groupPosition));
 
         return convertView;
@@ -104,6 +107,14 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
+    }
+
+    public void editItem(int position) {
+        JournalDayView context = (JournalDayView) activity;
+        Record record = getTypedGroup(position);
+        Intent intent = new Intent(context, RecordView.class);
+        intent.putExtra("record_dbid", record.DBID);
+        activity.startActivity(intent);
     }
 
     public void deleteItem(int position) {
