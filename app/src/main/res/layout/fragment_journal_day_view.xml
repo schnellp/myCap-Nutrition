@@ -33,6 +33,8 @@
         android:contextClickable="true"
         android:drawSelectorOnTop="false"
         android:footerDividersEnabled="false"
-        android:headerDividersEnabled="false" />
+        android:headerDividersEnabled="false"
+        android:paddingBottom="128dp"
+        android:clipToPadding="false"/>
 
 </LinearLayout>
