@@ -1,11 +1,11 @@
 package net.schnellp.mycapnutrition.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.IntOrNA;
@@ -34,7 +34,10 @@ public class RecipeForm extends AppCompatActivity {
         footer.setText("Add Ingredient");
         footer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.println("CLICK");
+                Intent intent = new Intent(v.getContext(), SelectFood.class);
+                intent.putExtra(SelectFood.Purpose.INTENT_EXTRA_NAME,
+                        SelectFood.Purpose.CREATE_RECORD);
+                startActivity(intent);
             }
         });
         lvIngredients.addFooterView(footer);

@@ -35,6 +35,7 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         public static final String FILTER_UNITS = "FILTER_UNITS";
         public static final String LIST = "LIST";
         public static final String CREATE_RECORD = "CREATE_RECORD";
+        public static final String CREATE_INGREDIENT = "CREATE_INGREDIENT";
     }
 
     private static class Page {
