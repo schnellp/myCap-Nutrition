@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
@@ -169,14 +170,14 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
             Intent foundingIntent = ((SelectFood) view.getContext()).getIntent();
             Intent intent;
 
-            switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
-                case SelectFood.Purpose.FILTER_UNITS:
+            switch (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+                case Objective.LIST_UNITS:
                     intent = new Intent(selectFood.getActivity(), UnitList.class);
                     break;
-                case SelectFood.Purpose.SWITCH_RECORD_FOOD:
+                case Objective.SWITCH_RECORD_FOOD:
                     intent = new Intent(selectFood.getActivity(), RecordView.class);
                     break;
-                case SelectFood.Purpose.CREATE_RECORD:
+                case Objective.CREATE_RECORD:
                     intent = new Intent(selectFood.getActivity(), RecordView.class);
                     break;
                 default:
@@ -187,12 +188,12 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
             intent.putExtras(((SelectFood) view.getContext()).getIntent());
             intent.putExtra("food_dbid", food.DBID);
 
-            if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                    .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
+            if (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1) ==
+                    Objective.SWITCH_RECORD_FOOD) {
                 selectFood.getActivity().setResult(Activity.RESULT_OK, intent);
                 selectFood.getActivity().finish();
-            } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                    .equals(SelectFood.Purpose.LIST)) {
+            } else if (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1) !=
+                    Objective.LIST_FOODS) {
                 selectFood.startActivity(intent);
             }
         }

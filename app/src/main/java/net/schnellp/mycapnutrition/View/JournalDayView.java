@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Conversion;
 import net.schnellp.mycapnutrition.Model.Record;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
 
@@ -80,8 +81,8 @@ public class JournalDayView extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), SelectFood.class);
                 String date = Conversion.dayNumberToDate(mViewPager.getCurrentItem());
-                intent.putExtra(SelectFood.Purpose.INTENT_EXTRA_NAME,
-                        SelectFood.Purpose.CREATE_RECORD);
+                intent.putExtra(Objective.INTENT_EXTRA_NAME,
+                        Objective.CREATE_RECORD);
                 intent.putExtra("DATE", date);
                 startActivity(intent);
             }

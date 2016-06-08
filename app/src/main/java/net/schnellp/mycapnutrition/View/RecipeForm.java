@@ -10,6 +10,7 @@ import android.widget.ListView;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.IntOrNA;
 import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.Presenter.IngredientListAdapter;
 import net.schnellp.mycapnutrition.R;
 
@@ -35,8 +36,8 @@ public class RecipeForm extends AppCompatActivity {
         footer.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), SelectFood.class);
-                intent.putExtra(SelectFood.Purpose.INTENT_EXTRA_NAME,
-                        SelectFood.Purpose.CREATE_RECORD);
+                intent.putExtra(Objective.INTENT_EXTRA_NAME,
+                        Objective.CREATE_INGREDIENT);
                 startActivity(intent);
             }
         });

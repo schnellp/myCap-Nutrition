@@ -28,7 +28,7 @@
             android:targetPackage="net.schnellp.mycapnutrition"
             android:targetClass="net.schnellp.mycapnutrition.View.SelectFood">
 
-            <extra android:name="SELECT_FOOD_PURPOSE" android:value="LIST" />
+            <extra android:name="objective" android:value="2" />
         </intent>
 
     </Preference>
@@ -42,7 +42,7 @@
             android:targetPackage="net.schnellp.mycapnutrition"
             android:targetClass="net.schnellp.mycapnutrition.View.SelectFood">
 
-            <extra android:name="SELECT_FOOD_PURPOSE" android:value="FILTER_UNITS" />
+            <extra android:name="objective" android:value="3" />
         </intent>
 
     </Preference>

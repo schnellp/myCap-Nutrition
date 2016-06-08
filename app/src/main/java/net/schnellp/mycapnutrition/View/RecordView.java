@@ -18,6 +18,7 @@ import net.schnellp.mycapnutrition.Model.IntOrNA;
 import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.Model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.Presenter.UnitSpinnerAdapter;
 
@@ -100,8 +101,8 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
 
     public void switchFood(View v) {
         Intent intent = new Intent(this, SelectFood.class);
-        intent.putExtra(SelectFood.Purpose.INTENT_EXTRA_NAME,
-                SelectFood.Purpose.SWITCH_RECORD_FOOD);
+        intent.putExtra(Objective.INTENT_EXTRA_NAME,
+                Objective.SWITCH_RECORD_FOOD);
         startActivityForResult(intent, SELECT_FOOD_RESULT);
     }
 

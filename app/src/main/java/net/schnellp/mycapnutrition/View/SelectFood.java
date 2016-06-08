@@ -28,16 +28,6 @@ import java.util.ArrayList;
 
 public class SelectFood extends AppCompatActivity implements MultiSelectActivity {
 
-    public static class Purpose {
-        public static final String INTENT_EXTRA_NAME = "SELECT_FOOD_PURPOSE";
-
-        public static final String SWITCH_RECORD_FOOD = "SWITCH_RECORD_FOOD";
-        public static final String FILTER_UNITS = "FILTER_UNITS";
-        public static final String LIST = "LIST";
-        public static final String CREATE_RECORD = "CREATE_RECORD";
-        public static final String CREATE_INGREDIENT = "CREATE_INGREDIENT";
-    }
-
     private static class Page {
         public static final int FOOD = 0;
         public static final int RECIPES = 1;
