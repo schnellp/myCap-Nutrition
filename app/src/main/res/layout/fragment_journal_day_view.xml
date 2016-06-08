@@ -26,7 +26,7 @@
         android:max="2000"
         android:progress="0"/>
 
-    <net.schnellp.mycapnutrition.View.ExpandableRecordListView
+    <ExpandableListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recordListView"

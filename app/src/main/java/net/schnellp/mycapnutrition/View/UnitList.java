@@ -35,29 +35,27 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
         setSupportActionBar(toolbar);
 
         listView = (ListView) findViewById(R.id.lvUnits);
-        // registerForContextMenu(listView);
 
         food = MyCapNutrition.dataManager.getFood(getIntent().getIntExtra("food_dbid", -1));
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        adapter = new UnitListAdapter(UnitList.this, food);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(adapter);
+        listView.setOnItemLongClickListener(adapter);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
         this.optionsMenu = menu;
         setSingleSelectOptionsMenuVisible(false);
         setMultiSelectOptionsMenuVisible(false);
         return true;
-    }
-
-    @Override
-    public void setSingleSelectOptionsMenuVisible(boolean visible) {
-        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
-    }
-
-    @Override
-    public void setMultiSelectOptionsMenuVisible(boolean visible) {
-        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
 
     @Override
@@ -88,17 +86,12 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        adapter = new UnitListAdapter(UnitList.this, food);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(adapter);
-        listView.setOnItemLongClickListener(adapter);
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    public void setMultiSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
 }

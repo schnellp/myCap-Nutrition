@@ -50,12 +50,10 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         EditText editText = (EditText) findViewById(R.id.editTextFoodSearch);
         listView = (ListView) findViewById(R.id.listViewFoodResults);
 
-        // Add Text Change Listener to EditText
         editText.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Call back the Adapter with current character to Filter
                 adapter.getFilter().filter(s.toString());
             }
 
@@ -77,28 +75,25 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
                 startActivity(intent);
             }
         });
+    }
 
-        // registerForContextMenu(listView);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        adapter = new FoodSearchAdapter(this, SelectFood.this);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(adapter);
+        listView.setOnItemLongClickListener(adapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
         this.optionsMenu = menu;
         setSingleSelectOptionsMenuVisible(false);
         setMultiSelectOptionsMenuVisible(false);
         return true;
-    }
-
-    @Override
-    public void setSingleSelectOptionsMenuVisible(boolean visible) {
-        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
-    }
-
-    @Override
-    public void setMultiSelectOptionsMenuVisible(boolean visible) {
-        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
 
     @Override
@@ -130,18 +125,12 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        adapter = new FoodSearchAdapter(this, SelectFood.this);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(adapter);
-        listView.setOnItemLongClickListener(adapter);
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    public void setMultiSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
-
 }

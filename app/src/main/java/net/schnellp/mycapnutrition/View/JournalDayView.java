@@ -54,7 +54,9 @@ public class JournalDayView extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
-    private void buildPagerAdapter() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_journal_day_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -87,22 +89,14 @@ public class JournalDayView extends AppCompatActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        buildPagerAdapter();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        buildPagerAdapter();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.optionsMenu =menu;
-        // Inflate the optionsMenu; this adds items to the action bar if it is present.
+        this.optionsMenu = menu;
         getMenuInflater().inflate(R.menu.menu_journal_day_view, menu);
         setMultiSelectOptionsMenuVisible(false);
         setSingleSelectOptionsMenuVisible(false);
