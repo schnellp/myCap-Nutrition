@@ -16,10 +16,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/editTextFoodSearch" />
 
-    <ListView
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewFoodResults"
-        android:longClickable="false"
-        android:drawSelectorOnTop="true" />
+        android:layout_height="match_parent" />
 </LinearLayout>

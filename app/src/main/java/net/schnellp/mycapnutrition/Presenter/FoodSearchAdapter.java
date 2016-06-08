@@ -18,6 +18,7 @@ import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
+import net.schnellp.mycapnutrition.View.FoodListFragment;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;
@@ -27,11 +28,11 @@ import java.util.Collections;
 
 public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filterable {
 
-    private SelectFood selectFood;
+    private FoodListFragment selectFood;
     private ArrayList<CheckableObject<Food>> originalItems = new ArrayList<>();
     LayoutInflater inflater;
 
-    public FoodSearchAdapter(SelectFood selectFood, Context context) {
+    public FoodSearchAdapter(FoodListFragment selectFood, Context context) {
         this.selectFood = selectFood;
         addAll(MyCapNutrition.dataManager.getAllFoods());
         originalItems.addAll(items);
@@ -39,9 +40,9 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
     }
 
     public void editItem(int position) {
-        SelectFood context = selectFood;
+        FoodListFragment context = selectFood;
         Food food = getTypedItem(position);
-        Intent intent = new Intent(context, AddFood.class);
+        Intent intent = new Intent(context.getActivity(), AddFood.class);
         intent.putExtra("CALLED_FOR_RESULT", true);
         intent.putExtra("food_dbid", food.DBID);
         selectFood.startActivityForResult(intent, 1);
@@ -170,13 +171,13 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
 
             switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
                 case SelectFood.Purpose.FILTER_UNITS:
-                    intent = new Intent(selectFood, UnitList.class);
+                    intent = new Intent(selectFood.getActivity(), UnitList.class);
                     break;
                 case SelectFood.Purpose.SWITCH_RECORD_FOOD:
-                    intent = new Intent(selectFood, RecordView.class);
+                    intent = new Intent(selectFood.getActivity(), RecordView.class);
                     break;
                 case SelectFood.Purpose.CREATE_RECORD:
-                    intent = new Intent(selectFood, RecordView.class);
+                    intent = new Intent(selectFood.getActivity(), RecordView.class);
                     break;
                 default:
                     return;
@@ -188,8 +189,8 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
 
             if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
                     .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
-                selectFood.setResult(Activity.RESULT_OK, intent);
-                selectFood.finish();
+                selectFood.getActivity().setResult(Activity.RESULT_OK, intent);
+                selectFood.getActivity().finish();
             } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
                     .equals(SelectFood.Purpose.LIST)) {
                 selectFood.startActivity(intent);

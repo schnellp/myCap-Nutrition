@@ -4,6 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -32,12 +36,17 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         public static final String CREATE_RECORD = "CREATE_RECORD";
     }
 
-    private ListView listView;
-    private FoodSearchAdapter adapter;
     private Menu optionsMenu;
 
+    private FoodListFragment tempFragment;
     private ArrayList<Food> tempFoods;
     private ArrayList<Integer> tempPositions;
+
+    private ViewPager mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    public void updateAdapter() {
+        mSectionsPagerAdapter.notifyDataSetChanged();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +56,20 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(0, false);
+
         EditText editText = (EditText) findViewById(R.id.editTextFoodSearch);
-        listView = (ListView) findViewById(R.id.listViewFoodResults);
 
         editText.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s.toString());
+                FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
+                        .instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                fragment.adapter.getFilter().filter(s.toString());
             }
 
             @Override
@@ -80,11 +95,6 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
     @Override
     protected void onResume() {
         super.onResume();
-
-        adapter = new FoodSearchAdapter(this, SelectFood.this);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(adapter);
-        listView.setOnItemLongClickListener(adapter);
     }
 
     @Override
@@ -101,23 +111,25 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         switch(item.getItemId()) {
             case R.id.action_delete:
                 Snackbar snackbar = Snackbar
-                        .make(listView, "Food(s) deleted.", Snackbar.LENGTH_LONG)
+                        .make(mViewPager, "Food(s) deleted.", Snackbar.LENGTH_LONG)
                         .setAction("UNDO", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Snackbar snackbar1 = Snackbar.make(listView,
+                                Snackbar snackbar1 = Snackbar.make(mViewPager,
                                         "Food(s) restored!", Snackbar.LENGTH_SHORT);
-                                SelectFood.this.adapter.restoreItems(tempFoods, tempPositions);
+                                tempFragment.adapter.restoreItems(tempFoods, tempPositions);
                                 snackbar1.show();
                             }
                         });
-                tempFoods = adapter.getCheckedItems();
-                tempPositions = adapter.getCheckedPositions();
-                adapter.deleteCheckedItems();
+                tempFoods = tempFragment.adapter.getCheckedItems();
+                tempPositions = tempFragment.adapter.getCheckedPositions();
+                tempFragment.adapter.deleteCheckedItems();
                 snackbar.show();
                 return true;
             case R.id.action_edit:
-                adapter.editItem(adapter.getCheckedPositions().get(0));
+                FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
+                        .instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                fragment.adapter.editItem(fragment.adapter.getCheckedPositions().get(0));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -132,5 +144,35 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
     @Override
     public void setMultiSelectOptionsMenuVisible(boolean visible) {
         optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
+    }
+
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            FoodListFragment fragment = new FoodListFragment();
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public int getItemPosition(Object item) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "title";
+        }
     }
 }
