@@ -66,7 +66,6 @@ public class FoodListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        System.out.println("ONCREATEVIEW");
         View rootView = inflater.inflate(R.layout.fragment_food_list, container, false);
         listView = (ListView) rootView.findViewById(R.id.listViewFoodResults);
         return rootView;

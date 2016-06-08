@@ -13,7 +13,7 @@
     tools:context=".View.RecordView"
     tools:showIn="@layout/activity_record_view">
 
-    <include layout="@layout/form_group_food_quantity_unit" />
+    <include layout="@layout/input_group_food_quantity_unit" />
 
     <Button
         android:layout_width="wrap_content"
