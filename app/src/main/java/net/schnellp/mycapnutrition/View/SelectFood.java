@@ -156,7 +156,7 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            FoodListFragment fragment = new FoodListFragment();
+            FoodListFragment fragment = FoodListFragment.newInstance(position);
             return fragment;
         }
 

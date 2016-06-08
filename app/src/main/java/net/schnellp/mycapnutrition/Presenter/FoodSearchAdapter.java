@@ -32,11 +32,11 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
     private ArrayList<CheckableObject<Food>> originalItems = new ArrayList<>();
     LayoutInflater inflater;
 
-    public FoodSearchAdapter(FoodListFragment selectFood, Context context) {
+    public FoodSearchAdapter(FoodListFragment selectFood, int foodType) {
         this.selectFood = selectFood;
-        addAll(MyCapNutrition.dataManager.getAllFoods());
+        addAll(MyCapNutrition.dataManager.getAllFoodsOfType(foodType));
         originalItems.addAll(items);
-        inflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(selectFood.getContext());
     }
 
     public void editItem(int position) {

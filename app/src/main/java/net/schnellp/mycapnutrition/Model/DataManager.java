@@ -216,12 +216,12 @@ public class DataManager {
         return newFood;
     }
 
-    public List<Food> getAllFoods() {
+    public List<Food> getFoods(String constraint) {
         List<Food> foods = new ArrayList<>();
 
         Cursor cursor = database.query(FoodEntry.TABLE_NAME,
                 null, // all columns
-                FoodEntry._ACTIVE + " = 1",
+                constraint,
                 null, // selection args
                 null, // group by
                 null, // having
@@ -236,6 +236,15 @@ public class DataManager {
 
         cursor.close();
         return foods;
+    }
+
+    public List<Food> getAllFoods() {
+        return getFoods(FoodEntry._ACTIVE + " = 1");
+    }
+
+    public List<Food> getAllFoodsOfType(int type) {
+        return getFoods(FoodEntry._ACTIVE + " = 1" +
+        " AND " + FoodEntry.COLUMN_NAME_TYPE + " = " + type);
     }
 
     public void deactivateFood(Food food) {
