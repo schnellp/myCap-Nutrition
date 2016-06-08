@@ -16,25 +16,11 @@ import java.util.List;
 public class DataManager {
 
     private SQLiteDatabase database;
-    private String[] foodColNames;
-    private String[] recordColNames;
-    private String[] unitColNames;
 
     public DataManager(Context context) {
         DBHelper dbHelper = new DBHelper(context);
 
         database = dbHelper.getWritableDatabase();
-
-        Cursor cursor = database.query(FoodEntry.TABLE_NAME, null, null, null, null, null, null);
-        foodColNames = cursor.getColumnNames();
-
-        cursor = database.query(RecordEntry.TABLE_NAME, null, null, null, null, null, null);
-        recordColNames = cursor.getColumnNames();
-
-        cursor = database.query(UnitEntry.TABLE_NAME, null, null, null, null, null, null);
-        unitColNames = cursor.getColumnNames();
-
-        cursor.close();
     }
 
     public String tableToString(String tableName, boolean headers) {
@@ -85,38 +71,43 @@ public class DataManager {
     }
 
     public Food foodFromCursor(Cursor cursor) {
-        int DBID = cursor.getInt(0);
-        String name = cursor.getString(2);
+        int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
+        String name = cursor.getString(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_NAME));
         IntOrNA referenceServing_mg;
         IntOrNA kcal;
         IntOrNA carb_mg;
         IntOrNA fat_mg;
         IntOrNA protein_mg;
 
-        if (cursor.isNull(3)) {
+        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_REF_SERVING_MG))) {
             referenceServing_mg = new IntOrNA(0, true);
         } else {
-            referenceServing_mg = new IntOrNA(cursor.getInt(3));
+            referenceServing_mg = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_REF_SERVING_MG)));
         }
-        if (cursor.isNull(4)) {
+        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_KCAL))) {
             kcal = new IntOrNA(0, true);
         } else {
-            kcal = new IntOrNA(cursor.getInt(4));
+            kcal = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_KCAL)));
         }
-        if (cursor.isNull(5)) {
+        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_CARB_MG))) {
             carb_mg = new IntOrNA(0, true);
         } else {
-            carb_mg = new IntOrNA(cursor.getInt(5));
+            carb_mg = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_CARB_MG)));
         }
-        if (cursor.isNull(6)) {
+        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_FAT_MG))) {
             fat_mg = new IntOrNA(0, true);
         } else {
-            fat_mg = new IntOrNA(cursor.getInt(6));
+            fat_mg = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_FAT_MG)));
         }
-        if (cursor.isNull(7)) {
+        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_PROTEIN_MG))) {
             protein_mg = new IntOrNA(0, true);
         } else {
-            protein_mg = new IntOrNA(cursor.getInt(7));
+            protein_mg = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_PROTEIN_MG)));
         }
 
         return new Food(DBID, name, referenceServing_mg, kcal, carb_mg, fat_mg, protein_mg);
@@ -214,7 +205,8 @@ public class DataManager {
     }
 
     public Food getFood(int dbid) {
-        Cursor cursor = database.query(FoodEntry.TABLE_NAME, foodColNames,
+        Cursor cursor = database.query(FoodEntry.TABLE_NAME,
+                null, // all columns
                 FoodEntry._ID + " = " + dbid,
                 null, null, null, null);
         cursor.moveToFirst();
@@ -228,7 +220,7 @@ public class DataManager {
         List<Food> foods = new ArrayList<>();
 
         Cursor cursor = database.query(FoodEntry.TABLE_NAME,
-                foodColNames,
+                null, // all columns
                 FoodEntry._ACTIVE + " = 1",
                 null, // selection args
                 null, // group by
@@ -270,25 +262,27 @@ public class DataManager {
     }
 
     public Record recordFromCursor(Cursor cursor) {
-        int DBID = cursor.getInt(0);
-        String date = cursor.getString(2);
+        int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
+        String date = cursor.getString(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_DATE));
 
-        int foodID = cursor.getInt(3);
+        int foodID = cursor.getInt(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_FOOD_ID));
         Food food = getFood(foodID);
 
         int unitID;
-        if (cursor.isNull(4)) {
+        if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID))) {
             unitID = -1;
         } else {
-            unitID = cursor.getInt(4);
+            unitID = cursor.getInt(
+                    cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID));
         }
         Unit unit = getUnit(unitID);
 
         IntOrNA quantity_cents;
-        if (cursor.isNull(5)) {
+        if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS))) {
             quantity_cents = new IntOrNA(0, true);
         } else {
-            quantity_cents = new IntOrNA(cursor.getInt(5));
+            quantity_cents = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS)));
         }
 
         String foodName = food.name;
@@ -338,7 +332,6 @@ public class DataManager {
             values.put(RecordEntry.COLUMN_NAME_UNIT_ID, unit.DBID);
         }
 
-        long insertID = -1;
         try {
             database.update(RecordEntry.TABLE_NAME, values, RecordEntry._ID + " = " + dbid, null);
         } catch(SQLException e) {
@@ -365,7 +358,8 @@ public class DataManager {
     }
 
     public Record getRecord(int dbid) {
-        Cursor cursor = database.query(RecordEntry.TABLE_NAME, recordColNames,
+        Cursor cursor = database.query(RecordEntry.TABLE_NAME,
+                null, // all columns
                 RecordEntry._ID + " = " + dbid,
                 null, null, null, null);
         cursor.moveToFirst();
@@ -379,7 +373,7 @@ public class DataManager {
         List<Record> records = new ArrayList<>();
 
         Cursor cursor = database.query(RecordEntry.TABLE_NAME,
-                recordColNames,
+                null, // all columns
                 RecordEntry._ACTIVE + " = 1",
                 null, null, null, null);
 
@@ -398,7 +392,7 @@ public class DataManager {
         List<Record> records = new ArrayList<>();
 
         Cursor cursor = database.query(RecordEntry.TABLE_NAME,
-                recordColNames,
+                null, // all columns
                 RecordEntry.COLUMN_NAME_DATE + " = ? AND " +
                 RecordEntry._ACTIVE + " = 1",
                 new String[] {date}, null, null, null);
@@ -435,14 +429,15 @@ public class DataManager {
     }
 
     public Unit unitFromCursor(Cursor cursor) {
-        int DBID = cursor.getInt(0);
-        int foodID = cursor.getInt(2);
-        String name = cursor.getString(3);
+        int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
+        int foodID = cursor.getInt(cursor.getColumnIndex(UnitEntry.COLUMN_NAME_FOOD_ID));
+        String name = cursor.getString(cursor.getColumnIndex(UnitEntry.COLUMN_NAME_NAME));
         IntOrNA amount_mg;
-        if (cursor.isNull(4)) {
+        if (cursor.isNull(cursor.getColumnIndex(UnitEntry.COLUMN_NAME_AMOUNT_MG))) {
             amount_mg = new IntOrNA(0, true);
         } else {
-            amount_mg = new IntOrNA(cursor.getInt(4));
+            amount_mg = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(UnitEntry.COLUMN_NAME_AMOUNT_MG)));
         }
 
         return new Unit(DBID, foodID, name, amount_mg);
@@ -486,7 +481,8 @@ public class DataManager {
             return Unit.G;
         }
 
-        Cursor cursor = database.query(UnitEntry.TABLE_NAME, unitColNames,
+        Cursor cursor = database.query(UnitEntry.TABLE_NAME,
+                null, // all columns
                 UnitEntry._ID + " = " + dbid,
                 null, null, null, null);
         cursor.moveToFirst();
@@ -506,12 +502,12 @@ public class DataManager {
         Cursor cursor;
         if (includeHidden) {
             cursor = database.query(UnitEntry.TABLE_NAME,
-                    unitColNames,
+                    null, // all columns
                     UnitEntry.COLUMN_NAME_FOOD_ID + " = ?",
                     new String[] {"" + food.DBID}, null, null, null);
         } else {
             cursor = database.query(UnitEntry.TABLE_NAME,
-                    unitColNames,
+                    null, // all columns
                     UnitEntry.COLUMN_NAME_FOOD_ID + " = ? AND " +
                     UnitEntry._ACTIVE + " = 1",
                     new String[] {"" + food.DBID}, null, null, null);
