@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -24,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     FoodEntry._ID + " INTEGER PRIMARY KEY, " +
                     FoodEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_PACKAGE + " INTEGER DEFAULT 1, " +
+                    FoodEntry.COLUMN_NAME_TYPE + " INTEGER DEFAULT " + FoodEntry.TYPE_FOOD + ", " +
                     FoodEntry.COLUMN_NAME_NAME + " TEXT, " +
                     FoodEntry.COLUMN_NAME_RECIPE_SERVINGS + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_REF_SERVING_MG + " INTEGER, " +

@@ -242,6 +242,11 @@ public class DataManager {
         return getFoods(FoodEntry._ACTIVE + " = 1");
     }
 
+    public List<Food> getAllFoodsOfType(int type) {
+        return getFoods(FoodEntry._ACTIVE + " = 1" +
+                " AND " + FoodEntry.COLUMN_NAME_TYPE + " = " + type);
+    }
+
     public void deactivateFood(Food food) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry._ACTIVE, 0);

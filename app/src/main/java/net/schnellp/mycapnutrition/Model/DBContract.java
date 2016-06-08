@@ -21,6 +21,7 @@ public final class DBContract {
         public static final String _ID = DBContract._ID;
         public static final String _ACTIVE = DBContract._ACTIVE;
         public static final String COLUMN_NAME_PACKAGE = "package";
+        public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_REF_SERVING_MG = "reference_serving_mg";
         public static final String COLUMN_NAME_RECIPE_SERVINGS = "recipe_servings";
@@ -29,6 +30,9 @@ public final class DBContract {
         public static final String COLUMN_NAME_FAT_MG = "fat_mg";
         public static final String COLUMN_NAME_PROTEIN_MG = "protein_mg";
         public static final String COLUMN_NAME_LAST_USED = "last_used";
+
+        public static final int TYPE_FOOD = 0;
+        public static final int TYPE_RECIPE = 1;
     }
 
     public static abstract class UnitEntry implements BaseColumns {
