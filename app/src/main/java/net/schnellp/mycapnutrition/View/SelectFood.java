@@ -172,7 +172,14 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "title";
+            switch (position) {
+                case 0:
+                    return "Food";
+                case 1:
+                    return "Recipes";
+                default:
+                    return null;
+            }
         }
     }
 }
