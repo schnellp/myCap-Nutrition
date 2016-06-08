@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import net.schnellp.mycapnutrition.Model.DBContract;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Presenter.FoodSearchAdapter;
 import net.schnellp.mycapnutrition.R;
@@ -85,7 +86,17 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AddFood.class);
+                Intent intent;
+                switch (SelectFood.this.mViewPager.getCurrentItem()) {
+                    case DBContract.FoodEntry.FOOD_TYPE_SIMPLE:
+                        intent = new Intent(view.getContext(), AddFood.class);
+                        break;
+                    case DBContract.FoodEntry.FOOD_TYPE_RECIPE:
+                        intent = new Intent(view.getContext(), RecipeForm.class);
+                        break;
+                    default:
+                        return;
+                }
                 intent.putExtras(((SelectFood) view.getContext()).getIntent());
                 startActivity(intent);
             }

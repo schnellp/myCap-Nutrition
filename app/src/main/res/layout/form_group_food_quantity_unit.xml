@@ -14,7 +14,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvFoodName"
             android:textStyle="bold"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="default" />
 
         <ImageButton
             android:layout_width="wrap_content"
