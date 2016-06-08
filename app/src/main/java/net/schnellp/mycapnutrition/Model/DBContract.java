@@ -23,6 +23,7 @@ public final class DBContract {
         public static final String COLUMN_NAME_PACKAGE = "package";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_REF_SERVING_MG = "reference_serving_mg";
+        public static final String COLUMN_NAME_RECIPE_SERVINGS = "recipe_servings";
         public static final String COLUMN_NAME_KCAL = "kcal";
         public static final String COLUMN_NAME_CARB_MG = "carb_mg";
         public static final String COLUMN_NAME_FAT_MG = "fat_mg";
@@ -37,14 +38,6 @@ public final class DBContract {
         public static final String COLUMN_NAME_FOOD_ID = "food_id";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_AMOUNT_MG = "amount_mg";
-    }
-
-    public static abstract class RecipeEntry implements BaseColumns {
-        public static final String TABLE_NAME = "Recipe";
-        public static final String _ID = DBContract._ID;
-        public static final String _ACTIVE = DBContract._ACTIVE;
-        public static final String COLUMN_NAME_SERVINGS = "servings";
-        public static final String COLUMN_NAME_SERVING_NAME = "serving_name";
     }
 
     public static abstract class IngredientEntry implements BaseColumns {
