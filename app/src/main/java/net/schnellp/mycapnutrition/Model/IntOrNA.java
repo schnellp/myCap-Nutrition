@@ -4,6 +4,11 @@ public class IntOrNA {
     public final int val;
     public final boolean isNA;
 
+    public IntOrNA() {
+        this.val = 0;
+        this.isNA = true;
+    }
+
     public IntOrNA(int val) {
         this.val = val;
         this.isNA = false;

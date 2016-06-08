@@ -115,6 +115,13 @@ public class DataManager {
 
     public Food createFood(String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
+        return createFood(name, referenceServing_mg,
+                kcal, carb_mg, fat_mg, protein_mg, true);
+    }
+
+    public Food createFood(String name, IntOrNA referenceServing_mg,
+                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
+                           boolean active) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
         if (!referenceServing_mg.isNA) {
@@ -132,6 +139,8 @@ public class DataManager {
         if (!protein_mg.isNA) {
             values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
         }
+
+        values.put(FoodEntry._ACTIVE, active);
 
         long insertID = -1;
         try {
@@ -268,6 +277,68 @@ public class DataManager {
         database.delete(FoodEntry.TABLE_NAME,
                 FoodEntry._ID + " = " + food.DBID,
                 null);
+    }
+
+    public Ingredient ingredientFromCursor(Cursor cursor) {
+        int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
+
+        int recipeID = cursor.getInt(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_RECIPE_ID));
+        int foodID = cursor.getInt(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_FOOD_ID));
+        Food food = getFood(foodID);
+
+        int unitID;
+        if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID))) {
+            unitID = -1;
+        } else {
+            unitID = cursor.getInt(
+                    cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID));
+        }
+        Unit unit = getUnit(unitID);
+
+        IntOrNA quantity_cents;
+        if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS))) {
+            quantity_cents = new IntOrNA(0, true);
+        } else {
+            quantity_cents = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS)));
+        }
+
+        String foodName = food.name;
+        String unitName = unit.name;
+
+        return new Ingredient(DBID, recipeID, foodID, unitID, quantity_cents, foodName, unitName);
+    }
+
+    public Ingredient getIngredient(int dbid) {
+        Cursor cursor = database.query(IngredientEntry.TABLE_NAME,
+                null, // all columns
+                IngredientEntry._ID + " = " + dbid,
+                null, null, null, null);
+        cursor.moveToFirst();
+        Ingredient ingredient = ingredientFromCursor(cursor);
+        cursor.close();
+
+        return ingredient;
+    }
+
+    public List<Ingredient> getIngredientsForRecipe(Food recipe) {
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        Cursor cursor = database.query(IngredientEntry.TABLE_NAME,
+                null, // all columns
+                IngredientEntry.COLUMN_NAME_RECIPE_ID + " = ?",
+                new String[] {"" + recipe.DBID}, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Ingredient ingredient = ingredientFromCursor(cursor);
+            ingredients.add(ingredient);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        return ingredients;
     }
 
     public Record recordFromCursor(Cursor cursor) {
