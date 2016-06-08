@@ -21,7 +21,6 @@ public final class DBContract {
         public static final String _ID = DBContract._ID;
         public static final String _ACTIVE = DBContract._ACTIVE;
         public static final String COLUMN_NAME_PACKAGE = "package";
-        public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_REF_SERVING_MG = "reference_serving_mg";
         public static final String COLUMN_NAME_KCAL = "kcal";
@@ -29,9 +28,6 @@ public final class DBContract {
         public static final String COLUMN_NAME_FAT_MG = "fat_mg";
         public static final String COLUMN_NAME_PROTEIN_MG = "protein_mg";
         public static final String COLUMN_NAME_LAST_USED = "last_used";
-
-        public static final int FOOD_TYPE_SIMPLE = 0;
-        public static final int FOOD_TYPE_RECIPE = 1;
     }
 
     public static abstract class UnitEntry implements BaseColumns {
@@ -43,13 +39,21 @@ public final class DBContract {
         public static final String COLUMN_NAME_AMOUNT_MG = "amount_mg";
     }
 
-    public static abstract class RecipeFoodEntry implements BaseColumns {
-        public static final String TABLE_NAME = "RecipeFood";
+    public static abstract class RecipeEntry implements BaseColumns {
+        public static final String TABLE_NAME = "Recipe";
+        public static final String _ID = DBContract._ID;
+        public static final String _ACTIVE = DBContract._ACTIVE;
+        public static final String COLUMN_NAME_SERVINGS = "servings";
+        public static final String COLUMN_NAME_SERVING_NAME = "serving_name";
+    }
+
+    public static abstract class IngredientEntry implements BaseColumns {
+        public static final String TABLE_NAME = "Ingredient";
         public static final String _ID = DBContract._ID;
         public static final String COLUMN_NAME_RECIPE_ID = "recipe_id";
         public static final String COLUMN_NAME_FOOD_ID = "food_id";
         public static final String COLUMN_NAME_UNIT_ID = "unit_id";
-        public static final String COLUMN_NAME_FOOD_QUANTITY_CENTS = "food_quantity_cents";
+        public static final String COLUMN_NAME_QUANTITY_CENTS = "quantity_cents";
     }
 
     public static abstract class RecordEntry implements BaseColumns {

@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -24,8 +24,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     FoodEntry._ID + " INTEGER PRIMARY KEY, " +
                     FoodEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_PACKAGE + " INTEGER DEFAULT 1," +
-                    FoodEntry.COLUMN_NAME_TYPE + " INTEGER DEFAULT " +
-                        FoodEntry.FOOD_TYPE_SIMPLE + ", " +
                     FoodEntry.COLUMN_NAME_NAME + " TEXT, " +
                     FoodEntry.COLUMN_NAME_REF_SERVING_MG + " INTEGER, " +
                     FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
@@ -48,22 +46,26 @@ public class DBHelper extends SQLiteOpenHelper {
                     "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + ") " +
                     "ON DELETE RESTRICT)";
 
-    private static final String SQL_CREATE_TABLE_RECIPE_FOOD =
-            "CREATE TABLE " + RecipeFoodEntry.TABLE_NAME + " (" +
-                    RecipeFoodEntry._ID + " INTEGER PRIMARY KEY, " +
-                    RecipeFoodEntry.COLUMN_NAME_RECIPE_ID + " INTEGER, " +
-                    RecipeFoodEntry.COLUMN_NAME_FOOD_ID + " INTEGER, " +
-                    RecipeFoodEntry.COLUMN_NAME_UNIT_ID + " INTEGER, " +
-                    RecipeFoodEntry.COLUMN_NAME_FOOD_QUANTITY_CENTS + " INTEGER, " +
-                    "FOREIGN KEY (" + RecipeFoodEntry.COLUMN_NAME_RECIPE_ID + ") " +
-                    "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + ") " +
+    private static final String SQL_CREATE_TABLE_RECIPE =
+            "CREATE TABLE " + RecipeEntry.TABLE_NAME + " (" +
+                    RecipeEntry._ID + " INTEGER PRIMARY KEY, " +
+                    RecipeEntry._ACTIVE + " INTEGER DEFAULT 1, " +
+                    RecipeEntry.COLUMN_NAME_SERVINGS + " INTEGER, " +
+                    RecipeEntry.COLUMN_NAME_SERVING_NAME + " TEXT)";
+
+    private static final String SQL_CREATE_TABLE_INGREDIENT =
+            "CREATE TABLE " + IngredientEntry.TABLE_NAME + " (" +
+                    IngredientEntry._ID + " INTEGER PRIMARY KEY, " +
+                    IngredientEntry.COLUMN_NAME_RECIPE_ID + " INTEGER " +
+                    "REFERENCES " + RecipeEntry.TABLE_NAME + " (" + RecipeEntry._ID + ") " +
                     "ON DELETE CASCADE, " +
-                    "FOREIGN KEY (" + RecipeFoodEntry.COLUMN_NAME_FOOD_ID + ") " +
+                    IngredientEntry.COLUMN_NAME_FOOD_ID + " INTEGER " +
                     "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + ") " +
                     "ON DELETE RESTRICT, " +
-                    "FOREIGN KEY (" + RecipeFoodEntry.COLUMN_NAME_UNIT_ID + ") " +
+                    IngredientEntry.COLUMN_NAME_UNIT_ID + " INTEGER " +
                     "REFERENCES " + UnitEntry.TABLE_NAME + " (" + UnitEntry._ID + ") " +
-                    "ON DELETE RESTRICT)";
+                    "ON DELETE RESTRICT, " +
+                    IngredientEntry.COLUMN_NAME_QUANTITY_CENTS + " INTEGER)";
 
     private static final String SQL_CREATE_TABLE_RECORD =
             "CREATE TABLE " + RecordEntry.TABLE_NAME + " (" +
@@ -86,8 +88,10 @@ public class DBHelper extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + FoodEntry.TABLE_NAME;
     private static final String SQL_DELETE_UNIT =
             "DROP TABLE IF EXISTS " + UnitEntry.TABLE_NAME;
-    private static final String SQL_DELETE_RECIPE_FOOD =
-            "DROP TABLE IF EXISTS " + RecipeFoodEntry.TABLE_NAME;
+    private static final String SQL_DELETE_RECIPE =
+            "DROP TABLE IF EXISTS " + RecipeEntry.TABLE_NAME;
+    private static final String SQL_DELETE_INGREDIENT =
+            "DROP TABLE IF EXISTS " + IngredientEntry.TABLE_NAME;
     private static final String SQL_DELETE_RECORD =
             "DROP TABLE IF EXISTS " + RecordEntry.TABLE_NAME;
 
@@ -107,14 +111,16 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_INSERT_DEFAULT_PACKAGE);
         db.execSQL(SQL_CREATE_TABLE_FOOD);
         db.execSQL(SQL_CREATE_TABLE_UNIT);
-        db.execSQL(SQL_CREATE_TABLE_RECIPE_FOOD);
+        db.execSQL(SQL_CREATE_TABLE_RECIPE);
+        db.execSQL(SQL_CREATE_TABLE_INGREDIENT);
         db.execSQL(SQL_CREATE_TABLE_RECORD);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_RECORD);
-        db.execSQL(SQL_DELETE_RECIPE_FOOD);
+        db.execSQL(SQL_DELETE_INGREDIENT);
+        db.execSQL(SQL_DELETE_RECIPE);
         db.execSQL(SQL_DELETE_UNIT);
         db.execSQL(SQL_DELETE_FOOD);
         db.execSQL(SQL_DELETE_PACKAGE);

@@ -37,6 +37,11 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         public static final String CREATE_RECORD = "CREATE_RECORD";
     }
 
+    private static class Page {
+        public static final int FOOD = 0;
+        public static final int RECIPES = 1;
+    }
+
     private Menu optionsMenu;
 
     private FoodListFragment tempFragment;
@@ -88,10 +93,10 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
             public void onClick(View view) {
                 Intent intent;
                 switch (SelectFood.this.mViewPager.getCurrentItem()) {
-                    case DBContract.FoodEntry.FOOD_TYPE_SIMPLE:
+                    case Page.FOOD:
                         intent = new Intent(view.getContext(), AddFood.class);
                         break;
-                    case DBContract.FoodEntry.FOOD_TYPE_RECIPE:
+                    case Page.RECIPES:
                         intent = new Intent(view.getContext(), RecipeForm.class);
                         break;
                     default:

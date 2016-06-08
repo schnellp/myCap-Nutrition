@@ -9,18 +9,10 @@
     tools:context="net.schnellp.mycapnutrition.View.RecipeForm"
     tools:showIn="@layout/activity_recipe_form">
 
-    <ScrollView
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/llFormGroupContainer">
-
-        </LinearLayout>
-
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:id="@+id/lvIngredients">
+    </ListView>
 
 </LinearLayout>

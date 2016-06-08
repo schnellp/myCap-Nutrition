@@ -34,7 +34,7 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
 
     public FoodSearchAdapter(FoodListFragment selectFood, int foodType) {
         this.selectFood = selectFood;
-        addAll(MyCapNutrition.dataManager.getAllFoodsOfType(foodType));
+        addAll(MyCapNutrition.dataManager.getAllFoods());
         originalItems.addAll(items);
         inflater = LayoutInflater.from(selectFood.getContext());
     }
