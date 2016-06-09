@@ -289,7 +289,7 @@ public class DataManager {
         return recipe;
     }
 
-    public Food compileRecipe(int dbid, IntOrNA servings) {
+    public Food compileRecipe(int dbid, String name, IntOrNA servings) {
 
         // get cursor of all ingredients for recipe
         String query = "SELECT " +
@@ -388,6 +388,8 @@ public class DataManager {
                 createUnit(dbid, "1 serving", dTotalMg.divide(servings.toDoubleOrNA()).round());
             }
         }
+
+        values.put(FoodEntry.COLUMN_NAME_NAME, name);
 
         if (!dTotalKcal.isNA) {
             values.put(FoodEntry.COLUMN_NAME_KCAL,

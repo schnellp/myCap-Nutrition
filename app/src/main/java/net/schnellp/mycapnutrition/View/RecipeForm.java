@@ -3,10 +3,14 @@ package net.schnellp.mycapnutrition.View;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.Model.Food;
@@ -31,6 +35,11 @@ public class RecipeForm extends AppCompatActivity {
         recipe = MyCapNutrition.dataManager.createBlankRecipe();
 
         lvIngredients = (ListView) findViewById(R.id.lvIngredients);
+
+        ViewGroup header = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.recipe_form_header, null);
+        lvIngredients.addHeaderView(header);
+
         Button footer = new Button(this);
         footer.setText("Add Ingredient");
         footer.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +68,10 @@ public class RecipeForm extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_submit:
-                MyCapNutrition.dataManager.compileRecipe(recipe.DBID, new IntOrNA(1));
+                String name = ((EditText) findViewById(R.id.recipe_name)).getText().toString();
+                IntOrNA servings = new IntOrNA(((EditText) findViewById(R.id.recipe_servings))
+                        .getText().toString());
+                MyCapNutrition.dataManager.compileRecipe(recipe.DBID, name, servings);
                 finish();
                 return true;
             default:
