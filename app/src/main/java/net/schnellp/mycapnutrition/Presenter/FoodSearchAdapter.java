@@ -20,6 +20,7 @@ import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.View.FoodListFragment;
+import net.schnellp.mycapnutrition.View.RecipeForm;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;
@@ -174,27 +175,46 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
                 case Objective.LIST_UNITS:
                     intent = new Intent(selectFood.getActivity(), UnitList.class);
                     break;
+
                 case Objective.SWITCH_RECORD_FOOD:
-                    intent = new Intent(selectFood.getActivity(), RecordView.class);
-                    break;
                 case Objective.CREATE_RECORD:
+                case Objective.CREATE_INGREDIENT:
                     intent = new Intent(selectFood.getActivity(), RecordView.class);
                     break;
-                default:
+
+                case Objective.LIST_FOODS:
                     return;
+
+                default:
+                    throw new RuntimeException("Unexpected objective: " +
+                            foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1));
             }
 
             Food food = getTypedItem(position);
             intent.putExtras(((SelectFood) view.getContext()).getIntent());
             intent.putExtra("food_dbid", food.DBID);
 
-            if (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1) ==
-                    Objective.SWITCH_RECORD_FOOD) {
-                selectFood.getActivity().setResult(Activity.RESULT_OK, intent);
-                selectFood.getActivity().finish();
-            } else if (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1) !=
-                    Objective.LIST_FOODS) {
-                selectFood.startActivity(intent);
+            switch (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+
+                // return a result
+                case Objective.SWITCH_RECORD_FOOD:
+                    selectFood.getActivity().setResult(Activity.RESULT_OK, intent);
+                    selectFood.getActivity().finish();
+                    break;
+
+                // continue to next activity in flow
+                case Objective.CREATE_RECORD:
+                case Objective.LIST_UNITS:
+                case Objective.CREATE_INGREDIENT:
+                    selectFood.startActivity(intent);
+                    break;
+
+                // do nothing
+                case Objective.LIST_FOODS:
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected objective: " +
+                            foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1));
             }
         }
     }

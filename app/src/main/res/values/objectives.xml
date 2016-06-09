@@ -5,4 +5,5 @@
     <integer name="objective_list_foods">2</integer>
     <integer name="objective_list_units">3</integer>
     <integer name="objective_create_ingredient">4</integer>
+    <integer name="objective_edit_record">5</integer>
 </resources>

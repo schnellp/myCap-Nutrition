@@ -45,8 +45,8 @@ public class IngredientListAdapter extends MultiSelectAdapter<Ingredient> {
 
         Ingredient ingredient = getTypedItem(position);
         holder.tvName.setText(ingredient.foodName);
-        holder.tvDetails.setText(ingredient.unitName + " x " +
-                ingredient.quantity_cents.toDoubleOrNA().divide(100));
+        holder.tvDetails.setText(ingredient.quantity_cents.toDoubleOrNA().divide(100) +
+                " x " + ingredient.unitName);
 
         holder.llContainer.setChecked(isItemChecked(position));
 

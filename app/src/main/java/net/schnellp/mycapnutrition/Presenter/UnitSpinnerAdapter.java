@@ -55,8 +55,6 @@ public class UnitSpinnerAdapter extends BaseAdapter {
         TextView tv = (TextView) convertView.findViewById(R.id.spinnerText);
         tv.setText(units.get(position).name);
 
-        System.out.println(convertView);
-
         return convertView;
     }
 
@@ -68,8 +66,6 @@ public class UnitSpinnerAdapter extends BaseAdapter {
 
         TextView tv = (TextView) convertView.findViewById(R.id.spinnerText);
         tv.setText(units.get(position).name);
-
-        System.out.println(convertView);
 
         return convertView;
     }

@@ -287,26 +287,50 @@ public class DataManager {
         Food food = getFood(foodID);
 
         int unitID;
-        if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID))) {
+        if (cursor.isNull(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_UNIT_ID))) {
             unitID = -1;
         } else {
             unitID = cursor.getInt(
-                    cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID));
+                    cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_UNIT_ID));
         }
         Unit unit = getUnit(unitID);
 
         IntOrNA quantity_cents;
-        if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS))) {
+        if (cursor.isNull(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_QUANTITY_CENTS))) {
             quantity_cents = new IntOrNA(0, true);
         } else {
             quantity_cents = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS)));
+                    cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_QUANTITY_CENTS)));
         }
 
         String foodName = food.name;
         String unitName = unit.name;
 
         return new Ingredient(DBID, recipeID, foodID, unitID, quantity_cents, foodName, unitName);
+    }
+
+    public Ingredient createIngredient(int recipeID, int foodID, int unitID,
+                                       IntOrNA quantity_cents) {
+
+        ContentValues values = new ContentValues();
+        values.put(IngredientEntry.COLUMN_NAME_RECIPE_ID, recipeID);
+        values.put(IngredientEntry.COLUMN_NAME_FOOD_ID, foodID);
+        if (unitID != -1) {
+            values.put(IngredientEntry.COLUMN_NAME_UNIT_ID, unitID);
+        }
+        if (!quantity_cents.isNA) {
+            values.put(IngredientEntry.COLUMN_NAME_QUANTITY_CENTS, quantity_cents.toString());
+        }
+
+        long insertID = -1;
+        try {
+            insertID = database.insertOrThrow(IngredientEntry.TABLE_NAME, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return getIngredient((int) insertID);
     }
 
     public Ingredient getIngredient(int dbid) {
@@ -397,8 +421,6 @@ public class DataManager {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-
-        System.out.println("SAVE " + insertID);
 
         return getRecord((int) insertID);
     }

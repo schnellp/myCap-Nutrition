@@ -38,12 +38,25 @@ public class RecipeForm extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), SelectFood.class);
                 intent.putExtra(Objective.INTENT_EXTRA_NAME,
                         Objective.CREATE_INGREDIENT);
-                startActivity(intent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.putExtra("recipe_dbid", recipe.DBID);
+                startActivityForResult(intent, Objective.CREATE_INGREDIENT);
             }
         });
         lvIngredients.addFooterView(footer);
 
         adapter = new IngredientListAdapter(this, recipe);
         lvIngredients.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == Objective.CREATE_INGREDIENT) {
+            // Make sure the request was successful
+            System.out.println("CREATE_INGREDIENT");
+            adapter = new IngredientListAdapter(this, recipe);
+            lvIngredients.setAdapter(adapter);
+        }
     }
 }

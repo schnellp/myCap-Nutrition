@@ -80,22 +80,39 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     public void saveRecord(View v) {
+
+        Intent foundingIntent = getIntent();
+
         EditText et = (EditText) findViewById(R.id.etRecordServing);
-        String date = getIntent().getStringExtra("DATE");
         IntOrNA quantity_cents = (new DoubleOrNA(et.getText().toString())).multiply(100).round();
+
         Spinner unitSpinner = (Spinner) findViewById(R.id.spUnit);
         Unit unit = ((Unit) unitSpinner.getSelectedItem());
 
-        if (getIntent().hasExtra("record_dbid")) {
-            MyCapNutrition.dataManager.updateRecord(getIntent().getIntExtra("record_dbid", -1),
-                    food, quantity_cents, unit);
-            finish();
-        } else {
-            MyCapNutrition.dataManager.createRecord(date, food, quantity_cents, unit);
+        switch (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+            case Objective.CREATE_RECORD:
+                String date = getIntent().getStringExtra("DATE");
+                MyCapNutrition.dataManager.createRecord(date, food, quantity_cents, unit);
 
-            Intent intent = new Intent(this, JournalDayView.class);
-            intent.putExtra("DATE", date);
-            startActivity(intent);
+                Intent intent = new Intent(this, JournalDayView.class);
+                intent.putExtra("DATE", date);
+                startActivity(intent);
+                break;
+            case Objective.EDIT_RECORD:
+                MyCapNutrition.dataManager.updateRecord(getIntent().getIntExtra("record_dbid", -1),
+                        food, quantity_cents, unit);
+                finish();
+                break;
+            case Objective.CREATE_INGREDIENT:
+                int recipeID = foundingIntent.getIntExtra("recipe_dbid", -1);
+                MyCapNutrition.dataManager.createIngredient(recipeID, food.DBID, unit.DBID,
+                        quantity_cents);
+                setResult(RecipeForm.RESULT_OK, null);
+                finish();
+                break;
+            default:
+                throw new RuntimeException("Unexpected objective: " +
+                        foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1));
         }
     }
 
