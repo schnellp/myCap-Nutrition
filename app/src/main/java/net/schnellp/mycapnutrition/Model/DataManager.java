@@ -119,15 +119,6 @@ public class DataManager {
                 kcal, carb_mg, fat_mg, protein_mg, true, FoodEntry.TYPE_FOOD);
     }
 
-    public Food createBlankRecipe() {
-        IntOrNA na = new IntOrNA();
-        Food recipe = createFood("New Recipe", na,
-                na, na, na, na,
-                false, FoodEntry.TYPE_RECIPE);
-        System.out.println("create blank recipe " + recipe.DBID);
-        return recipe;
-    }
-
     public Food createFood(String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
                            boolean active, int type) {
@@ -289,9 +280,134 @@ public class DataManager {
                 null);
     }
 
-    public void activateRecipe(int dbid) {
+    public Food createBlankRecipe() {
+        IntOrNA na = new IntOrNA();
+        Food recipe = createFood("New Recipe", na,
+                na, na, na, na,
+                false, FoodEntry.TYPE_RECIPE);
+        System.out.println("create blank recipe " + recipe.DBID);
+        return recipe;
+    }
+
+    public Food compileRecipe(int dbid, IntOrNA servings) {
+
+        // get cursor of all ingredients for recipe
+        String query = "SELECT " +
+                FoodEntry.TABLE_NAME + "." + FoodEntry.COLUMN_NAME_NAME + ", " +
+                IngredientEntry.COLUMN_NAME_QUANTITY_CENTS + ", " +
+                FoodEntry.COLUMN_NAME_REF_SERVING_MG + ", " +
+                FoodEntry.COLUMN_NAME_KCAL + ", " +
+                FoodEntry.COLUMN_NAME_CARB_MG + ", " +
+                FoodEntry.COLUMN_NAME_FAT_MG + ", " +
+                FoodEntry.COLUMN_NAME_PROTEIN_MG + ", " +
+                UnitEntry.COLUMN_NAME_AMOUNT_MG + " " +
+                "FROM " +
+                IngredientEntry.TABLE_NAME + ", " +
+                FoodEntry.TABLE_NAME + ", " +
+                UnitEntry.TABLE_NAME + " " +
+                "WHERE " +
+                IngredientEntry.TABLE_NAME + "." + IngredientEntry.COLUMN_NAME_RECIPE_ID + "=" +
+                dbid + " " +
+                "AND " +
+                IngredientEntry.TABLE_NAME + "." + IngredientEntry.COLUMN_NAME_UNIT_ID + "=" +
+                UnitEntry.TABLE_NAME + "." + UnitEntry._ID + " " +
+                "AND " +
+                UnitEntry.TABLE_NAME + "." + UnitEntry.COLUMN_NAME_FOOD_ID + "=" +
+                FoodEntry.TABLE_NAME + "." + FoodEntry._ID;
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        // add up nutritional information from ingredients
+        DoubleOrNA dTotalMg = new DoubleOrNA(0);
+        DoubleOrNA dTotalKcal = new DoubleOrNA(0);
+        DoubleOrNA dTotalCarb_mg = new DoubleOrNA(0);
+        DoubleOrNA dTotalFat_mg = new DoubleOrNA(0);
+        DoubleOrNA dTotalProtein_mg = new DoubleOrNA(0);
+
+        DoubleOrNA dMg;
+        DoubleOrNA dRefServings;
+
+        cursor.moveToFirst();
+
+        System.out.println();
+        while (!cursor.isAfterLast()) {
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                System.out.print(cursor.getString(i) + ", ");
+            }
+            System.out.println();
+            dMg = ((new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
+                    IngredientEntry.COLUMN_NAME_QUANTITY_CENTS)))).divide(100))
+                    .multiply(
+                            (new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
+                                    UnitEntry.COLUMN_NAME_AMOUNT_MG)))));
+            System.out.println(dMg.toString());
+
+            dRefServings = dMg.divide(
+                    (new DoubleOrNA(
+                            cursor.getString(cursor.getColumnIndex(
+                                    FoodEntry.COLUMN_NAME_REF_SERVING_MG))))
+            );
+            System.out.println(dRefServings);
+
+            dTotalMg = dTotalMg.add(dMg);
+            dTotalKcal = dTotalKcal.add(dRefServings.multiply(
+                    new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
+                            FoodEntry.COLUMN_NAME_KCAL
+                    )))
+            ));
+            System.out.println(dTotalKcal);
+            dTotalCarb_mg = dTotalCarb_mg.add(dRefServings.multiply(
+                    new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
+                            FoodEntry.COLUMN_NAME_CARB_MG
+                    )))
+            ));
+            dTotalFat_mg = dTotalFat_mg.add(dRefServings.multiply(
+                    new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
+                            FoodEntry.COLUMN_NAME_FAT_MG
+                    )))
+            ));
+            dTotalProtein_mg = dTotalProtein_mg.add(dRefServings.multiply(
+                    new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
+                            FoodEntry.COLUMN_NAME_PROTEIN_MG
+                    )))
+            ));
+
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        // update recipe record
+
         ContentValues values = new ContentValues();
-        values.put(RecordEntry._ACTIVE, 1);
+
+        values.put(FoodEntry._ACTIVE, 1);
+        if (!servings.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS, servings.toString());
+            if (!dTotalMg.isNA) {
+                createUnit(dbid, "1 serving", dTotalMg.divide(servings.toDoubleOrNA()).round());
+            }
+        }
+
+        if (!dTotalKcal.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_KCAL,
+                    dTotalKcal.round().toString());
+        }
+
+        if (!dTotalCarb_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_CARB_MG,
+                    dTotalCarb_mg.round().toString());
+        }
+
+        if (!dTotalFat_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_FAT_MG,
+                    dTotalFat_mg.round().toString());
+        }
+
+        if (!dTotalProtein_mg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG,
+                    dTotalProtein_mg.round().toString());
+        }
 
         try {
             database.update(FoodEntry.TABLE_NAME, values,
@@ -300,7 +416,7 @@ public class DataManager {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-        System.out.println("activate recipe " + dbid);
+        return getFood(dbid);
     }
 
     public Ingredient ingredientFromCursor(Cursor cursor) {
@@ -569,9 +685,9 @@ public class DataManager {
         return new Unit(DBID, foodID, name, amount_mg);
     }
 
-    public Unit createUnit(Food food, String name, IntOrNA amount_mg) {
+    public Unit createUnit(int foodID, String name, IntOrNA amount_mg) {
         ContentValues values = new ContentValues();
-        values.put(UnitEntry.COLUMN_NAME_FOOD_ID, food.DBID);
+        values.put(UnitEntry.COLUMN_NAME_FOOD_ID, foodID);
         values.put(UnitEntry.COLUMN_NAME_NAME, name);
         if (!amount_mg.isNA) { values.put(UnitEntry.COLUMN_NAME_AMOUNT_MG, amount_mg.val); }
 
@@ -584,6 +700,10 @@ public class DataManager {
         }
 
         return getUnit((int) insertID);
+    }
+
+    public Unit createUnit(Food food, String name, IntOrNA amount_mg) {
+        return createUnit(food.DBID, name, amount_mg);
     }
 
     public Unit updateUnit(int dbid, Food food, String name, IntOrNA amount_mg) {

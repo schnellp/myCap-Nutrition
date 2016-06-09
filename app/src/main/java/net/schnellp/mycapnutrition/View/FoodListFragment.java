@@ -38,7 +38,6 @@ public class FoodListFragment extends Fragment {
     }
 
     public static FoodListFragment newInstance(int foodType) {
-        System.out.println("food type " + foodType);
         FoodListFragment fragment = new FoodListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_FOOD_TYPE, foodType);

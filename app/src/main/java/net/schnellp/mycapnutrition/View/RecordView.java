@@ -14,6 +14,7 @@ import android.widget.TextView;
 import net.schnellp.mycapnutrition.Model.DoubleOrNA;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.DataManager;
+import net.schnellp.mycapnutrition.Model.Ingredient;
 import net.schnellp.mycapnutrition.Model.IntOrNA;
 import net.schnellp.mycapnutrition.Model.Record;
 import net.schnellp.mycapnutrition.Model.Unit;
@@ -105,8 +106,10 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
                 break;
             case Objective.CREATE_INGREDIENT:
                 int recipeID = foundingIntent.getIntExtra("recipe_dbid", -1);
-                MyCapNutrition.dataManager.createIngredient(recipeID, food.DBID, unit.DBID,
+                Ingredient ing = MyCapNutrition.dataManager.createIngredient(recipeID, food.DBID, unit.DBID,
                         quantity_cents);
+                System.out.println("ing.recipe_id: " + ing.recipe_id);
+                System.out.println("ing.DBID: " + ing.DBID);
                 setResult(RecipeForm.RESULT_OK, null);
                 finish();
                 break;

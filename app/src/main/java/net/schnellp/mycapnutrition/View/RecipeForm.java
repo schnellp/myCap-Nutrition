@@ -59,7 +59,7 @@ public class RecipeForm extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_submit:
-                MyCapNutrition.dataManager.activateRecipe(recipe.DBID);
+                MyCapNutrition.dataManager.compileRecipe(recipe.DBID, new IntOrNA(1));
                 finish();
                 return true;
             default:
