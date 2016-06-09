@@ -285,7 +285,6 @@ public class DataManager {
         Food recipe = createFood("New Recipe", na,
                 na, na, na, na,
                 false, FoodEntry.TYPE_RECIPE);
-        System.out.println("create blank recipe " + recipe.DBID);
         return recipe;
     }
 
@@ -329,25 +328,18 @@ public class DataManager {
 
         cursor.moveToFirst();
 
-        System.out.println();
         while (!cursor.isAfterLast()) {
-            for (int i = 0; i < cursor.getColumnCount(); i++) {
-                System.out.print(cursor.getString(i) + ", ");
-            }
-            System.out.println();
             dMg = ((new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
                     IngredientEntry.COLUMN_NAME_QUANTITY_CENTS)))).divide(100))
                     .multiply(
                             (new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
                                     UnitEntry.COLUMN_NAME_AMOUNT_MG)))));
-            System.out.println(dMg.toString());
 
             dRefServings = dMg.divide(
                     (new DoubleOrNA(
                             cursor.getString(cursor.getColumnIndex(
                                     FoodEntry.COLUMN_NAME_REF_SERVING_MG))))
             );
-            System.out.println(dRefServings);
 
             dTotalMg = dTotalMg.add(dMg);
             dTotalKcal = dTotalKcal.add(dRefServings.multiply(
@@ -355,7 +347,7 @@ public class DataManager {
                             FoodEntry.COLUMN_NAME_KCAL
                     )))
             ));
-            System.out.println(dTotalKcal);
+
             dTotalCarb_mg = dTotalCarb_mg.add(dRefServings.multiply(
                     new DoubleOrNA(cursor.getString(cursor.getColumnIndex(
                             FoodEntry.COLUMN_NAME_CARB_MG
@@ -390,6 +382,11 @@ public class DataManager {
         }
 
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
+
+        if (!dTotalMg.isNA) {
+            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG,
+                    dTotalMg.round().toString());
+        }
 
         if (!dTotalKcal.isNA) {
             values.put(FoodEntry.COLUMN_NAME_KCAL,
