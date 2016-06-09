@@ -20,7 +20,6 @@ import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.View.FoodListFragment;
-import net.schnellp.mycapnutrition.View.RecipeForm;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;

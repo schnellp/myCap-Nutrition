@@ -128,6 +128,8 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
                                 snackbar1.show();
                             }
                         });
+                tempFragment = (FoodListFragment) mSectionsPagerAdapter.instantiateItem(
+                        mViewPager, mViewPager.getCurrentItem());
                 tempFoods = tempFragment.adapter.getCheckedItems();
                 tempPositions = tempFragment.adapter.getCheckedPositions();
                 tempFragment.adapter.deleteCheckedItems();

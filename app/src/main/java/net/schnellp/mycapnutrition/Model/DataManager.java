@@ -116,12 +116,21 @@ public class DataManager {
     public Food createFood(String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
         return createFood(name, referenceServing_mg,
-                kcal, carb_mg, fat_mg, protein_mg, true);
+                kcal, carb_mg, fat_mg, protein_mg, true, FoodEntry.TYPE_FOOD);
+    }
+
+    public Food createBlankRecipe() {
+        IntOrNA na = new IntOrNA();
+        Food recipe = createFood("New Recipe", na,
+                na, na, na, na,
+                false, FoodEntry.TYPE_RECIPE);
+        System.out.println("create blank recipe " + recipe.DBID);
+        return recipe;
     }
 
     public Food createFood(String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
-                           boolean active) {
+                           boolean active, int type) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
         if (!referenceServing_mg.isNA) {
@@ -141,6 +150,7 @@ public class DataManager {
         }
 
         values.put(FoodEntry._ACTIVE, active);
+        values.put(FoodEntry.COLUMN_NAME_TYPE, type);
 
         long insertID = -1;
         try {
@@ -277,6 +287,20 @@ public class DataManager {
         database.delete(FoodEntry.TABLE_NAME,
                 FoodEntry._ID + " = " + food.DBID,
                 null);
+    }
+
+    public void activateRecipe(int dbid) {
+        ContentValues values = new ContentValues();
+        values.put(RecordEntry._ACTIVE, 1);
+
+        try {
+            database.update(FoodEntry.TABLE_NAME, values,
+                    FoodEntry._ID + " = " + dbid, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+        System.out.println("activate recipe " + dbid);
     }
 
     public Ingredient ingredientFromCursor(Cursor cursor) {
