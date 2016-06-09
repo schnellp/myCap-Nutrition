@@ -47,6 +47,7 @@ public final class DBContract {
     public static abstract class IngredientEntry implements BaseColumns {
         public static final String TABLE_NAME = "Ingredient";
         public static final String _ID = DBContract._ID;
+        public static final String _ACTIVE = DBContract._ACTIVE;
         public static final String COLUMN_NAME_RECIPE_ID = "recipe_id";
         public static final String COLUMN_NAME_FOOD_ID = "food_id";
         public static final String COLUMN_NAME_UNIT_ID = "unit_id";

@@ -308,13 +308,15 @@ public class DataManager {
                 FoodEntry.TABLE_NAME + ", " +
                 UnitEntry.TABLE_NAME + " " +
                 "WHERE " +
-                IngredientEntry.TABLE_NAME + "." + IngredientEntry.COLUMN_NAME_RECIPE_ID + "=" +
+                IngredientEntry.TABLE_NAME + "." + IngredientEntry.COLUMN_NAME_RECIPE_ID + " = " +
                 dbid + " " +
                 "AND " +
-                IngredientEntry.TABLE_NAME + "." + IngredientEntry.COLUMN_NAME_UNIT_ID + "=" +
+                IngredientEntry.TABLE_NAME + "." + IngredientEntry._ACTIVE + " = 1 " +
+                "AND " +
+                IngredientEntry.TABLE_NAME + "." + IngredientEntry.COLUMN_NAME_UNIT_ID + " = " +
                 UnitEntry.TABLE_NAME + "." + UnitEntry._ID + " " +
                 "AND " +
-                UnitEntry.TABLE_NAME + "." + UnitEntry.COLUMN_NAME_FOOD_ID + "=" +
+                UnitEntry.TABLE_NAME + "." + UnitEntry.COLUMN_NAME_FOOD_ID + " = " +
                 FoodEntry.TABLE_NAME + "." + FoodEntry._ID;
 
         Cursor cursor = database.rawQuery(query, null);

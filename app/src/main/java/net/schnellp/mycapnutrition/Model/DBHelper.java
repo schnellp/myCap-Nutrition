@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -51,6 +51,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_INGREDIENT =
             "CREATE TABLE " + IngredientEntry.TABLE_NAME + " (" +
                     IngredientEntry._ID + " INTEGER PRIMARY KEY, " +
+                    IngredientEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     IngredientEntry.COLUMN_NAME_RECIPE_ID + " INTEGER " +
                     "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + ") " +
                     "ON DELETE CASCADE, " +
