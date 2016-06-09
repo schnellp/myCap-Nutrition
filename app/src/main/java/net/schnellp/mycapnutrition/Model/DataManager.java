@@ -151,7 +151,10 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        return getFood((int) insertID);
+        Food food = getFood((int) insertID);
+        createUnit(food, "1 g", new IntOrNA(1000));
+
+        return food;
     }
 
     public boolean restoreFood(Food food) {
@@ -722,10 +725,6 @@ public class DataManager {
     }
 
     public Unit getUnit(int dbid) {
-        if (dbid == -1) {
-            return Unit.G;
-        }
-
         Cursor cursor = database.query(UnitEntry.TABLE_NAME,
                 null, // all columns
                 UnitEntry._ID + " = " + dbid,

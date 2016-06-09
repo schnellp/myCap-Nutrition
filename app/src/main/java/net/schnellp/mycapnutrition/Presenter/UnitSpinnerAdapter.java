@@ -24,7 +24,6 @@ public class UnitSpinnerAdapter extends BaseAdapter {
         activity = act;
 
         units = new ArrayList<>();
-        units.add(Unit.G);
         units.addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
         units.add(Unit.ADD);
 
