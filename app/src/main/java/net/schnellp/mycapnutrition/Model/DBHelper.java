@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -111,13 +111,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_RECORD);
-        db.execSQL(SQL_DELETE_INGREDIENT);
-        db.execSQL(SQL_DELETE_UNIT);
-        db.execSQL(SQL_DELETE_FOOD);
-        db.execSQL(SQL_DELETE_PACKAGE);
-
-        onCreate(db);
+        resetDatabase(db);
     }
 
     @Override
@@ -132,5 +126,23 @@ public class DBHelper extends SQLiteOpenHelper {
             // Enable foreign key constraints
             db.execSQL("PRAGMA foreign_keys=ON;");
         }
+    }
+
+    public void resetDatabase(SQLiteDatabase db) {
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=OFF;");
+        }
+        db.execSQL(SQL_DELETE_RECORD);
+        db.execSQL(SQL_DELETE_INGREDIENT);
+        db.execSQL(SQL_DELETE_UNIT);
+        db.execSQL(SQL_DELETE_FOOD);
+        db.execSQL(SQL_DELETE_PACKAGE);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
+
+        onCreate(db);
     }
 }

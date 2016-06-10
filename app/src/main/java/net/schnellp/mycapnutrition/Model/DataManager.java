@@ -16,9 +16,10 @@ import java.util.List;
 public class DataManager {
 
     private SQLiteDatabase database;
+    private DBHelper dbHelper;
 
     public DataManager(Context context) {
-        DBHelper dbHelper = new DBHelper(context);
+        dbHelper = new DBHelper(context);
 
         database = dbHelper.getWritableDatabase();
     }
@@ -875,8 +876,6 @@ public class DataManager {
     }
 
     public void clearData() {
-        database.delete(RecordEntry.TABLE_NAME, null, null);
-        database.delete(UnitEntry.TABLE_NAME, null, null);
-        database.delete(FoodEntry.TABLE_NAME, null, null);
+        dbHelper.resetDatabase(database);
     }
 }
