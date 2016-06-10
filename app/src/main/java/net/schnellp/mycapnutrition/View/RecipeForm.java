@@ -59,7 +59,8 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
         });
         lvIngredients.addFooterView(footer);
 
-        switch (getIntent().getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+        int objective = getIntent().getIntExtra(Objective.INTENT_EXTRA_NAME, -1);
+        switch (objective) {
             case Objective.CREATE_RECIPE:
                 recipe = MyCapNutrition.dataManager.createBlankRecipe();
                 break;
@@ -69,6 +70,8 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
                 ((EditText) findViewById(R.id.recipe_name)).setText(recipe.name);
                 ((EditText) findViewById(R.id.recipe_servings)).setText(recipe.servings.toString());
                 break;
+            default:
+                throw new RuntimeException("Invalid objective: " + objective);
         }
     }
 

@@ -87,15 +87,16 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
                 switch (SelectFood.this.mViewPager.getCurrentItem()) {
                     case Page.FOOD:
                         intent = new Intent(view.getContext(), AddFood.class);
+                        intent.putExtras(((SelectFood) view.getContext()).getIntent());
                         break;
                     case Page.RECIPES:
                         intent = new Intent(view.getContext(), RecipeForm.class);
+                        intent.putExtras(((SelectFood) view.getContext()).getIntent());
                         intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.CREATE_RECIPE);
                         break;
                     default:
                         return;
                 }
-                intent.putExtras(((SelectFood) view.getContext()).getIntent());
                 startActivity(intent);
             }
         });
