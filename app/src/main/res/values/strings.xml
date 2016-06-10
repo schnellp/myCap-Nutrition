@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">myCap Nutrition</string>
-    <string name="action_settings">Settings</string>
     <string name="section_format">Day %1$d</string>
     <string name="title_activity_record_view">Record Food</string>
     <string name="title_activity_select_food">Select Food</string>
@@ -8,6 +7,12 @@
     <string name="title_activity_add_unit">Add Unit</string>
     <string name="title_activity_unit_list">Unit List</string>
     <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Options Menus -->
+    <string name="action_settings">Settings</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_submit">Done</string>
 
     <!-- Strings related to Settings -->
 
@@ -54,5 +59,12 @@
     <string name="alert_negative_clear_data">Cancel</string>
     <string name="alert_positive_toast_clear_data">Database cleared.</string>
     <string name="alert_negative_toast_clear_data">Database preserved.</string>
+
+    <!-- Strings related to displaying numbers -->
+
+    <string name="kcal">kcal</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

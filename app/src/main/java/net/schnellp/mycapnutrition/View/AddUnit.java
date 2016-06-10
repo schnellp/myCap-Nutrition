@@ -19,6 +19,8 @@ import net.schnellp.mycapnutrition.R;
 
 public class AddUnit extends AppCompatActivity {
 
+    private Food food;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,17 @@ public class AddUnit extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        Food food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
+        int dbid = intent.getIntExtra("unit_dbid", -1);
+        if (dbid != -1) {
+            Unit unit = MyCapNutrition.dataManager.getUnit(dbid);
+            food = MyCapNutrition.dataManager.getFood(unit.foodID);
+
+            ((EditText) findViewById(R.id.etUnitName)).setText(unit.name);
+            ((EditText) findViewById(R.id.etUnitAmount)).setText(unit.amount_mg.toDoubleOrNA().divide(1000).toString());
+        } else {
+            food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
+        }
+
         TextView tv = (TextView) findViewById(R.id.tvUnitFoodName);
         tv.setText(food.name);
 
@@ -58,14 +70,20 @@ public class AddUnit extends AppCompatActivity {
 
         IntOrNA iAmount_mg = getDoubleOrNAFromForm(R.id.etUnitAmount).multiply(1000).round();
 
-        Food food = MyCapNutrition.dataManager.getFood(getIntent().getIntExtra("food_dbid", -1));
+        if (getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
+            MyCapNutrition.dataManager.updateUnit(getIntent().getIntExtra("unit_dbid", -1),
+                    food, name, iAmount_mg);
 
-        Unit unit = MyCapNutrition.dataManager.createUnit(food, name, iAmount_mg);
-
-        Intent intent = new Intent(this, RecordView.class);
-        intent.putExtra("unit_dbid", unit.DBID);
-        setResult(RESULT_OK, intent);
-        finish();
+            Intent intent = new Intent(this, UnitList.class);
+            setResult(RESULT_OK,intent);
+            finish();
+        } else {
+            Unit unit = MyCapNutrition.dataManager.createUnit(food, name, iAmount_mg);
+            Intent intent = new Intent(this, RecordView.class);
+            intent.putExtra("unit_dbid", unit.DBID);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     public void switchFood(View v) {

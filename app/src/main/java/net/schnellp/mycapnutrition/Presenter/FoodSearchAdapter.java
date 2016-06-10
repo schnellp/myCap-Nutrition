@@ -6,77 +6,99 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.Model.DBContract;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.View.AddFood;
+import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
+import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
+import net.schnellp.mycapnutrition.View.FoodListFragment;
+import net.schnellp.mycapnutrition.View.RecipeForm;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class FoodSearchAdapter extends BaseAdapter implements Filterable {
+public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filterable {
 
-    private SelectFood selectFood;
-    private ArrayList<Food> foodsOriginalValues = new ArrayList<>();
-    private ArrayList<Food> foodsDisplayedValues = new ArrayList<>();
+    private FoodListFragment selectFood;
+    private ArrayList<CheckableObject<Food>> originalItems = new ArrayList<>();
     LayoutInflater inflater;
+    private int foodType;
 
-    public FoodSearchAdapter(SelectFood selectFood, Context context) {
+    public FoodSearchAdapter(FoodListFragment selectFood, int foodType) {
         this.selectFood = selectFood;
-        foodsOriginalValues.addAll(MyCapNutrition.dataManager.getAllFoods());
-        foodsDisplayedValues.addAll(MyCapNutrition.dataManager.getAllFoods());
-        inflater = LayoutInflater.from(context);
-    }
-
-    @Override
-    public int getCount() {
-        return foodsDisplayedValues.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return foodsDisplayedValues.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+        addAll(MyCapNutrition.dataManager.getAllFoodsOfType(foodType));
+        originalItems.addAll(items);
+        inflater = LayoutInflater.from(selectFood.getContext());
+        this.foodType = foodType;
     }
 
     public void editItem(int position) {
-        SelectFood context = selectFood;
-        Food food = foodsDisplayedValues.get(position);
-        Intent intent = new Intent(context, AddFood.class);
+        FoodListFragment context = selectFood;
+        Food food = getTypedItem(position);
+
+        Intent intent;
+        switch (foodType) {
+            case DBContract.FoodEntry.TYPE_FOOD:
+                intent = new Intent(context.getActivity(), AddFood.class);
+                intent.putExtra("food_dbid", food.DBID);
+                break;
+            case DBContract.FoodEntry.TYPE_RECIPE:
+                intent = new Intent(context.getActivity(), RecipeForm.class);
+                intent.putExtra("recipe_dbid", food.DBID);
+                intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.EDIT_RECIPE);
+                break;
+            default:
+                return;
+        }
+
         intent.putExtra("CALLED_FOR_RESULT", true);
-        intent.putExtra("food_dbid", food.DBID);
+
         selectFood.startActivityForResult(intent, 1);
     }
 
-    public void restoreItem(Food food) {
-        MyCapNutrition.dataManager.restoreFood(food);
-        foodsOriginalValues.add(food);
+    public void deleteItem(int position) {
+        Food food = getTypedItem(position);
+        MyCapNutrition.dataManager.deactivateFood(food);
+        originalItems.remove(position);
         getFilter().filter("");
         notifyDataSetChanged();
     }
 
-    public void deleteItem(int position) {
-        Food food = foodsDisplayedValues.get(position);
-        MyCapNutrition.dataManager.deactivateFood(food);
-        foodsOriginalValues.remove(position);
+    public void deleteCheckedItems() {
+        ArrayList<Integer> checkedPositions = getCheckedPositions();
+        Collections.sort(checkedPositions, Collections.<Integer>reverseOrder());
+        for (Integer i : checkedPositions) {
+            deleteItem(i);
+        }
+    }
+
+    public void restoreItem(Food food, int position) {
+        MyCapNutrition.dataManager.restoreFood(food);
+        originalItems.add(position, new CheckableObject<>(food));
         getFilter().filter("");
         notifyDataSetChanged();
+    }
+
+    public void restoreItems(ArrayList<Food> foods, ArrayList<Integer> positions) {
+        for (int i = 0; i < foods.size(); i++) {
+            restoreItem(foods.get(i), positions.get(i));
+        }
     }
 
     private class ViewHolder {
-        LinearLayout llContainer;
+        ActivatedLinearLayout llContainer;
         TextView tvName, tvDetails;
     }
 
@@ -86,68 +108,21 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
         ViewHolder holder = null;
 
         if (convertView == null) {
-
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.foodrow, null);
-            holder.llContainer = (LinearLayout) convertView.findViewById(R.id.selectfoodrow);
+            holder.llContainer = (ActivatedLinearLayout) convertView.findViewById(R.id.selectfoodrow);
             holder.tvName = (TextView) convertView.findViewById(R.id.foodrowName);
             holder.tvDetails = (TextView) convertView.findViewById(R.id.foodrowDetails);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvName.setText(foodsDisplayedValues.get(position).name);
-        holder.tvDetails.setText(foodsDisplayedValues.get(position).kcal + " kcal / " +
-        foodsDisplayedValues.get(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
+        holder.tvName.setText(getTypedItem(position).name);
+        holder.tvDetails.setText(getTypedItem(position).kcal + " kcal / " +
+        getTypedItem(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
         " g");
 
-
-        holder.llContainer.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                Intent foundingIntent = ((SelectFood) v.getContext()).getIntent();
-                Intent intent;
-
-                switch (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)) {
-                    case SelectFood.Purpose.FILTER_UNITS:
-                        intent = new Intent(selectFood, UnitList.class);
-                        break;
-                    case SelectFood.Purpose.SWITCH_RECORD_FOOD:
-                        intent = new Intent(selectFood, RecordView.class);
-                        break;
-                    case SelectFood.Purpose.CREATE_RECORD:
-                        intent = new Intent(selectFood, RecordView.class);
-                        break;
-                    default:
-                        return;
-                }
-
-                Food food = foodsDisplayedValues.get(position);
-                intent.putExtras(((SelectFood) v.getContext()).getIntent());
-                intent.putExtra("food_dbid", food.DBID);
-
-                if (foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                        .equals(SelectFood.Purpose.SWITCH_RECORD_FOOD)) {
-                    selectFood.setResult(Activity.RESULT_OK, intent);
-                    selectFood.finish();
-                } else if (!foundingIntent.getStringExtra(SelectFood.Purpose.INTENT_EXTRA_NAME)
-                        .equals(SelectFood.Purpose.LIST)) {
-                    selectFood.startActivity(intent);
-                }
-            }
-        });
-
-        /*
-        holder.llContainer.setOnLongClickListener(new View.OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                v.setBackgroundColor(ContextCompat.getColor(v.getContext(), android.R.color.holo_purple));
-
-                return true;
-            }
-        });
-        */
+        holder.llContainer.setChecked(isItemChecked(position));
 
         return convertView;
     }
@@ -160,17 +135,17 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
 
-                foodsDisplayedValues = (ArrayList<Food>) results.values; // has the filtered values
+                items = (ArrayList<CheckableObject<Food>>) results.values; // has the filtered values
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                ArrayList<Food> FilteredArrList = new ArrayList<>();
+                ArrayList<CheckableObject<Food>> FilteredArrList = new ArrayList<>();
 
-                if (foodsOriginalValues == null) {
-                    foodsOriginalValues = new ArrayList<>(foodsDisplayedValues); // saves the original data in mOriginalValues
+                if (originalItems == null) {
+                    originalItems = new ArrayList<>(items); // saves the original data in mOriginalValues
                 }
 
                 /********
@@ -182,14 +157,14 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
                 if (constraint == null || constraint.length() == 0) {
 
                     // set the Original result to return
-                    results.count = foodsOriginalValues.size();
-                    results.values = foodsOriginalValues;
+                    results.count = originalItems.size();
+                    results.values = originalItems;
                 } else {
                     constraint = constraint.toString().toLowerCase();
-                    for (int i = 0; i < foodsOriginalValues.size(); i++) {
-                        String data = foodsOriginalValues.get(i).name;
+                    for (int i = 0; i < originalItems.size(); i++) {
+                        String data = (originalItems.get(i).object).name;
                         if (matches(data, constraint.toString())) {
-                            FilteredArrList.add(foodsOriginalValues.get(i));
+                            FilteredArrList.add(originalItems.get(i));
                         }
                     }
                     // set the Filtered result to return
@@ -204,6 +179,62 @@ public class FoodSearchAdapter extends BaseAdapter implements Filterable {
             }
         };
         return filter;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (getNumChecked() > 0) {
+            super.onItemClick(parent, view, position, id);
+        } else {
+            Intent foundingIntent = ((SelectFood) view.getContext()).getIntent();
+            Intent intent;
+
+            switch (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+                case Objective.LIST_UNITS:
+                    intent = new Intent(selectFood.getActivity(), UnitList.class);
+                    break;
+
+                case Objective.SWITCH_RECORD_FOOD:
+                case Objective.CREATE_RECORD:
+                case Objective.CREATE_INGREDIENT:
+                    intent = new Intent(selectFood.getActivity(), RecordView.class);
+                    break;
+
+                case Objective.LIST_FOODS:
+                    return;
+
+                default:
+                    throw new RuntimeException("Unexpected objective: " +
+                            foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1));
+            }
+
+            Food food = getTypedItem(position);
+            intent.putExtras(((SelectFood) view.getContext()).getIntent());
+            intent.putExtra("food_dbid", food.DBID);
+
+            switch (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+
+                // return a result
+                case Objective.SWITCH_RECORD_FOOD:
+                    selectFood.getActivity().setResult(Activity.RESULT_OK, intent);
+                    selectFood.getActivity().finish();
+                    break;
+
+                // continue to next activity in flow
+                case Objective.CREATE_RECORD:
+                case Objective.LIST_UNITS:
+                case Objective.CREATE_INGREDIENT:
+                    selectFood.startActivity(intent);
+                    break;
+
+                // do nothing
+                case Objective.LIST_FOODS:
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected objective: " +
+                            foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1));
+            }
+        }
     }
 
 }

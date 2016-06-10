@@ -4,6 +4,11 @@ public class DoubleOrNA {
     public final double val;
     public final boolean isNA;
 
+    public DoubleOrNA(double d) {
+        val = d;
+        isNA = false;
+    }
+
     public DoubleOrNA(String string) {
         if (string.equals("") || string.equals("null") || string.equals("NA")) {
             isNA = true;
@@ -46,6 +51,10 @@ public class DoubleOrNA {
         } else {
             return Double.toString(val);
         }
+    }
+
+    public DoubleOrNA add(DoubleOrNA d) {
+        return new DoubleOrNA(d.val + val, d.isNA | d.isNA);
     }
 
     public IntOrNA round() {

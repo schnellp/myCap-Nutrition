@@ -8,41 +8,43 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
-import net.schnellp.mycapnutrition.Model.Unit;
-import net.schnellp.mycapnutrition.MyCapNutrition;
-import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.Model.Ingredient;
 import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
-import net.schnellp.mycapnutrition.View.AddUnit;
-import net.schnellp.mycapnutrition.View.UnitList;
+import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Objective;
+import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.View.RecipeForm;
+import net.schnellp.mycapnutrition.View.RecordView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class UnitListAdapter extends MultiSelectAdapter<Unit> {
+public class IngredientListAdapter extends MultiSelectAdapter<Ingredient> {
 
-    private UnitList unitList;
+    private RecipeForm recipeForm;
     private LayoutInflater inflater;
 
-    public UnitListAdapter(Context context, Food food) {
-        addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
+    public IngredientListAdapter(Context context, Food recipe) {
+        addAll(MyCapNutrition.dataManager.getIngredientsForRecipe(recipe));
         inflater = LayoutInflater.from(context);
-        unitList = (UnitList) context;
+        recipeForm = (RecipeForm) context;
     }
 
     public void editItem(int position) {
-        UnitList context = unitList;
-        Unit unit = getTypedItem(position);
-        Intent intent = new Intent(context, AddUnit.class);
+        RecipeForm context = recipeForm;
+        Ingredient ingredient = getTypedItem(position);
+        Intent intent = new Intent(context, RecordView.class);
         intent.putExtra("CALLED_FOR_RESULT", true);
-        intent.putExtra("unit_dbid", unit.DBID);
-        unitList.startActivityForResult(intent, 1);
+        intent.putExtra("ingredient_dbid", ingredient.DBID);
+        intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.EDIT_INGREDIENT);
+        recipeForm.startActivityForResult(intent, 1);
     }
 
     public void deleteItem(int position) {
-        Unit unit = getTypedItem(position);
-        MyCapNutrition.dataManager.deactivateUnit(unit);
+        Ingredient ingredient = getTypedItem(position);
+        MyCapNutrition.dataManager.deactivateIngredient(ingredient);
         items.remove(position);
         notifyDataSetChanged();
     }
@@ -55,15 +57,15 @@ public class UnitListAdapter extends MultiSelectAdapter<Unit> {
         }
     }
 
-    public void restoreItem(Unit unit) {
-        MyCapNutrition.dataManager.restoreUnit(unit);
-        items.add(new CheckableObject<>(unit));
+    public void restoreItem(Ingredient ingredient) {
+        MyCapNutrition.dataManager.restoreIngredient(ingredient);
+        items.add(new CheckableObject<>(ingredient));
         notifyDataSetChanged();
     }
 
-    public void restoreItems(ArrayList<Unit> units) {
-        for (Unit unit : units) {
-            restoreItem(unit);
+    public void restoreItems(ArrayList<Ingredient> ingredients) {
+        for (Ingredient ingredient : ingredients) {
+            restoreItem(ingredient);
         }
     }
 
@@ -73,7 +75,7 @@ public class UnitListAdapter extends MultiSelectAdapter<Unit> {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder;
 
@@ -87,9 +89,11 @@ public class UnitListAdapter extends MultiSelectAdapter<Unit> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvName.setText(getTypedItem(position).name);
-        holder.tvDetails.setText(getTypedItem(position).amount_mg.toDoubleOrNA().divide(1000).round()
-                + " g");
+
+        Ingredient ingredient = getTypedItem(position);
+        holder.tvName.setText(ingredient.foodName);
+        holder.tvDetails.setText(ingredient.quantity_cents.toDoubleOrNA().divide(100) +
+                " x " + ingredient.unitName);
 
         holder.llContainer.setChecked(isItemChecked(position));
 

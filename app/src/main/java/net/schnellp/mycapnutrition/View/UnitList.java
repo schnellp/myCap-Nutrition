@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.Model.Food;
@@ -16,13 +14,17 @@ import net.schnellp.mycapnutrition.Model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Presenter.UnitListAdapter;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
 
-public class UnitList extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class UnitList extends AppCompatActivity implements MultiSelectActivity {
 
     private ListView listView;
     private UnitListAdapter adapter;
+    private Menu optionsMenu;
 
-    private Unit tempUnit;
+    private ArrayList<Unit> tempUnits;
     private Food food;
 
     @Override
@@ -33,44 +35,8 @@ public class UnitList extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         listView = (ListView) findViewById(R.id.lvUnits);
-        registerForContextMenu(listView);
 
         food = MyCapNutrition.dataManager.getFood(getIntent().getIntExtra("food_dbid", -1));
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.lvUnits) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_context_generic_delete, menu);
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
-            case R.id.delete:
-                Snackbar snackbar = Snackbar
-                        .make(findViewById(R.id.clUnitList), "Unit deleted.", Snackbar.LENGTH_LONG)
-                        .setAction("UNDO", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Snackbar snackbar1 = Snackbar.make(findViewById(R.id.clUnitList),
-                                        "Unit is restored!", Snackbar.LENGTH_SHORT);
-                                UnitList.this.adapter.restoreItem(tempUnit);
-                                snackbar1.show();
-                            }
-                        });
-                snackbar.show();
-
-                tempUnit = (Unit) adapter.getItem(info.position);
-                adapter.deleteItem(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
     }
 
     @Override
@@ -79,10 +45,53 @@ public class UnitList extends AppCompatActivity {
 
         adapter = new UnitListAdapter(UnitList.this, food);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(adapter);
+        listView.setOnItemLongClickListener(adapter);
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
+        this.optionsMenu = menu;
+        setSingleSelectOptionsMenuVisible(false);
+        setMultiSelectOptionsMenuVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_delete:
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.clUnitList), "Unit(s) deleted.", Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Snackbar snackbar1 = Snackbar.make(findViewById(R.id.clUnitList),
+                                        "Unit(s) restored!", Snackbar.LENGTH_SHORT);
+                                UnitList.this.adapter.restoreItems(tempUnits);
+                                snackbar1.show();
+                            }
+                        });
+                tempUnits = adapter.getCheckedItems();
+                adapter.deleteCheckedItems();
+                snackbar.show();
+                return true;
+            case R.id.action_edit:
+                adapter.editItem(adapter.getCheckedPositions().get(0));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
+    }
+
+    @Override
+    public void setMultiSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
 }

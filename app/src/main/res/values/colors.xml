@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorPrimaryContrast">#FFFFFF</color>
+    <color name="colorBackground">#FAFAFA</color>
+
+    <color name="listItemUnchecked">@color/colorBackground</color>
+    <color name="listItemChecked">@color/colorAccent</color>
 </resources>

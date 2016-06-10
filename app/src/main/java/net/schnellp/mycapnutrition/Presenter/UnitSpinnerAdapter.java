@@ -24,7 +24,6 @@ public class UnitSpinnerAdapter extends BaseAdapter {
         activity = act;
 
         units = new ArrayList<>();
-        units.add(Unit.G);
         units.addAll(MyCapNutrition.dataManager.getUnitsForFood(food));
         units.add(Unit.ADD);
 
@@ -55,8 +54,6 @@ public class UnitSpinnerAdapter extends BaseAdapter {
         TextView tv = (TextView) convertView.findViewById(R.id.spinnerText);
         tv.setText(units.get(position).name);
 
-        System.out.println(convertView);
-
         return convertView;
     }
 
@@ -68,8 +65,6 @@ public class UnitSpinnerAdapter extends BaseAdapter {
 
         TextView tv = (TextView) convertView.findViewById(R.id.spinnerText);
         tv.setText(units.get(position).name);
-
-        System.out.println(convertView);
 
         return convertView;
     }
