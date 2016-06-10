@@ -10,4 +10,6 @@ public abstract class Objective {
     public static final int CREATE_INGREDIENT = 4;
     public static final int EDIT_RECORD = 5;
     public static final int EDIT_INGREDIENT = 6;
+    public static final int CREATE_RECIPE = 7;
+    public static final int EDIT_RECIPE = 8;
 }

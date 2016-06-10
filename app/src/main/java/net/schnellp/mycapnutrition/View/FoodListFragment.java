@@ -21,11 +21,9 @@ import net.schnellp.mycapnutrition.R;
  * create an instance of this fragment.
  */
 public class FoodListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_FOOD_TYPE = "foodType";
 
-    // TODO: Rename and change types of parameters
     private int foodType;
 
     private OnFragmentInteractionListener mListener;

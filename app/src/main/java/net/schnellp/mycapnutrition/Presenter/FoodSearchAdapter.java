@@ -11,6 +11,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.Model.DBContract;
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Objective;
@@ -20,6 +21,7 @@ import net.schnellp.mycapnutrition.View.AddFood;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.View.FoodListFragment;
+import net.schnellp.mycapnutrition.View.RecipeForm;
 import net.schnellp.mycapnutrition.View.RecordView;
 import net.schnellp.mycapnutrition.View.SelectFood;
 import net.schnellp.mycapnutrition.View.UnitList;
@@ -32,20 +34,37 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
     private FoodListFragment selectFood;
     private ArrayList<CheckableObject<Food>> originalItems = new ArrayList<>();
     LayoutInflater inflater;
+    private int foodType;
 
     public FoodSearchAdapter(FoodListFragment selectFood, int foodType) {
         this.selectFood = selectFood;
         addAll(MyCapNutrition.dataManager.getAllFoodsOfType(foodType));
         originalItems.addAll(items);
         inflater = LayoutInflater.from(selectFood.getContext());
+        this.foodType = foodType;
     }
 
     public void editItem(int position) {
         FoodListFragment context = selectFood;
         Food food = getTypedItem(position);
-        Intent intent = new Intent(context.getActivity(), AddFood.class);
+
+        Intent intent;
+        switch (foodType) {
+            case DBContract.FoodEntry.TYPE_FOOD:
+                intent = new Intent(context.getActivity(), AddFood.class);
+                intent.putExtra("food_dbid", food.DBID);
+                break;
+            case DBContract.FoodEntry.TYPE_RECIPE:
+                intent = new Intent(context.getActivity(), RecipeForm.class);
+                intent.putExtra("recipe_dbid", food.DBID);
+                intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.EDIT_RECIPE);
+                break;
+            default:
+                return;
+        }
+
         intent.putExtra("CALLED_FOR_RESULT", true);
-        intent.putExtra("food_dbid", food.DBID);
+
         selectFood.startActivityForResult(intent, 1);
     }
 

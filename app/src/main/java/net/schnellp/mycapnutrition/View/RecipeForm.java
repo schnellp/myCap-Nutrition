@@ -39,8 +39,6 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_form);
 
-        recipe = MyCapNutrition.dataManager.createBlankRecipe();
-
         lvIngredients = (ListView) findViewById(R.id.lvIngredients);
 
         ViewGroup header = (LinearLayout) LayoutInflater.from(this).inflate(
@@ -60,6 +58,18 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
             }
         });
         lvIngredients.addFooterView(footer);
+
+        switch (getIntent().getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
+            case Objective.CREATE_RECIPE:
+                recipe = MyCapNutrition.dataManager.createBlankRecipe();
+                break;
+            case Objective.EDIT_RECIPE:
+                recipe = MyCapNutrition.dataManager.getFood(
+                        getIntent().getIntExtra("recipe_dbid", -1));
+                ((EditText) findViewById(R.id.recipe_name)).setText(recipe.name);
+                ((EditText) findViewById(R.id.recipe_servings)).setText(recipe.servings.toString());
+                break;
+        }
     }
 
     @Override

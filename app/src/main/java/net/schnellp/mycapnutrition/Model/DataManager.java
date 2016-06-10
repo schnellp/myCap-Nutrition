@@ -79,6 +79,9 @@ public class DataManager {
         IntOrNA fat_mg;
         IntOrNA protein_mg;
 
+        boolean isRecipe;
+        IntOrNA servings;
+
         if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_REF_SERVING_MG))) {
             referenceServing_mg = new IntOrNA(0, true);
         } else {
@@ -109,8 +112,16 @@ public class DataManager {
             protein_mg = new IntOrNA(cursor.getInt(
                     cursor.getColumnIndex(FoodEntry.COLUMN_NAME_PROTEIN_MG)));
         }
+        isRecipe = cursor.getInt(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_TYPE)) == 1;
+        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS))) {
+            servings = new IntOrNA(0, true);
+        } else {
+            servings = new IntOrNA(cursor.getInt(
+                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS)));
+        }
 
-        return new Food(DBID, name, referenceServing_mg, kcal, carb_mg, fat_mg, protein_mg);
+        return new Food(DBID, name, referenceServing_mg, kcal, carb_mg, fat_mg, protein_mg,
+                isRecipe, servings);
     }
 
     public Food createFood(String name, IntOrNA referenceServing_mg,

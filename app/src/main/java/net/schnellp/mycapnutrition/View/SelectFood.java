@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.Model.DBContract;
 import net.schnellp.mycapnutrition.Model.Food;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.Presenter.FoodSearchAdapter;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
@@ -89,6 +90,7 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
                         break;
                     case Page.RECIPES:
                         intent = new Intent(view.getContext(), RecipeForm.class);
+                        intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.CREATE_RECIPE);
                         break;
                     default:
                         return;
