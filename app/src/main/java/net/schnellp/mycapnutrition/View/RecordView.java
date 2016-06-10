@@ -58,7 +58,25 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
             spinner.setOnItemSelectedListener(this);
             spinner.setSelection(((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit));
 
-            ((EditText) findViewById(R.id.etRecordServing)).setText(record.quantity_cents.toDoubleOrNA().divide(100).toString());
+            ((EditText) findViewById(R.id.etRecordServing)).setText(
+                    record.quantity_cents.toDoubleOrNA().divide(100).round().toString());
+        } else if (intent.hasExtra("ingredient_dbid")) {
+            Ingredient ingredient = MyCapNutrition.dataManager.getIngredient(
+                    intent.getIntExtra("ingredient_dbid", -1));
+            food = MyCapNutrition.dataManager.getFood(ingredient.food_id);
+            TextView tv = (TextView) findViewById(R.id.tvFoodName);
+            tv.setText(food.name);
+
+            Unit unit = MyCapNutrition.dataManager.getUnit(ingredient.unit_id);
+            UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
+            Spinner spinner = (Spinner) findViewById(R.id.spUnit);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            spinner.setSelection(((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit));
+
+            ((EditText) findViewById(R.id.etRecordServing)).setText(
+                    ingredient.quantity_cents.toDoubleOrNA().divide(100).round().toString());
+
         } else {
             food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
@@ -111,6 +129,12 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
                 System.out.println("ing.recipe_id: " + ing.recipe_id);
                 System.out.println("ing.DBID: " + ing.DBID);
                 setResult(RecipeForm.RESULT_OK, null);
+                finish();
+                break;
+            case Objective.EDIT_INGREDIENT:
+                MyCapNutrition.dataManager.updateIngredient(
+                        getIntent().getIntExtra("ingredient_dbid", -1),
+                        food, quantity_cents, unit);
                 finish();
                 break;
             default:

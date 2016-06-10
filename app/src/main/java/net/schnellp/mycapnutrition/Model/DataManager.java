@@ -477,6 +477,27 @@ public class DataManager {
         return getIngredient((int) insertID);
     }
 
+    public Ingredient updateIngredient(int dbid, Food food, IntOrNA quantity_cents, Unit unit) {
+
+        ContentValues values = new ContentValues();
+        values.put(IngredientEntry.COLUMN_NAME_FOOD_ID, food.DBID);
+        if (!quantity_cents.isNA) { values.put(IngredientEntry.COLUMN_NAME_QUANTITY_CENTS,
+                quantity_cents.toString()); }
+        if (unit.DBID != -1) {
+            values.put(IngredientEntry.COLUMN_NAME_UNIT_ID, unit.DBID);
+        }
+
+        try {
+            database.update(IngredientEntry.TABLE_NAME, values,
+                    IngredientEntry._ID + " = " + dbid, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return getIngredient(dbid);
+    }
+
     public Ingredient getIngredient(int dbid) {
         Cursor cursor = database.query(IngredientEntry.TABLE_NAME,
                 null, // all columns

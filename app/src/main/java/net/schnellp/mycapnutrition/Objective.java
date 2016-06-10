@@ -9,4 +9,5 @@ public abstract class Objective {
     public static final int LIST_UNITS = 3;
     public static final int CREATE_INGREDIENT = 4;
     public static final int EDIT_RECORD = 5;
+    public static final int EDIT_INGREDIENT = 6;
 }

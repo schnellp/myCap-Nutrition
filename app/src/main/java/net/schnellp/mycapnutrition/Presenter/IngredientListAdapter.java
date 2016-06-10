@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.Model.Food;
 import net.schnellp.mycapnutrition.Model.Ingredient;
-import net.schnellp.mycapnutrition.Model.Recipe;
 import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
 import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
 import net.schnellp.mycapnutrition.MyCapNutrition;
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.View.RecipeForm;
 import net.schnellp.mycapnutrition.View.RecordView;
@@ -38,6 +38,7 @@ public class IngredientListAdapter extends MultiSelectAdapter<Ingredient> {
         Intent intent = new Intent(context, RecordView.class);
         intent.putExtra("CALLED_FOR_RESULT", true);
         intent.putExtra("ingredient_dbid", ingredient.DBID);
+        intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.EDIT_INGREDIENT);
         recipeForm.startActivityForResult(intent, 1);
     }
 
