@@ -15,7 +15,7 @@
         android:id="@+id/menu_options_multi_select_group">
         <item
             android:id="@+id/action_delete"
-            android:orderInCategory="100"
+            android:orderInCategory="91"
             android:title="@string/action_delete"
             android:icon="@drawable/ic_delete_black_24dp"
             app:showAsAction="ifRoom" />

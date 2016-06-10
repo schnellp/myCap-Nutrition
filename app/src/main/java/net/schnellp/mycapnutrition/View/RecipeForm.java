@@ -2,6 +2,7 @@ package net.schnellp.mycapnutrition.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,16 +15,23 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.Model.Food;
+import net.schnellp.mycapnutrition.Model.Ingredient;
 import net.schnellp.mycapnutrition.Model.IntOrNA;
+import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.Presenter.IngredientListAdapter;
 import net.schnellp.mycapnutrition.R;
 
-public class RecipeForm extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class RecipeForm extends AppCompatActivity implements MultiSelectActivity {
 
     private ListView lvIngredients;
     private IngredientListAdapter adapter;
+    private Menu optionsMenu;
+
+    private ArrayList<Ingredient> tempIngredients;
     private Food recipe;
 
     @Override
@@ -31,7 +39,6 @@ public class RecipeForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_form);
 
-        IntOrNA na = new IntOrNA();
         recipe = MyCapNutrition.dataManager.createBlankRecipe();
 
         lvIngredients = (ListView) findViewById(R.id.lvIngredients);
@@ -53,20 +60,51 @@ public class RecipeForm extends AppCompatActivity {
             }
         });
         lvIngredients.addFooterView(footer);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         adapter = new IngredientListAdapter(this, recipe);
+        adapter.headerCount = 1;
         lvIngredients.setAdapter(adapter);
+        lvIngredients.setOnItemClickListener(adapter);
+        lvIngredients.setOnItemLongClickListener(adapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
         getMenuInflater().inflate(R.menu.menu_options_submit, menu);
+        this.optionsMenu = menu;
+        setSingleSelectOptionsMenuVisible(false);
+        setMultiSelectOptionsMenuVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
+            case R.id.action_delete:
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.clRecipeForm), "Ingredient(s) deleted.",
+                                Snackbar.LENGTH_LONG)
+                        .setAction("UNDO", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Snackbar snackbar1 = Snackbar
+                                        .make(findViewById(R.id.clRecipeForm),
+                                                "Ingredient(s) restored!",
+                                                Snackbar.LENGTH_SHORT);
+                                RecipeForm.this.adapter.restoreItems(tempIngredients);
+                                snackbar1.show();
+                            }
+                        });
+                tempIngredients = adapter.getCheckedItems();
+                adapter.deleteCheckedItems();
+                snackbar.show();
+                return true;
             case R.id.action_submit:
                 String name = ((EditText) findViewById(R.id.recipe_name)).getText().toString();
                 IntOrNA servings = new IntOrNA(((EditText) findViewById(R.id.recipe_servings))
@@ -87,5 +125,15 @@ public class RecipeForm extends AppCompatActivity {
             adapter = new IngredientListAdapter(this, recipe);
             lvIngredients.setAdapter(adapter);
         }
+    }
+
+    @Override
+    public void setSingleSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_single_select_group, visible);
+    }
+
+    @Override
+    public void setMultiSelectOptionsMenuVisible(boolean visible) {
+        optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
     }
 }

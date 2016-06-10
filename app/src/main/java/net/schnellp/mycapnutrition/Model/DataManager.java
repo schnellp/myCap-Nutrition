@@ -509,6 +509,34 @@ public class DataManager {
         return ingredients;
     }
 
+    public void deactivateIngredient(Ingredient ingredient) {
+        ContentValues values = new ContentValues();
+        values.put(IngredientEntry._ACTIVE, 0);
+
+        try {
+            database.update(IngredientEntry.TABLE_NAME, values,
+                    IngredientEntry._ID + " = " + ingredient.DBID, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
+    public boolean restoreIngredient(Ingredient ingredient) {
+        ContentValues values = new ContentValues();
+        values.put(IngredientEntry._ACTIVE, 1);
+
+        try {
+            database.update(IngredientEntry.TABLE_NAME, values,
+                    IngredientEntry._ID + " = " + ingredient.DBID, null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     public Record recordFromCursor(Cursor cursor) {
         int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
         String date = cursor.getString(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_DATE));

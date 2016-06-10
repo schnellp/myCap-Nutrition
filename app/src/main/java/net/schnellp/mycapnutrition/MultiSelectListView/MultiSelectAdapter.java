@@ -11,6 +11,9 @@ import java.util.List;
 public abstract class MultiSelectAdapter<T> extends BaseAdapter
         implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
 
+    //TODO: Dirty, ugly hack. Find better way to handle positioning when headers present.
+    public int headerCount = 0;
+
     protected ArrayList<CheckableObject<T>> items = new ArrayList<>();
 
     public void addAll(List<T> list) {
@@ -81,13 +84,16 @@ public abstract class MultiSelectAdapter<T> extends BaseAdapter
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position < headerCount) {
+            return;
+        }
         if (getNumChecked() > 0) {
             if (((ActivatedLinearLayout) view).isChecked()) {
                 ((ActivatedLinearLayout) view).setChecked(false);
-                setItemChecked(position, false);
+                setItemChecked(position - headerCount, false);
             } else {
                 ((ActivatedLinearLayout) view).setChecked(true);
-                setItemChecked(position, true);
+                setItemChecked(position - headerCount, true);
             }
             showMenuGroupIfApplicable(view.getContext());
         }
@@ -95,12 +101,15 @@ public abstract class MultiSelectAdapter<T> extends BaseAdapter
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position < headerCount) {
+            return false;
+        }
         if (((ActivatedLinearLayout) view).isChecked()) {
             ((ActivatedLinearLayout) view).setChecked(false);
-            setItemChecked(position, false);
+            setItemChecked(position - headerCount, false);
         } else {
             ((ActivatedLinearLayout) view).setChecked(true);
-            setItemChecked(position, true);
+            setItemChecked(position - headerCount, true);
         }
         showMenuGroupIfApplicable(view.getContext());
         return true;

@@ -5,7 +5,7 @@
         android:id="@+id/menu_options_submit">
         <item
             android:id="@+id/action_submit"
-            android:orderInCategory="90"
+            android:orderInCategory="1000"
             android:title="@string/action_submit"
             android:icon="@drawable/ic_done_black_24dp"
             app:showAsAction="ifRoom" />
