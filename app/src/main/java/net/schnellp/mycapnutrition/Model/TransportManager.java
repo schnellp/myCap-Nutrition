@@ -203,18 +203,18 @@ public class TransportManager {
                         int foodDBIDCol = colnames.indexOf(DBContract.UnitEntry.COLUMN_NAME_FOOD_ID);
                         int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
                         lineEntries.set(foodDBIDCol,
-                                dm.getFood(foodDBIDFromFileID.get(foodFileID)).DBID + "");
+                                dm.foodManager.get(foodDBIDFromFileID.get(foodFileID)).DBID + "");
                     } else if (table.equals(DBContract.RecordEntry.TABLE_NAME)) {
                         int foodDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_FOOD_ID);
                         int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
-                        Food food = dm.getFood(foodDBIDFromFileID.get(foodFileID));
+                        Food food = dm.foodManager.get(foodDBIDFromFileID.get(foodFileID));
                         lineEntries.set(foodDBIDCol, food.DBID + "");
 
                         int unitDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_UNIT_ID);
                         if (!lineEntries.get(unitDBIDCol).equals("")) {
                             int unitFileID = Integer.parseInt(lineEntries.get(unitDBIDCol));
                             lineEntries.set(unitDBIDCol,
-                                    dm.getFood(unitDBIDFromFileID.get(unitFileID)).DBID + "");
+                                    dm.foodManager.get(unitDBIDFromFileID.get(unitFileID)).DBID + "");
                         }
                     }
 

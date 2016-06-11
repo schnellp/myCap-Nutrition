@@ -43,7 +43,7 @@ public abstract class DataObjectManager<T extends DataObject> {
         T newObject = fromCursor(cursor);
         cursor.close();
 
-        objects.setValueAt(newObject.DBID, newObject);
+        objects.append(newObject.DBID, newObject);
 
         return newObject;
     }
@@ -63,7 +63,7 @@ public abstract class DataObjectManager<T extends DataObject> {
         while (!cursor.isAfterLast()) {
             T object = fromCursor(cursor);
             newObjects.add(object);
-            this.objects.setValueAt(object.DBID, object);
+            this.objects.append(object.DBID, object);
             cursor.moveToNext();
         }
 

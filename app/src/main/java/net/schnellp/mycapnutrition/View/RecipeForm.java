@@ -65,7 +65,7 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
                 recipe = MyCapNutrition.dataManager.createBlankRecipe();
                 break;
             case Objective.EDIT_RECIPE:
-                recipe = MyCapNutrition.dataManager.getFood(
+                recipe = MyCapNutrition.dataManager.foodManager.get(
                         getIntent().getIntExtra("recipe_dbid", -1));
                 ((EditText) findViewById(R.id.recipe_name)).setText(recipe.getName());
                 ((EditText) findViewById(R.id.recipe_servings)).setText(recipe.getServings().toString());

@@ -43,7 +43,7 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
             Record record = MyCapNutrition.dataManager.getRecord(
                     intent.getIntExtra("record_dbid", -1));
 
-            food = MyCapNutrition.dataManager.getFood(record.foodID);
+            food = MyCapNutrition.dataManager.foodManager.get(record.foodID);
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
             tv.setText(food.getName());
 
@@ -59,7 +59,7 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         } else if (intent.hasExtra("ingredient_dbid")) {
             Ingredient ingredient = MyCapNutrition.dataManager.getIngredient(
                     intent.getIntExtra("ingredient_dbid", -1));
-            food = MyCapNutrition.dataManager.getFood(ingredient.food_id);
+            food = MyCapNutrition.dataManager.foodManager.get(ingredient.food_id);
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
             tv.setText(food.getName());
 
@@ -74,7 +74,7 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
                     ingredient.quantity_cents.toDoubleOrNA().divide(100).round().toString());
 
         } else {
-            food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
+            food = MyCapNutrition.dataManager.foodManager.get(intent.getIntExtra("food_dbid", -1));
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
             tv.setText(food.getName());
 
@@ -167,7 +167,7 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         if (requestCode == SELECT_FOOD_RESULT) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                food = MyCapNutrition.dataManager.getFood(data.getIntExtra("food_dbid", -1));
+                food = MyCapNutrition.dataManager.foodManager.get(data.getIntExtra("food_dbid", -1));
 
                 TextView tv = (TextView) findViewById(R.id.tvFoodName);
                 tv.setText(food.getName());

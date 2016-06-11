@@ -92,7 +92,7 @@ public class FoodManager extends DataObjectManager<Food> {
         cursor.close();
         return foods;
     }
-    
+
     @Override
     public boolean setActive(int dbid, boolean active) {
         ContentValues values = new ContentValues();

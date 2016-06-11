@@ -36,7 +36,7 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
 
         listView = (ListView) findViewById(R.id.lvUnits);
 
-        food = MyCapNutrition.dataManager.getFood(getIntent().getIntExtra("food_dbid", -1));
+        food = MyCapNutrition.dataManager.foodManager.get(getIntent().getIntExtra("food_dbid", -1));
     }
 
     @Override

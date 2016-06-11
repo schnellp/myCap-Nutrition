@@ -15,7 +15,7 @@ public class IntOrNA {
     }
 
     public IntOrNA(String string) {
-        if (string.equals("") || string.equals("null") || string.equals("NA")) {
+        if (string == null || string.equals("") || string.equals("null") || string.equals("NA")) {
             isNA = true;
             val = 0;
         } else {

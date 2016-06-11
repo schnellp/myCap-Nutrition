@@ -32,12 +32,12 @@ public class AddUnit extends AppCompatActivity {
         int dbid = intent.getIntExtra("unit_dbid", -1);
         if (dbid != -1) {
             Unit unit = MyCapNutrition.dataManager.getUnit(dbid);
-            food = MyCapNutrition.dataManager.getFood(unit.foodID);
+            food = MyCapNutrition.dataManager.foodManager.get(unit.foodID);
 
             ((EditText) findViewById(R.id.etUnitName)).setText(unit.name);
             ((EditText) findViewById(R.id.etUnitAmount)).setText(unit.amount_mg.toDoubleOrNA().divide(1000).toString());
         } else {
-            food = MyCapNutrition.dataManager.getFood(intent.getIntExtra("food_dbid", -1));
+            food = MyCapNutrition.dataManager.foodManager.get(intent.getIntExtra("food_dbid", -1));
         }
 
         TextView tv = (TextView) findViewById(R.id.tvUnitFoodName);

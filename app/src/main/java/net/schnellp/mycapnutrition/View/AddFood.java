@@ -40,7 +40,7 @@ public class AddFood extends AppCompatActivity {
 
         int dbid = getIntent().getIntExtra("food_dbid", -1);
         if (dbid != -1) {
-            Food food = MyCapNutrition.dataManager.getFood(dbid);
+            Food food = MyCapNutrition.dataManager.foodManager.get(dbid);
 
             ((EditText) findViewById(R.id.etName)).setText(food.getName());
             ((EditText) findViewById(R.id.etRefServing)).setText(food.getReferenceServing_mg().toDoubleOrNA().divide(1000).toString());
