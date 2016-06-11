@@ -24,7 +24,7 @@ public class DataManager {
         dbHelper = new DBHelper(context);
 
         database = dbHelper.getWritableDatabase();
-        foodManager = new FoodManager(database, FoodEntry.TABLE_NAME);
+        foodManager = new FoodManager(database, FoodEntry.TABLE_NAME, Food.class);
     }
 
     public String tableToString(String tableName, boolean headers) {

@@ -13,17 +13,8 @@ import java.util.List;
 
 public class FoodManager extends DataObjectManager<Food> {
 
-    public FoodManager(SQLiteDatabase db, String tableName) {
-        super(db, tableName);
-    }
-
-    @Override
-    protected Food fromCursor(Cursor cursor) {
-        int dbid = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
-
-        ContentValues values = contentValuesFromCursor(cursor);
-
-        return new Food(dbid, values);
+    public FoodManager(SQLiteDatabase db, String tableName, Class<Food> dataObjectClass) {
+        super(db, tableName, dataObjectClass);
     }
 
     protected List<Food> getByConstraint(String constraint) {

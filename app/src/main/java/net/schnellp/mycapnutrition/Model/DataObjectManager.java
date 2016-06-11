@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.SparseArray;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +14,12 @@ public abstract class DataObjectManager<T extends DataObject> {
     protected final SparseArray<T> objects = new SparseArray<>();
     protected final SQLiteDatabase db;
     protected final String tableName;
+    protected final Class<T> dataObjectClass;
 
-    public DataObjectManager(SQLiteDatabase db, String tableName) {
+    public DataObjectManager(SQLiteDatabase db, String tableName, Class<T> dataObjectClass) {
         this.db = db;
         this.tableName = tableName;
+        this.dataObjectClass = dataObjectClass;
     }
 
     public T get(int dbid) {
@@ -82,7 +83,23 @@ public abstract class DataObjectManager<T extends DataObject> {
         return values;
     }
 
-    protected abstract T fromCursor(Cursor cursor);
+    protected T fromCursor(Cursor cursor) {
+        int dbid = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
+
+        ContentValues values = contentValuesFromCursor(cursor);
+
+        T object;
+        try {
+            object = dataObjectClass.getConstructor(int.class, ContentValues.class)
+                    .newInstance(dbid, values);
+        } catch (Exception e) {
+            Log.e("Exception","SQLException" + String.valueOf(e.getMessage()));
+            e.printStackTrace();
+            return null;
+        }
+
+        return object;
+    }
 
     public boolean setActive(int dbid, boolean active) {
         ContentValues values = new ContentValues();
