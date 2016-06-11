@@ -185,8 +185,11 @@ public class Settings extends AppCompatPreferenceActivity {
                     final int id = 1;
 
                     final NotificationManager mNotifyManager =
-                            (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                    final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity());
+                            (NotificationManager) getActivity().getApplicationContext()
+                                    .getSystemService(Context.NOTIFICATION_SERVICE);
+                    final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                            getActivity().getApplicationContext()
+                    );
                     mBuilder.setContentTitle(getString(R.string.notify_title_data_import))
                             .setContentText(getString(R.string.notify_text_data_import_progress))
                             .setSmallIcon(R.drawable.ic_import_export_black_24dp);
@@ -198,7 +201,9 @@ public class Settings extends AppCompatPreferenceActivity {
                                     mBuilder.setProgress(0, 0, true);
                                     mNotifyManager.notify(id, mBuilder.build());
                                     MyCapNutrition.transportManager.importData(uri);
-                                    mBuilder.setContentText(getString(R.string.notify_text_data_import_complete))
+                                    mBuilder.setContentText(
+                                            mBuilder.mContext.
+                                            getString(R.string.notify_text_data_import_complete))
                                             // Removes the progress bar
                                             .setProgress(0,0,false);
                                     mNotifyManager.notify(id, mBuilder.build());
