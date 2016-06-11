@@ -8,14 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
             "CREATE TABLE " + PackageEntry.TABLE_NAME + " (" +
                     PackageEntry._ID + " INTEGER PRIMARY KEY, " +
                     PackageEntry._ACTIVE + " INTEGER DEFAULT 1, " +
-                    PackageEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    PackageEntry.COLUMN_NAME_NAME + " TEXT DEFAULT 'Untitled', " +
                     PackageEntry.COLUMN_NAME_DESCRIPTION + " TEXT)";
 
     private static final String SQL_CREATE_TABLE_FOOD =
@@ -24,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     FoodEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_PACKAGE + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_TYPE + " INTEGER DEFAULT " + FoodEntry.TYPE_FOOD + ", " +
-                    FoodEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    FoodEntry.COLUMN_NAME_NAME + " TEXT DEFAULT 'Unnamed', " +
                     FoodEntry.COLUMN_NAME_RECIPE_SERVINGS + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_REF_SERVING_MG + " INTEGER, " +
                     FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
@@ -41,7 +41,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     UnitEntry._ID + " INTEGER PRIMARY KEY, " +
                     UnitEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     UnitEntry.COLUMN_NAME_FOOD_ID + " INTEGER, " +
-                    UnitEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    UnitEntry.COLUMN_NAME_NAME + " TEXT DEFAULT 'Unnamed', " +
                     UnitEntry.COLUMN_NAME_AMOUNT_MG + " INTEGER, " +
                     "FOREIGN KEY (" + UnitEntry.COLUMN_NAME_FOOD_ID + ") " +
                     "REFERENCES " + FoodEntry.TABLE_NAME + " (" + FoodEntry._ID + ") " +
