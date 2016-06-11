@@ -1,7 +1,6 @@
 package net.schnellp.mycapnutrition.Presenter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,9 +116,9 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.tvName.setText(getTypedItem(position).name);
-        holder.tvDetails.setText(getTypedItem(position).kcal + " kcal / " +
-        getTypedItem(position).referenceServing_mg.toDoubleOrNA().divide(1000).round() +
+        holder.tvName.setText(getTypedItem(position).getName());
+        holder.tvDetails.setText(getTypedItem(position).getKcal() + " kcal / " +
+        getTypedItem(position).getReferenceServing_mg().toDoubleOrNA().divide(1000).round() +
         " g");
 
         holder.llContainer.setChecked(isItemChecked(position));
@@ -162,7 +161,7 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
                 } else {
                     constraint = constraint.toString().toLowerCase();
                     for (int i = 0; i < originalItems.size(); i++) {
-                        String data = (originalItems.get(i).object).name;
+                        String data = (originalItems.get(i).object).getName();
                         if (matches(data, constraint.toString())) {
                             FilteredArrList.add(originalItems.get(i));
                         }

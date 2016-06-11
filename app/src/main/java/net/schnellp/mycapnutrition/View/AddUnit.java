@@ -41,7 +41,7 @@ public class AddUnit extends AppCompatActivity {
         }
 
         TextView tv = (TextView) findViewById(R.id.tvUnitFoodName);
-        tv.setText(food.name);
+        tv.setText(food.getName());
 
         EditText finalField = (EditText) findViewById(R.id.etUnitAmount);
         finalField.setOnEditorActionListener(new EditText.OnEditorActionListener() {

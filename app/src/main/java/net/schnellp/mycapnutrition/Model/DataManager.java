@@ -459,7 +459,7 @@ public class DataManager {
                     cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_QUANTITY_CENTS)));
         }
 
-        String foodName = food.name;
+        String foodName = food.getName();
         String unitName = unit.name;
 
         return new Ingredient(DBID, recipeID, foodID, unitID, quantity_cents, foodName, unitName);
@@ -594,15 +594,15 @@ public class DataManager {
                     cursor.getColumnIndex(RecordEntry.COLUMN_NAME_QUANTITY_CENTS)));
         }
 
-        String foodName = food.name;
+        String foodName = food.getName();
         String unitName = unit.name;
 
         IntOrNA amount_mg = unit.amount_mg.toDoubleOrNA().multiply(quantity_cents.toDoubleOrNA().divide(100)).round();
-        DoubleOrNA servings = amount_mg.toDoubleOrNA().divide(food.referenceServing_mg.toDoubleOrNA());
-        DoubleOrNA dKcal = servings.multiply(food.kcal.toDoubleOrNA());
-        DoubleOrNA dCarb_mg = servings.multiply(food.carb_mg.toDoubleOrNA());
-        DoubleOrNA dFat_mg = servings.multiply(food.fat_mg.toDoubleOrNA());
-        DoubleOrNA dProtein_mg = servings.multiply(food.protein_mg.toDoubleOrNA());
+        DoubleOrNA servings = amount_mg.toDoubleOrNA().divide(food.getReferenceServing_mg().toDoubleOrNA());
+        DoubleOrNA dKcal = servings.multiply(food.getKcal().toDoubleOrNA());
+        DoubleOrNA dCarb_mg = servings.multiply(food.getCarb_mg().toDoubleOrNA());
+        DoubleOrNA dFat_mg = servings.multiply(food.getFat_mg().toDoubleOrNA());
+        DoubleOrNA dProtein_mg = servings.multiply(food.getProtein_mg().toDoubleOrNA());
 
         return new Record(DBID, date, foodID, unitID, foodName, unitName, quantity_cents,
                 amount_mg, dKcal.round(), dCarb_mg.round(), dFat_mg.round(), dProtein_mg.round());

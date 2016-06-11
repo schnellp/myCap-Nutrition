@@ -42,12 +42,12 @@ public class AddFood extends AppCompatActivity {
         if (dbid != -1) {
             Food food = MyCapNutrition.dataManager.getFood(dbid);
 
-            ((EditText) findViewById(R.id.etName)).setText(food.name);
-            ((EditText) findViewById(R.id.etRefServing)).setText(food.referenceServing_mg.toDoubleOrNA().divide(1000).toString());
-            ((EditText) findViewById(R.id.etKcal)).setText(food.kcal.toString());
-            ((EditText) findViewById(R.id.etCarb)).setText(food.carb_mg.toDoubleOrNA().divide(1000).toString());
-            ((EditText) findViewById(R.id.etFat)).setText(food.fat_mg.toDoubleOrNA().divide(1000).toString());
-            ((EditText) findViewById(R.id.etProtein)).setText(food.protein_mg.toDoubleOrNA().divide(1000).toString());
+            ((EditText) findViewById(R.id.etName)).setText(food.getName());
+            ((EditText) findViewById(R.id.etRefServing)).setText(food.getReferenceServing_mg().toDoubleOrNA().divide(1000).toString());
+            ((EditText) findViewById(R.id.etKcal)).setText(food.getKcal().toString());
+            ((EditText) findViewById(R.id.etCarb)).setText(food.getCarb_mg().toDoubleOrNA().divide(1000).toString());
+            ((EditText) findViewById(R.id.etFat)).setText(food.getFat_mg().toDoubleOrNA().divide(1000).toString());
+            ((EditText) findViewById(R.id.etProtein)).setText(food.getProtein_mg().toDoubleOrNA().divide(1000).toString());
         }
     }
 
