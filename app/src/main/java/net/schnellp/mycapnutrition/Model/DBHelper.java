@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -77,6 +77,13 @@ public class DBHelper extends SQLiteOpenHelper {
                     "REFERENCES " + UnitEntry.TABLE_NAME + " (" + UnitEntry._ID + ") " +
                     "ON DELETE RESTRICT)";
 
+    private static final String SQL_CREATE_TABLE_BODYMASS =
+            "CREATE TABLE " + BodyMassEntry.TABLE_NAME + " (" +
+                    BodyMassEntry._ID + " INTEGER PRIMARY KEY, " +
+                    BodyMassEntry._ACTIVE + " INTEGER DEFAULT 1, " +
+                    BodyMassEntry.COLUMN_NAME_DATE + " TEXT, " +
+                    BodyMassEntry.COLUMN_NAME_MASS_G + " INTEGER)";
+
     private static final String SQL_DELETE_PACKAGE =
             "DROP TABLE IF EXISTS " + PackageEntry.TABLE_NAME;
     private static final String SQL_DELETE_FOOD =
@@ -87,6 +94,8 @@ public class DBHelper extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + IngredientEntry.TABLE_NAME;
     private static final String SQL_DELETE_RECORD =
             "DROP TABLE IF EXISTS " + RecordEntry.TABLE_NAME;
+    private static final String SQL_DELETE_BODYMASS =
+            "DROP TABLE IF EXISTS " + BodyMassEntry.TABLE_NAME;
 
     private static final String SQL_INSERT_DEFAULT_PACKAGE =
             "INSERT INTO " + PackageEntry.TABLE_NAME + " (" +
@@ -106,6 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_UNIT);
         db.execSQL(SQL_CREATE_TABLE_INGREDIENT);
         db.execSQL(SQL_CREATE_TABLE_RECORD);
+        db.execSQL(SQL_CREATE_TABLE_BODYMASS);
     }
 
     @Override
@@ -132,6 +142,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // Enable foreign key constraints
             db.execSQL("PRAGMA foreign_keys=OFF;");
         }
+        db.execSQL(SQL_DELETE_BODYMASS);
         db.execSQL(SQL_DELETE_RECORD);
         db.execSQL(SQL_DELETE_INGREDIENT);
         db.execSQL(SQL_DELETE_UNIT);

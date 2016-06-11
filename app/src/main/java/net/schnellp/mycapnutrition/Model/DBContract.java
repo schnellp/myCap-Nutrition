@@ -67,4 +67,10 @@ public final class DBContract {
         public static final String COLUMN_NAME_UNIT_ID = "unit_id";
         public static final String COLUMN_NAME_QUANTITY_CENTS = "quantity_cents";
     }
+
+    public static abstract class BodyMassEntry extends ObjectEntry {
+        public static final String TABLE_NAME = "BodyMass";
+        public static final String COLUMN_NAME_DATE = "date";
+        public static final String COLUMN_NAME_MASS_G = "mass_g";
+    }
 }
