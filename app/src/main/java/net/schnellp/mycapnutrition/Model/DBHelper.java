@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     FoodEntry.COLUMN_NAME_PACKAGE + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_TYPE + " INTEGER DEFAULT " + FoodEntry.TYPE_FOOD + ", " +
                     FoodEntry.COLUMN_NAME_NAME + " TEXT DEFAULT 'Unnamed', " +
-                    FoodEntry.COLUMN_NAME_NAME + " TEXT, " +
+                    FoodEntry.COLUMN_NAME_NOTES + " TEXT, " +
                     FoodEntry.COLUMN_NAME_RECIPE_SERVINGS + " INTEGER DEFAULT 1, " +
                     FoodEntry.COLUMN_NAME_REF_SERVING_MG + " INTEGER, " +
                     FoodEntry.COLUMN_NAME_KCAL + " INTEGER, " +
