@@ -17,58 +17,13 @@ public class FoodManager extends DataObjectManager<Food> {
         super(db, tableName);
     }
 
+    @Override
     protected Food fromCursor(Cursor cursor) {
-        int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
-        String name = cursor.getString(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_NAME));
-        IntOrNA referenceServing_mg;
-        IntOrNA kcal;
-        IntOrNA carb_mg;
-        IntOrNA fat_mg;
-        IntOrNA protein_mg;
+        int dbid = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
 
-        boolean isRecipe;
-        IntOrNA servings;
+        ContentValues values = contentValuesFromCursor(cursor);
 
-        if (cursor.isNull(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_REF_SERVING_MG))) {
-            referenceServing_mg = new IntOrNA(0, true);
-        } else {
-            referenceServing_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_REF_SERVING_MG)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_KCAL))) {
-            kcal = new IntOrNA(0, true);
-        } else {
-            kcal = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_KCAL)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_CARB_MG))) {
-            carb_mg = new IntOrNA(0, true);
-        } else {
-            carb_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_CARB_MG)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_FAT_MG))) {
-            fat_mg = new IntOrNA(0, true);
-        } else {
-            fat_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_FAT_MG)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_PROTEIN_MG))) {
-            protein_mg = new IntOrNA(0, true);
-        } else {
-            protein_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_PROTEIN_MG)));
-        }
-        isRecipe = cursor.getInt(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_TYPE)) == 1;
-        if (cursor.isNull(cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_RECIPE_SERVINGS))) {
-            servings = new IntOrNA(0, true);
-        } else {
-            servings = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(DBContract.FoodEntry.COLUMN_NAME_RECIPE_SERVINGS)));
-        }
-
-        return new Food(DBID, name, referenceServing_mg, kcal, carb_mg, fat_mg, protein_mg,
-                isRecipe, servings);
+        return new Food(dbid, values);
     }
 
     protected List<Food> getByConstraint(String constraint) {

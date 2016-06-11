@@ -1,39 +1,13 @@
 package net.schnellp.mycapnutrition.Model;
 
+import android.content.ContentValues;
+
 import net.schnellp.mycapnutrition.Model.DBContract.FoodEntry;
 
 public class Food extends DataObject {
 
-    public Food(int dbid, String name, IntOrNA referenceServing_mg,
-                IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
-                boolean isRecipe, IntOrNA servings) {
-        super(dbid);
-
-        values.put(FoodEntry.COLUMN_NAME_NAME, name);
-
-        if (!referenceServing_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg.val);
-        }
-
-        if (!kcal.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_KCAL, kcal.val);
-        }
-
-        if (!carb_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.val);
-        }
-
-        if (!fat_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.val);
-        }
-
-        if (!protein_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.val);
-        }
-
-        if (!servings.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS, servings.val);
-        }
+    public Food(int dbid, ContentValues values) {
+        super(dbid, values);
     }
 
     public String getName() {

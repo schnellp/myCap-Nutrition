@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.SparseArray;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,16 @@ public abstract class DataObjectManager<T extends DataObject> {
 
         cursor.close();
         return newObjects;
+    }
+
+    protected ContentValues contentValuesFromCursor(Cursor cursor) {
+        ContentValues values = new ContentValues();
+
+        for (int j = 0; j < cursor.getColumnCount(); j++) {
+            values.put(cursor.getColumnName(j), cursor.getString(j));
+        }
+
+        return values;
     }
 
     protected abstract T fromCursor(Cursor cursor);
