@@ -72,14 +72,15 @@ public class AddFood extends AppCompatActivity {
         IntOrNA iProtein_mg = getDoubleOrNAFromForm(R.id.etProtein).multiply(1000).round();
 
         if (getIntent().getBooleanExtra("CALLED_FOR_RESULT", false)) {
-            MyCapNutrition.dataManager.updateFood(getIntent().getIntExtra("food_dbid", -1), name, iRefServing_mg,
+            MyCapNutrition.dataManager.foodManager.update(getIntent().getIntExtra("food_dbid", -1),
+                    name, iRefServing_mg,
                     iKcal, iCarb_mg, iFat_mg, iProtein_mg);
 
             Intent intent = new Intent(this, SelectFood.class);
             setResult(RESULT_OK,intent);
             finish();
         } else {
-            Food food = MyCapNutrition.dataManager.createFood(name, iRefServing_mg,
+            Food food = MyCapNutrition.dataManager.foodManager.createFood(name, iRefServing_mg,
                     iKcal, iCarb_mg, iFat_mg, iProtein_mg);
 
             Intent intent = new Intent(this, RecordView.class);

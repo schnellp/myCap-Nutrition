@@ -9,12 +9,13 @@ import android.util.Log;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FoodManager extends DataObjectManager<Food> {
 
-    public FoodManager(SQLiteDatabase db, String tableName, Class<Food> dataObjectClass) {
-        super(db, tableName, dataObjectClass);
+    public FoodManager(SQLiteDatabase db) {
+        super(db, DBContract.FoodEntry.TABLE_NAME, Food.class);
     }
 
     protected List<Food> getByConstraint(String constraint) {
@@ -48,6 +49,63 @@ public class FoodManager extends DataObjectManager<Food> {
         return newFood;
     }
 
+    public Food create(String name, IntOrNA referenceServing_mg,
+                       IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
+                       boolean active, int type) {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.FoodEntry.COLUMN_NAME_NAME, name);
+        if (!referenceServing_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg.toString());
+        }
+        if (!kcal.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_KCAL, kcal.toString());
+        }
+        if (!carb_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.toString());
+        }
+        if (!fat_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.toString());
+        }
+        if (!protein_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
+        }
+
+        values.put(DBContract.FoodEntry._ACTIVE, active);
+        values.put(DBContract.FoodEntry.COLUMN_NAME_TYPE, type);
+
+        return create(values);
+    }
+
+    public Food createFood(String name, IntOrNA referenceServing_mg,
+                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
+        return create(name, referenceServing_mg,
+                kcal, carb_mg, fat_mg, protein_mg, true, DBContract.FoodEntry.TYPE_FOOD);
+    }
+
+    public Food update(int dbid, String name, IntOrNA referenceServing_mg,
+                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.FoodEntry.COLUMN_NAME_NAME, name);
+        if (!referenceServing_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_REF_SERVING_MG,
+                    referenceServing_mg.toString());
+        }
+        if (!kcal.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_KCAL, kcal.toString());
+        }
+        if (!carb_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.toString());
+        }
+        if (!fat_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.toString());
+        }
+        if (!protein_mg.isNA) {
+            values.put(DBContract.FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
+        }
+
+        return update(dbid, values);
+    }
+
     @Override
     public boolean setActive(int dbid, boolean active) {
         ContentValues values = new ContentValues();
@@ -69,5 +127,16 @@ public class FoodManager extends DataObjectManager<Food> {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void touch(int dbid) {
+        ContentValues values = new ContentValues();
+        values.put(DBContract.FoodEntry.COLUMN_NAME_LAST_USED, (new Date()).getTime() / 1000);
+        update(dbid, values);
+    }
+
+    public List<Food> getAllFoodsOfType(int type) {
+        return getByConstraint(DBContract.FoodEntry._ACTIVE + " = 1" +
+                " AND " + DBContract.FoodEntry.COLUMN_NAME_TYPE + " = " + type);
     }
 }

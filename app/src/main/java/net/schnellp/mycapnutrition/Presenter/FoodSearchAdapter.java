@@ -37,7 +37,7 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
 
     public FoodSearchAdapter(FoodListFragment selectFood, int foodType) {
         this.selectFood = selectFood;
-        addAll(MyCapNutrition.dataManager.getAllFoodsOfType(foodType));
+        addAll(MyCapNutrition.dataManager.foodManager.getAllFoodsOfType(foodType));
         originalItems.addAll(items);
         inflater = LayoutInflater.from(selectFood.getContext());
         this.foodType = foodType;
@@ -69,7 +69,7 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
 
     public void deleteItem(int position) {
         Food food = getTypedItem(position);
-        MyCapNutrition.dataManager.deactivateFood(food);
+        MyCapNutrition.dataManager.foodManager.setActive(food.DBID, false);
         originalItems.remove(position);
         getFilter().filter("");
         notifyDataSetChanged();
@@ -84,7 +84,7 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
     }
 
     public void restoreItem(Food food, int position) {
-        MyCapNutrition.dataManager.restoreFood(food);
+        MyCapNutrition.dataManager.foodManager.setActive(food.DBID, true);
         originalItems.add(position, new CheckableObject<>(food));
         getFilter().filter("");
         notifyDataSetChanged();

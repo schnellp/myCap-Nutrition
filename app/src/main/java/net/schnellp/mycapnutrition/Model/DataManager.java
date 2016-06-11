@@ -24,7 +24,7 @@ public class DataManager {
         dbHelper = new DBHelper(context);
 
         database = dbHelper.getWritableDatabase();
-        foodManager = new FoodManager(database, FoodEntry.TABLE_NAME, Food.class);
+        foodManager = new FoodManager(database);
     }
 
     public String tableToString(String tableName, boolean headers) {
@@ -74,88 +74,9 @@ public class DataManager {
         return tableString.toString();
     }
 
-    public Food createFood(String name, IntOrNA referenceServing_mg,
-                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
-        return createFood(name, referenceServing_mg,
-                kcal, carb_mg, fat_mg, protein_mg, true, FoodEntry.TYPE_FOOD);
-    }
-
-    public Food createFood(String name, IntOrNA referenceServing_mg,
-                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
-                           boolean active, int type) {
-        ContentValues values = new ContentValues();
-        values.put(FoodEntry.COLUMN_NAME_NAME, name);
-        if (!referenceServing_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg.toString());
-        }
-        if (!kcal.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_KCAL, kcal.toString());
-        }
-        if (!carb_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.toString());
-        }
-        if (!fat_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.toString());
-        }
-        if (!protein_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
-        }
-
-        values.put(FoodEntry._ACTIVE, active);
-        values.put(FoodEntry.COLUMN_NAME_TYPE, type);
-
-        return foodManager.create(values);
-    }
-
-    public boolean restoreFood(Food food) {
-        return foodManager.setActive(food.DBID, true);
-    }
-
-    public Food updateFood(int dbid, String name, IntOrNA referenceServing_mg,
-                           IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
-        ContentValues values = new ContentValues();
-        values.put(FoodEntry.COLUMN_NAME_NAME, name);
-        if (!referenceServing_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_REF_SERVING_MG, referenceServing_mg.toString());
-        }
-        if (!kcal.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_KCAL, kcal.toString());
-        }
-        if (!carb_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_CARB_MG, carb_mg.toString());
-        }
-        if (!fat_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_FAT_MG, fat_mg.toString());
-        }
-        if (!protein_mg.isNA) {
-            values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
-        }
-
-        return foodManager.update(dbid, values);
-    }
-
-    public void touchFood(int dbid) {
-        ContentValues values = new ContentValues();
-        values.put(FoodEntry.COLUMN_NAME_LAST_USED, (new Date()).getTime() / 1000);
-        foodManager.update(dbid, values);
-    }
-
-    public List<Food> getFoods(String constraint) {
-        return foodManager.getByConstraint(constraint);
-    }
-
-    public List<Food> getAllFoodsOfType(int type) {
-        return getFoods(FoodEntry._ACTIVE + " = 1" +
-                " AND " + FoodEntry.COLUMN_NAME_TYPE + " = " + type);
-    }
-
-    public void deactivateFood(Food food) {
-        foodManager.setActive(food.DBID, false);
-    }
-
     public Food createBlankRecipe() {
         IntOrNA na = new IntOrNA();
-        Food recipe = createFood("New Recipe", na,
+        Food recipe = foodManager.create("New Recipe", na,
                 na, na, na, na,
                 false, FoodEntry.TYPE_RECIPE);
         return recipe;
@@ -467,7 +388,7 @@ public class DataManager {
     }
 
     public Record createRecord(String date, Food food, IntOrNA quantity_cents, Unit unit) {
-        touchFood(food.DBID);
+        foodManager.touch(food.DBID);
 
         ContentValues values = new ContentValues();
         values.put(RecordEntry.COLUMN_NAME_DATE, date);
