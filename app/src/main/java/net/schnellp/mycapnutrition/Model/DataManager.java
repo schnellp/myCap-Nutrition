@@ -104,18 +104,7 @@ public class DataManager {
         values.put(FoodEntry._ACTIVE, active);
         values.put(FoodEntry.COLUMN_NAME_TYPE, type);
 
-        long insertID = -1;
-        try {
-            insertID = database.insertOrThrow(FoodEntry.TABLE_NAME, null, values);
-        } catch(SQLException e) {
-            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
-            e.printStackTrace();
-        }
-
-        Food food = foodManager.get((int) insertID);
-        createUnit(food, "1 g", new IntOrNA(1000));
-
-        return food;
+        return foodManager.create(values);
     }
 
     public boolean restoreFood(Food food) {
@@ -142,25 +131,13 @@ public class DataManager {
             values.put(FoodEntry.COLUMN_NAME_PROTEIN_MG, protein_mg.toString());
         }
 
-        try {
-            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + dbid, null);
-        } catch(SQLException e) {
-            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
-            e.printStackTrace();
-        }
-
-        return foodManager.get(dbid);
+        return foodManager.update(dbid, values);
     }
 
     public void touchFood(int dbid) {
         ContentValues values = new ContentValues();
         values.put(FoodEntry.COLUMN_NAME_LAST_USED, (new Date()).getTime() / 1000);
-        try {
-            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + dbid, null);
-        } catch(SQLException e) {
-            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
-            e.printStackTrace();
-        }
+        foodManager.update(dbid, values);
     }
 
     public List<Food> getFoods(String constraint) {

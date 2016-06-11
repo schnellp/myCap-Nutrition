@@ -22,6 +22,18 @@ public abstract class DataObjectManager<T extends DataObject> {
         this.dataObjectClass = dataObjectClass;
     }
 
+    public T create(ContentValues values) {
+        long insertID = -1;
+        try {
+            insertID = db.insertOrThrow(tableName, null, values);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return get((int) insertID);
+    }
+
     public T get(int dbid) {
         T object = objects.get(dbid);
 
@@ -99,6 +111,20 @@ public abstract class DataObjectManager<T extends DataObject> {
         }
 
         return object;
+    }
+
+    public T update(int dbid, ContentValues values) {
+        long updateID = -1;
+        try {
+            updateID = db.update(tableName, values,
+                    DBContract.ObjectEntry._ID + " = " + dbid,
+                    null);
+        } catch(SQLException e) {
+            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+
+        return get((int) updateID);
     }
 
     public boolean setActive(int dbid, boolean active) {

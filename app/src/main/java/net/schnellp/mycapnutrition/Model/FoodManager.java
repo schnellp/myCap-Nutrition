@@ -40,6 +40,15 @@ public class FoodManager extends DataObjectManager<Food> {
     }
 
     @Override
+    public Food create(ContentValues values) {
+        Food newFood = super.create(values);
+
+        MyCapNutrition.dataManager.createUnit(newFood, "1 g", new IntOrNA(1000));
+
+        return newFood;
+    }
+
+    @Override
     public boolean setActive(int dbid, boolean active) {
         ContentValues values = new ContentValues();
         values.put(DBContract.ObjectEntry._ACTIVE, active);
