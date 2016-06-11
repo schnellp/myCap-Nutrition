@@ -27,6 +27,7 @@ public final class DBContract {
         public static final String COLUMN_NAME_PACKAGE = "package";
         public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_NOTES = "notes";
         public static final String COLUMN_NAME_REF_SERVING_MG = "reference_serving_mg";
         public static final String COLUMN_NAME_RECIPE_SERVINGS = "recipe_servings";
         public static final String COLUMN_NAME_KCAL = "kcal";
