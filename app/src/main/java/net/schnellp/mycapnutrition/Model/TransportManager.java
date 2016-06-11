@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.SparseArray;
@@ -34,7 +33,9 @@ public class TransportManager {
         String dirPath = sender.getFilesDir().getAbsolutePath() + File.separator + "publicdata";
         File dir = new File(dirPath);
         if (!dir.exists()) {
-            dir.mkdir();
+            if (!dir.mkdir()) {
+                throw new RuntimeException("Could not create directory " + dirPath);
+            }
         }
         File file = new File(dir, "MyCap Nutrition data.mccsv");
 
@@ -99,19 +100,6 @@ public class TransportManager {
         return Uri.fromFile(file);
     }
 
-    private boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hasEnclosingDoubleQuotes(String string) {
-        return string.charAt(0) == '"' &&
-                string.charAt(string.length() - 1) == '"';
-    }
-
     private String stripEnclosingDoubleQuotes(String string) {
         if (!string.equals("") &&
                 string.charAt(0) == '"' &&
@@ -168,6 +156,9 @@ public class TransportManager {
 
         try {
             InputStream inputStream = app.getContentResolver().openInputStream(uri);
+            if (inputStream == null) {
+                throw new IOException("Unable to create input stream.");
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     inputStream));
 
@@ -178,7 +169,6 @@ public class TransportManager {
 
             String table = reader.readLine();
             ArrayList<String> colnames = getEntriesFromLine(reader.readLine());
-            int ncol = colnames.size();
             int idcol = colnames.indexOf(DBContract._ID);
             String line;
             ArrayList<String> lineEntries;
@@ -193,7 +183,6 @@ public class TransportManager {
                         break;
                     }
                     colnames = getEntriesFromLine(reader.readLine());
-                    ncol = colnames.size();
                     idcol = colnames.indexOf(DBContract._ID);
                 } else {
                     lineEntries = getEntriesFromLine(line);
@@ -233,7 +222,8 @@ public class TransportManager {
             }
             inputStream.close();
         } catch (IOException e) {
-            System.out.println(e);
+            Log.e("Exception","IOException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
         }
     }
 }

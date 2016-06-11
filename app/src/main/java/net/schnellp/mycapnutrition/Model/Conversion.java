@@ -1,5 +1,7 @@
 package net.schnellp.mycapnutrition.Model;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -65,7 +67,8 @@ public abstract class Conversion {
         try {
             c.setTime(sdf.parse(dt));
         } catch(Exception e) {
-            System.out.println(e);
+            Log.e("Exception",String.valueOf(e.getMessage()));
+            e.printStackTrace();
         }
 
         c.add(Calendar.DATE, day);  // number of days to add

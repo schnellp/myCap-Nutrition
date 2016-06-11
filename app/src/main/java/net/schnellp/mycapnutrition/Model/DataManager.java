@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class DataManager {
@@ -50,14 +49,14 @@ public class DataManager {
 
         while (!cursor.isAfterLast()) {
             for(int j = 0; j < ncol; j++) {
-                if (cursor.isNull(j)) {
-
-                } else if (cursor.getType(j) == Cursor.FIELD_TYPE_STRING) {
-                    tableString.append("\"");
-                    tableString.append(cursor.getString(j).replace("\"", "\"\""));
-                    tableString.append("\"");
-                } else {
-                    tableString.append(cursor.getString(j));
+                if (!cursor.isNull(j)) {
+                    if (cursor.getType(j) == Cursor.FIELD_TYPE_STRING) {
+                        tableString.append("\"");
+                        tableString.append(cursor.getString(j).replace("\"", "\"\""));
+                        tableString.append("\"");
+                    } else {
+                        tableString.append(cursor.getString(j));
+                    }
                 }
 
                 if (j < ncol - 1) {
@@ -76,10 +75,9 @@ public class DataManager {
 
     public Food createBlankRecipe() {
         IntOrNA na = new IntOrNA();
-        Food recipe = foodManager.create("New Recipe", na,
+        return foodManager.create("New Recipe", na,
                 na, na, na, na,
                 false, FoodEntry.TYPE_RECIPE);
-        return recipe;
     }
 
     public Food compileRecipe(int dbid, String name, IntOrNA servings) {
