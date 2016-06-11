@@ -1,16 +1,18 @@
-package net.schnellp.mycapnutrition.MultiSelectListView;
+package net.schnellp.mycapnutrition.multiselect;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListView;
+import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableListAdapter
-    implements ExpandableListView.OnGroupClickListener, AdapterView.OnItemLongClickListener {
+public abstract class MultiSelectAdapter<T> extends BaseAdapter
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
+
+    //TODO: Dirty, ugly hack. Find better way to handle positioning when headers present.
+    public int headerCount = 0;
 
     protected ArrayList<CheckableObject<T>> items = new ArrayList<>();
 
@@ -28,6 +30,25 @@ public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableList
             }
         }
         return numChecked;
+    }
+
+    @Override
+    public int getCount() {
+        return items.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return getTypedItem(position);
+    }
+
+    public T getTypedItem(int position) {
+        return (T) items.get(position).object;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     public void setItemChecked(int position, boolean checked) {
@@ -56,68 +77,39 @@ public abstract class ExpandableMultiSelectAdapter<T> extends BaseExpandableList
         return checkedPositions;
     }
 
-    @Override
-    public int getGroupCount() {
-        return items.size();
-    }
-
-    @Override
-    public int getChildrenCount(int groupPosition) {
-        return 1;
-    }
-
-    @Override
-    public Object getGroup(int groupPosition) {
-        return getTypedGroup(groupPosition);
-    }
-
-    public T getTypedGroup(int groupPosition) {
-        return items.get(groupPosition).object;
-    }
-
-    @Override
-    public Object getChild(int groupPosition, int childPosition) {
-        return null;
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    public void showMenuGroupIfApplicable(Context context) {
+    protected void showMenuGroupIfApplicable(Context context) {
         ((MultiSelectActivity) context).setMultiSelectOptionsMenuVisible(getNumChecked() > 0);
         ((MultiSelectActivity) context).setSingleSelectOptionsMenuVisible(getNumChecked() == 1);
     }
 
     @Override
-    public boolean onGroupClick(ExpandableListView parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (position < headerCount) {
+            return;
+        }
         if (getNumChecked() > 0) {
             if (((ActivatedLinearLayout) view).isChecked()) {
                 ((ActivatedLinearLayout) view).setChecked(false);
-                setItemChecked(position, false);
+                setItemChecked(position - headerCount, false);
             } else {
                 ((ActivatedLinearLayout) view).setChecked(true);
-                setItemChecked(position, true);
+                setItemChecked(position - headerCount, true);
             }
             showMenuGroupIfApplicable(view.getContext());
-            return true;
         }
-        return false;
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        for (int i = 0; i < getGroupCount(); i++) {
-            ((ExpandableListView) parent).collapseGroup(i);
+        if (position < headerCount) {
+            return false;
         }
-
         if (((ActivatedLinearLayout) view).isChecked()) {
             ((ActivatedLinearLayout) view).setChecked(false);
-            setItemChecked(position, false);
+            setItemChecked(position - headerCount, false);
         } else {
             ((ActivatedLinearLayout) view).setChecked(true);
-            setItemChecked(position, true);
+            setItemChecked(position - headerCount, true);
         }
         showMenuGroupIfApplicable(view.getContext());
         return true;

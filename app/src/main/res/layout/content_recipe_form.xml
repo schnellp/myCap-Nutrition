@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.schnellp.mycapnutrition.View.RecipeForm"
+    tools:context="net.schnellp.mycapnutrition.view.RecipeForm"
     tools:showIn="@layout/activity_recipe_form">
 
     <ListView

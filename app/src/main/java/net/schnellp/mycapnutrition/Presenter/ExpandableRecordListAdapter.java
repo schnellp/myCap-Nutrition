@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.Presenter;
+package net.schnellp.mycapnutrition.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,14 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Model.Record;
+import net.schnellp.mycapnutrition.model.Record;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
-import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
-import net.schnellp.mycapnutrition.MultiSelectListView.ExpandableMultiSelectAdapter;
-import net.schnellp.mycapnutrition.View.JournalDayView;
-import net.schnellp.mycapnutrition.View.RecordView;
+import net.schnellp.mycapnutrition.multiselect.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.multiselect.CheckableObject;
+import net.schnellp.mycapnutrition.multiselect.ExpandableMultiSelectAdapter;
+import net.schnellp.mycapnutrition.view.JournalDayView;
+import net.schnellp.mycapnutrition.view.RecordView;
 
 import java.util.ArrayList;
 import java.util.Collections;

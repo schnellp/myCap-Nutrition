@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="net.schnellp.mycapnutrition.View.UnitList"
+    tools:context="net.schnellp.mycapnutrition.view.UnitList"
     tools:showIn="@layout/activity_unit_list">
 
     <ListView

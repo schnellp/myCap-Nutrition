@@ -1,12 +1,12 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="net.schnellp.mycapnutrition.View.Settings$PersonalPreferenceFragment"
+        android:fragment="net.schnellp.mycapnutrition.view.Settings$PersonalPreferenceFragment"
         android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="@string/pref_header_me" />
 
     <header
-        android:fragment="net.schnellp.mycapnutrition.View.Settings$DataPreferenceFragment"
+        android:fragment="net.schnellp.mycapnutrition.view.Settings$DataPreferenceFragment"
         android:icon="@drawable/ic_storage_black_24dp"
         android:title="@string/pref_header_data" />
 

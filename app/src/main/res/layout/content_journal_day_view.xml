@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.JournalDayView"
+    tools:context=".view.JournalDayView"
     tools:showIn="@layout/activity_journal_day_view"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 

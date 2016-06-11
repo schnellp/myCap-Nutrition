@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="net.schnellp.mycapnutrition.View.UnitList"
+    tools:context="net.schnellp.mycapnutrition.view.UnitList"
     android:id="@+id/clUnitList">
 
     <android.support.design.widget.AppBarLayout

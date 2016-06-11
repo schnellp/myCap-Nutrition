@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.MultiSelectListView;
+package net.schnellp.mycapnutrition.multiselect;
 
 public interface MultiSelectActivity {
     void setMultiSelectOptionsMenuVisible(boolean visible);

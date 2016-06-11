@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.MultiSelectListView;
+package net.schnellp.mycapnutrition.multiselect;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;

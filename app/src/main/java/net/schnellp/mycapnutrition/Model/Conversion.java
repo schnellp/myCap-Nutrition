@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.Model;
+package net.schnellp.mycapnutrition.model;
 
 import android.util.Log;
 

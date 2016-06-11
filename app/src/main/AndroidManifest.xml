@@ -20,7 +20,7 @@
         </provider>
 
         <activity
-            android:name=".View.JournalDayView"
+            android:name=".view.JournalDayView"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,30 +30,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".View.RecordView"
+            android:name=".view.RecordView"
             android:label="@string/title_activity_record_view"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.SelectFood"
+            android:name=".view.SelectFood"
             android:label="@string/title_activity_select_food"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.AddFood"
+            android:name=".view.AddFood"
             android:label="@string/title_activity_add_food"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:name=".View.AddUnit"
+            android:name=".view.AddUnit"
             android:label="@string/title_activity_add_unit"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.UnitList"
+            android:name=".view.UnitList"
             android:label="@string/title_activity_unit_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".View.Settings"
+            android:name=".view.Settings"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".View.RecipeForm"></activity>
+        <activity android:name=".view.RecipeForm"></activity>
     </application>
 
 </manifest>

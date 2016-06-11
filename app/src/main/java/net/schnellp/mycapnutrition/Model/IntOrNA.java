@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.Model;
+package net.schnellp.mycapnutrition.model;
 
 public class IntOrNA {
     public final int val;

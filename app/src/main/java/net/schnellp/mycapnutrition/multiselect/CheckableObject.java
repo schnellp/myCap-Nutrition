@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.MultiSelectListView;
+package net.schnellp.mycapnutrition.multiselect;
 
 public class CheckableObject<T> {
     public final T object;
