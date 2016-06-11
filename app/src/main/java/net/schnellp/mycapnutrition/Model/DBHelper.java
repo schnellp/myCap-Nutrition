@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -67,6 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     RecordEntry._ID + " INTEGER PRIMARY KEY, " +
                     RecordEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     RecordEntry.COLUMN_NAME_DATE + " TEXT, " +
+                    RecordEntry.COLUMN_NAME_TIME + " TEXT, " +
                     RecordEntry.COLUMN_NAME_FOOD_ID + " INTEGER, " +
                     RecordEntry.COLUMN_NAME_UNIT_ID + " INTEGER, " +
                     RecordEntry.COLUMN_NAME_QUANTITY_CENTS + " INTEGER, " +
@@ -82,6 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     BodyMassEntry._ID + " INTEGER PRIMARY KEY, " +
                     BodyMassEntry._ACTIVE + " INTEGER DEFAULT 1, " +
                     BodyMassEntry.COLUMN_NAME_DATE + " TEXT, " +
+                    BodyMassEntry.COLUMN_NAME_TIME + " TEXT, " +
                     BodyMassEntry.COLUMN_NAME_MASS_G + " INTEGER)";
 
     private static final String SQL_DELETE_PACKAGE =
