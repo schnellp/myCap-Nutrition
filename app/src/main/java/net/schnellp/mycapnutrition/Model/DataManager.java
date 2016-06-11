@@ -18,10 +18,13 @@ public class DataManager {
     private SQLiteDatabase database;
     private DBHelper dbHelper;
 
+    public final FoodManager foodManager;
+
     public DataManager(Context context) {
         dbHelper = new DBHelper(context);
 
         database = dbHelper.getWritableDatabase();
+        foodManager = new FoodManager(database, FoodEntry.TABLE_NAME);
     }
 
     public String tableToString(String tableName, boolean headers) {
@@ -71,60 +74,6 @@ public class DataManager {
         return tableString.toString();
     }
 
-    public Food foodFromCursor(Cursor cursor) {
-        int DBID = cursor.getInt(cursor.getColumnIndex(DBContract._ID));
-        String name = cursor.getString(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_NAME));
-        IntOrNA referenceServing_mg;
-        IntOrNA kcal;
-        IntOrNA carb_mg;
-        IntOrNA fat_mg;
-        IntOrNA protein_mg;
-
-        boolean isRecipe;
-        IntOrNA servings;
-
-        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_REF_SERVING_MG))) {
-            referenceServing_mg = new IntOrNA(0, true);
-        } else {
-            referenceServing_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_REF_SERVING_MG)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_KCAL))) {
-            kcal = new IntOrNA(0, true);
-        } else {
-            kcal = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_KCAL)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_CARB_MG))) {
-            carb_mg = new IntOrNA(0, true);
-        } else {
-            carb_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_CARB_MG)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_FAT_MG))) {
-            fat_mg = new IntOrNA(0, true);
-        } else {
-            fat_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_FAT_MG)));
-        }
-        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_PROTEIN_MG))) {
-            protein_mg = new IntOrNA(0, true);
-        } else {
-            protein_mg = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_PROTEIN_MG)));
-        }
-        isRecipe = cursor.getInt(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_TYPE)) == 1;
-        if (cursor.isNull(cursor.getColumnIndex(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS))) {
-            servings = new IntOrNA(0, true);
-        } else {
-            servings = new IntOrNA(cursor.getInt(
-                    cursor.getColumnIndex(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS)));
-        }
-
-        return new Food(DBID, name, referenceServing_mg, kcal, carb_mg, fat_mg, protein_mg,
-                isRecipe, servings);
-    }
-
     public Food createFood(String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
         return createFood(name, referenceServing_mg,
@@ -163,29 +112,14 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        Food food = getFood((int) insertID);
+        Food food = foodManager.get((int) insertID);
         createUnit(food, "1 g", new IntOrNA(1000));
 
         return food;
     }
 
     public boolean restoreFood(Food food) {
-        ContentValues values = new ContentValues();
-        values.put(FoodEntry._ACTIVE, 1);
-
-        try {
-            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + food.DBID, null);
-        } catch(SQLException e) {
-            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
-            e.printStackTrace();
-        }
-
-        List<Unit> units = getUnitsForFood(food, true);
-        for (Unit unit : units) {
-            restoreUnit(unit);
-        }
-
-        return true;
+        return foodManager.setActive(food.DBID, true);
     }
 
     public Food updateFood(int dbid, String name, IntOrNA referenceServing_mg,
@@ -215,7 +149,7 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        return getFood(dbid);
+        return foodManager.get(dbid);
     }
 
     public void touchFood(int dbid) {
@@ -229,42 +163,8 @@ public class DataManager {
         }
     }
 
-    public Food getFood(int dbid) {
-        Cursor cursor = database.query(FoodEntry.TABLE_NAME,
-                null, // all columns
-                FoodEntry._ID + " = " + dbid,
-                null, null, null, null);
-        cursor.moveToFirst();
-        Food newFood = foodFromCursor(cursor);
-        cursor.close();
-
-        return newFood;
-    }
-
     public List<Food> getFoods(String constraint) {
-        List<Food> foods = new ArrayList<>();
-
-        Cursor cursor = database.query(FoodEntry.TABLE_NAME,
-                null, // all columns
-                constraint,
-                null, // selection args
-                null, // group by
-                null, // having
-                FoodEntry.COLUMN_NAME_LAST_USED + " DESC"); // order by
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Food food = foodFromCursor(cursor);
-            foods.add(food);
-            cursor.moveToNext();
-        }
-
-        cursor.close();
-        return foods;
-    }
-
-    public List<Food> getAllFoods() {
-        return getFoods(FoodEntry._ACTIVE + " = 1");
+        return foodManager.getByConstraint(constraint);
     }
 
     public List<Food> getAllFoodsOfType(int type) {
@@ -273,26 +173,7 @@ public class DataManager {
     }
 
     public void deactivateFood(Food food) {
-        ContentValues values = new ContentValues();
-        values.put(FoodEntry._ACTIVE, 0);
-
-        try {
-            database.update(FoodEntry.TABLE_NAME, values, FoodEntry._ID + " = " + food.DBID, null);
-        } catch(SQLException e) {
-            Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
-            e.printStackTrace();
-        }
-
-        List<Unit> units = getUnitsForFood(food, true);
-        for (Unit unit : units) {
-            deactivateUnit(unit);
-        }
-    }
-
-    private void deleteFood(Food food) {
-        database.delete(FoodEntry.TABLE_NAME,
-                FoodEntry._ID + " = " + food.DBID,
-                null);
+        foodManager.setActive(food.DBID, false);
     }
 
     public Food createBlankRecipe() {
@@ -432,7 +313,7 @@ public class DataManager {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-        return getFood(dbid);
+        return foodManager.get(dbid);
     }
 
     public Ingredient ingredientFromCursor(Cursor cursor) {
@@ -440,7 +321,7 @@ public class DataManager {
 
         int recipeID = cursor.getInt(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_RECIPE_ID));
         int foodID = cursor.getInt(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_FOOD_ID));
-        Food food = getFood(foodID);
+        Food food = foodManager.get(foodID);
 
         int unitID;
         if (cursor.isNull(cursor.getColumnIndex(IngredientEntry.COLUMN_NAME_UNIT_ID))) {
@@ -575,7 +456,7 @@ public class DataManager {
         String date = cursor.getString(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_DATE));
 
         int foodID = cursor.getInt(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_FOOD_ID));
-        Food food = getFood(foodID);
+        Food food = foodManager.get(foodID);
 
         int unitID;
         if (cursor.isNull(cursor.getColumnIndex(RecordEntry.COLUMN_NAME_UNIT_ID))) {

@@ -8,6 +8,12 @@ public final class DBContract {
     public static final String _ID = "id";
     public static final String _ACTIVE = "active";
 
+    public static abstract class ObjectEntry implements BaseColumns {
+
+        public static final String _ID = DBContract._ID;
+        public static final String _ACTIVE = DBContract._ACTIVE;
+    }
+
     public static abstract class PackageEntry implements BaseColumns {
         public static final String TABLE_NAME = "Package";
         public static final String _ID = DBContract._ID;
@@ -16,10 +22,8 @@ public final class DBContract {
         public static final String COLUMN_NAME_DESCRIPTION = "description";
     }
 
-    public static abstract class FoodEntry implements BaseColumns {
+    public static abstract class FoodEntry extends ObjectEntry {
         public static final String TABLE_NAME = "Food";
-        public static final String _ID = DBContract._ID;
-        public static final String _ACTIVE = DBContract._ACTIVE;
         public static final String COLUMN_NAME_PACKAGE = "package";
         public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_NAME = "name";

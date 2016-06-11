@@ -4,12 +4,10 @@ import net.schnellp.mycapnutrition.Model.DBContract.FoodEntry;
 
 public class Food extends DataObject {
 
-    public final int DBID;
-
     public Food(int dbid, String name, IntOrNA referenceServing_mg,
                 IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg,
                 boolean isRecipe, IntOrNA servings) {
-        this.DBID = dbid;
+        super(dbid);
 
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
 
