@@ -12,10 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import net.schnellp.mycapnutrition.model.Food;
 import net.schnellp.mycapnutrition.Objective;
@@ -39,9 +42,6 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
 
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    public void updateAdapter() {
-        mSectionsPagerAdapter.notifyDataSetChanged();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,22 +57,16 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
         mViewPager.setCurrentItem(0, false);
 
         EditText editText = (EditText) findViewById(R.id.editTextFoodSearch);
-
-        editText.addTextChangedListener(new TextWatcher() {
-
+        editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
-                        .instantiateItem(mViewPager, mViewPager.getCurrentItem());
-                fragment.adapter.getFilter().filter(s.toString());
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
+                            .instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                    fragment.adapter.search(v.getText().toString());
+                    return true;
+                }
+                return false;
             }
         });
 

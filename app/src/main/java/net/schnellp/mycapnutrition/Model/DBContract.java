@@ -40,6 +40,12 @@ public final class DBContract {
         public static final int TYPE_RECIPE = 1;
     }
 
+    public static final class FTSFoodEntry implements BaseColumns {
+        public static final String TABLE_NAME = "FTSFood";
+        public static final String _DOCID = "docid";
+        public static final String COLUMN_NAME_NAME = FoodEntry.COLUMN_NAME_NAME;
+    }
+
     public static abstract class UnitEntry implements BaseColumns {
         public static final String TABLE_NAME = "Unit";
         public static final String _ID = DBContract._ID;

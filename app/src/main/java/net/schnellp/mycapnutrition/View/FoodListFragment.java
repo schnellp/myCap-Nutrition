@@ -109,8 +109,4 @@ public class FoodListFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    public void updateFilter(String constraint) {
-        adapter.getFilter().filter(constraint);
-    }
 }

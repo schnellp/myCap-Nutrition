@@ -34,6 +34,10 @@ public abstract class DataObjectManager<T extends DataObject> {
         return get((int) insertID);
     }
 
+    public void clear() {
+        objects.clear();
+    }
+
     public T get(int dbid) {
         T object = objects.get(dbid);
 

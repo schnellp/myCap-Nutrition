@@ -82,6 +82,32 @@ public class FoodManager extends DataObjectManager<Food> {
                 kcal, carb_mg, fat_mg, protein_mg, true, DBContract.FoodEntry.TYPE_FOOD);
     }
 
+    public List<Food> getFoodMatches(String constraint) {
+
+        String sql = "SELECT * FROM " + DBContract.FoodEntry.TABLE_NAME + " " +
+                "WHERE " + DBContract.FoodEntry._ID + " IN (" +
+                "SELECT " + DBContract.FTSFoodEntry._DOCID + " " +
+                "FROM " + DBContract.FTSFoodEntry.TABLE_NAME + " " +
+                "WHERE " + DBContract.FTSFoodEntry.TABLE_NAME + " " +
+                "MATCH ?)";
+        String[] args = { constraint };
+
+        List<Food> newFoods = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery(sql, args);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Food food = fromCursor(cursor);
+            newFoods.add(food);
+            this.objects.append(food.DBID, food);
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return newFoods;
+    }
+
     public Food update(int dbid, String name, IntOrNA referenceServing_mg,
                            IntOrNA kcal, IntOrNA carb_mg, IntOrNA fat_mg, IntOrNA protein_mg) {
         ContentValues values = new ContentValues();

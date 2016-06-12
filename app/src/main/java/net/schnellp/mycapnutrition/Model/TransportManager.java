@@ -221,6 +221,7 @@ public class TransportManager {
                 }
             }
             inputStream.close();
+            // MyCapNutrition.dataManager.rebuildFTS();
         } catch (IOException e) {
             Log.e("Exception","IOException"+String.valueOf(e.getMessage()));
             e.printStackTrace();

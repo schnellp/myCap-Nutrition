@@ -27,7 +27,7 @@ public class DataManager {
     }
 
     public String tableToString(String tableName, boolean headers) {
-        Cursor cursor = database.query(tableName, null, null, null, null, null, null);
+        Cursor cursor = database.query(tableName, new String[] {"docid", "name"}, null, null, null, null, null);
 
         int ncol = cursor.getColumnCount();
         cursor.moveToFirst();
@@ -71,6 +71,11 @@ public class DataManager {
         cursor.close();
 
         return tableString.toString();
+    }
+
+    public void rebuildFTS() {
+        database.execSQL("INSERT INTO " + FTSFoodEntry.TABLE_NAME + "(" +
+                FTSFoodEntry.TABLE_NAME + ") VALUES('rebuild')");
     }
 
     public Food createBlankRecipe() {

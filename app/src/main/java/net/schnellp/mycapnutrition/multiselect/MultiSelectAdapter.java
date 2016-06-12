@@ -22,6 +22,10 @@ public abstract class MultiSelectAdapter<T> extends BaseAdapter
         }
     }
 
+    public void clear() {
+        items.clear();
+    }
+
     public int getNumChecked() {
         int numChecked = 0;
         for (CheckableObject item : items) {

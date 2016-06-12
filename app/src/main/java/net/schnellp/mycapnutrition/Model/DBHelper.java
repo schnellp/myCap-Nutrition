@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -36,6 +36,11 @@ public class DBHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + FoodEntry.COLUMN_NAME_PACKAGE + ") " +
                     "REFERENCES " + PackageEntry.TABLE_NAME + " (" + PackageEntry._ID + ") " +
                     "ON DELETE SET DEFAULT)";
+
+    private static final String SQL_CREATE_TABLE_FTS_FOOD =
+            "CREATE VIRTUAL TABLE " + FTSFoodEntry.TABLE_NAME + " " +
+                    "USING fts4 (content='" + FoodEntry.TABLE_NAME + "', " +
+                    FoodEntry.COLUMN_NAME_NAME + ")";
 
     private static final String SQL_CREATE_TABLE_UNIT =
             "CREATE TABLE " + UnitEntry.TABLE_NAME + " (" +
@@ -91,6 +96,8 @@ public class DBHelper extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + PackageEntry.TABLE_NAME;
     private static final String SQL_DELETE_FOOD =
             "DROP TABLE IF EXISTS " + FoodEntry.TABLE_NAME;
+    private static final String SQL_DELETE_FTS_FOOD =
+            "DROP TABLE IF EXISTS " + FTSFoodEntry.TABLE_NAME;
     private static final String SQL_DELETE_UNIT =
             "DROP TABLE IF EXISTS " + UnitEntry.TABLE_NAME;
     private static final String SQL_DELETE_INGREDIENT =
@@ -99,6 +106,43 @@ public class DBHelper extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + RecordEntry.TABLE_NAME;
     private static final String SQL_DELETE_BODYMASS =
             "DROP TABLE IF EXISTS " + BodyMassEntry.TABLE_NAME;
+
+    private static final String SQL_TRIGGER_FTS_BEFORE_UPDATE =
+            "CREATE TRIGGER Food_bu BEFORE UPDATE ON " + FoodEntry.TABLE_NAME + " BEGIN " +
+                    "DELETE FROM " + FTSFoodEntry.TABLE_NAME + " " +
+                    "WHERE " + "docid" + " = old." + "rowid" + "; " +
+                    "END";
+
+    private static final String SQL_TRIGGER_FTS_BEFORE_DELETE =
+            "CREATE TRIGGER Food_bd BEFORE DELETE ON " + FoodEntry.TABLE_NAME + " BEGIN " +
+                    "DELETE FROM " + FTSFoodEntry.TABLE_NAME + " " +
+                    "WHERE " + "docid" + " = old." + "rowid" + "; " +
+                    "END";
+
+    private static final String SQL_TRIGGER_FTS_AFTER_UPDATE =
+            "CREATE TRIGGER Food_au AFTER UPDATE ON " + FoodEntry.TABLE_NAME + " BEGIN " +
+                    "INSERT INTO " + FTSFoodEntry.TABLE_NAME + " (" +
+                    "docid" + ", " + FTSFoodEntry.COLUMN_NAME_NAME + ") " +
+                    "VALUES (" +
+                    "NEW.rowid" + ", NEW." + FoodEntry.COLUMN_NAME_NAME + "); " +
+                    "END";
+
+    private static final String SQL_TRIGGER_FTS_AFTER_INSERT =
+            "CREATE TRIGGER Food_ai AFTER INSERT ON " + FoodEntry.TABLE_NAME + " BEGIN " +
+                    "INSERT INTO " + FTSFoodEntry.TABLE_NAME + " (" +
+                    "docid" + ", " + FTSFoodEntry.COLUMN_NAME_NAME + ") " +
+                    "VALUES (" +
+                    "NEW.rowid" + ", NEW." + FoodEntry.COLUMN_NAME_NAME + "); " +
+                    "END";
+
+    private static final String SQL_DROP_TRIGGER_FTS_BEFORE_DELETE =
+            "DROP TRIGGER IF EXISTS Food_bd";
+    private static final String SQL_DROP_TRIGGER_FTS_BEFORE_UPDATE =
+            "DROP TRIGGER IF EXISTS Food_bu";
+    private static final String SQL_DROP_TRIGGER_FTS_AFTER_UPDATE =
+            "DROP TRIGGER IF EXISTS Food_au";
+    private static final String SQL_DROP_TRIGGER_FTS_AFTER_INSERT =
+            "DROP TRIGGER IF EXISTS Food_ai";
 
     private static final String SQL_INSERT_DEFAULT_PACKAGE =
             "INSERT INTO " + PackageEntry.TABLE_NAME + " (" +
@@ -115,10 +159,16 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_PACKAGE);
         db.execSQL(SQL_INSERT_DEFAULT_PACKAGE);
         db.execSQL(SQL_CREATE_TABLE_FOOD);
+        db.execSQL(SQL_CREATE_TABLE_FTS_FOOD);
         db.execSQL(SQL_CREATE_TABLE_UNIT);
         db.execSQL(SQL_CREATE_TABLE_INGREDIENT);
         db.execSQL(SQL_CREATE_TABLE_RECORD);
         db.execSQL(SQL_CREATE_TABLE_BODYMASS);
+
+        db.execSQL(SQL_TRIGGER_FTS_BEFORE_UPDATE);
+        db.execSQL(SQL_TRIGGER_FTS_BEFORE_DELETE);
+        db.execSQL(SQL_TRIGGER_FTS_AFTER_UPDATE);
+        db.execSQL(SQL_TRIGGER_FTS_AFTER_INSERT);
     }
 
     @Override
@@ -145,10 +195,16 @@ public class DBHelper extends SQLiteOpenHelper {
             // Enable foreign key constraints
             db.execSQL("PRAGMA foreign_keys=OFF;");
         }
+        db.execSQL(SQL_DROP_TRIGGER_FTS_BEFORE_UPDATE);
+        db.execSQL(SQL_DROP_TRIGGER_FTS_BEFORE_DELETE);
+        db.execSQL(SQL_DROP_TRIGGER_FTS_AFTER_UPDATE);
+        db.execSQL(SQL_DROP_TRIGGER_FTS_AFTER_INSERT);
+
         db.execSQL(SQL_DELETE_BODYMASS);
         db.execSQL(SQL_DELETE_RECORD);
         db.execSQL(SQL_DELETE_INGREDIENT);
         db.execSQL(SQL_DELETE_UNIT);
+        db.execSQL(SQL_DELETE_FTS_FOOD);
         db.execSQL(SQL_DELETE_FOOD);
         db.execSQL(SQL_DELETE_PACKAGE);
         if (!db.isReadOnly()) {

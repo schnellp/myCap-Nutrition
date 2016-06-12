@@ -15,6 +15,7 @@ import net.schnellp.mycapnutrition.model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.model.FoodManager;
 import net.schnellp.mycapnutrition.multiselect.ActivatedLinearLayout;
 import net.schnellp.mycapnutrition.view.AddFood;
 import net.schnellp.mycapnutrition.multiselect.CheckableObject;
@@ -28,17 +29,15 @@ import net.schnellp.mycapnutrition.view.UnitList;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filterable {
+public class FoodSearchAdapter extends MultiSelectAdapter<Food> {
 
     private FoodListFragment selectFood;
-    private ArrayList<CheckableObject<Food>> originalItems = new ArrayList<>();
     LayoutInflater inflater;
     private int foodType;
 
     public FoodSearchAdapter(FoodListFragment selectFood, int foodType) {
         this.selectFood = selectFood;
-        addAll(MyCapNutrition.dataManager.foodManager.getAllFoodsOfType(foodType));
-        originalItems.addAll(items);
+        // addAll(MyCapNutrition.dataManager.foodManager.getAllFoodsOfType(foodType));
         inflater = LayoutInflater.from(selectFood.getContext());
         this.foodType = foodType;
     }
@@ -70,8 +69,6 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
     public void deleteItem(int position) {
         Food food = getTypedItem(position);
         MyCapNutrition.dataManager.foodManager.setActive(food.DBID, false);
-        originalItems.remove(position);
-        getFilter().filter("");
         notifyDataSetChanged();
     }
 
@@ -85,8 +82,6 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
 
     public void restoreItem(Food food, int position) {
         MyCapNutrition.dataManager.foodManager.setActive(food.DBID, true);
-        originalItems.add(position, new CheckableObject<>(food));
-        getFilter().filter("");
         notifyDataSetChanged();
     }
 
@@ -126,58 +121,10 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> implements Filte
         return convertView;
     }
 
-    @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-
-                items = (ArrayList<CheckableObject<Food>>) results.values; // has the filtered values
-                notifyDataSetChanged();  // notifies the data with new filtered values
-            }
-
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-                ArrayList<CheckableObject<Food>> FilteredArrList = new ArrayList<>();
-
-                if (originalItems == null) {
-                    originalItems = new ArrayList<>(items); // saves the original data in mOriginalValues
-                }
-
-                /********
-                 *
-                 *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
-                 *  else does the Filtering and returns FilteredArrList(Filtered)
-                 *
-                 ********/
-                if (constraint == null || constraint.length() == 0) {
-
-                    // set the Original result to return
-                    results.count = originalItems.size();
-                    results.values = originalItems;
-                } else {
-                    constraint = constraint.toString().toLowerCase();
-                    for (int i = 0; i < originalItems.size(); i++) {
-                        String data = (originalItems.get(i).object).getName();
-                        if (matches(data, constraint.toString())) {
-                            FilteredArrList.add(originalItems.get(i));
-                        }
-                    }
-                    // set the Filtered result to return
-                    results.count = FilteredArrList.size();
-                    results.values = FilteredArrList;
-                }
-                return results;
-            }
-
-            protected boolean matches(String target, String query) {
-                return target.toLowerCase().contains(query);
-            }
-        };
-        return filter;
+    public void search(String constraint) {
+        clear();
+        addAll(MyCapNutrition.dataManager.foodManager.getFoodMatches(constraint));
+        notifyDataSetChanged();
     }
 
     @Override
