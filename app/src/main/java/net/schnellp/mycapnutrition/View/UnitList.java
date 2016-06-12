@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View;
+package net.schnellp.mycapnutrition.view;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -9,12 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import net.schnellp.mycapnutrition.Model.Food;
-import net.schnellp.mycapnutrition.Model.Unit;
+import net.schnellp.mycapnutrition.model.Food;
+import net.schnellp.mycapnutrition.model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
-import net.schnellp.mycapnutrition.Presenter.UnitListAdapter;
+import net.schnellp.mycapnutrition.presenter.UnitListAdapter;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
+import net.schnellp.mycapnutrition.multiselect.MultiSelectActivity;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View;
+package net.schnellp.mycapnutrition.view;
 
 
 import android.annotation.TargetApi;

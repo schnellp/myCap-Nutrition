@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View;
+package net.schnellp.mycapnutrition.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +10,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Model.DoubleOrNA;
-import net.schnellp.mycapnutrition.Model.Food;
-import net.schnellp.mycapnutrition.Model.IntOrNA;
-import net.schnellp.mycapnutrition.Model.Unit;
+import net.schnellp.mycapnutrition.model.DoubleOrNA;
+import net.schnellp.mycapnutrition.model.Food;
+import net.schnellp.mycapnutrition.model.IntOrNA;
+import net.schnellp.mycapnutrition.model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 

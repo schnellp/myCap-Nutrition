@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View;
+package net.schnellp.mycapnutrition.view;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import net.schnellp.mycapnutrition.Presenter.FoodSearchAdapter;
+import net.schnellp.mycapnutrition.presenter.FoodSearchAdapter;
 import net.schnellp.mycapnutrition.R;
 
 /**

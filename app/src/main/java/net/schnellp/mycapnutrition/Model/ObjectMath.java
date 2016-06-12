@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.Model;
+package net.schnellp.mycapnutrition.model;
 
 import java.util.List;
 

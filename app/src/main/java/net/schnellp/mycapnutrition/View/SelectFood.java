@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View;
+package net.schnellp.mycapnutrition.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,14 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ListView;
 
-import net.schnellp.mycapnutrition.Model.DBContract;
-import net.schnellp.mycapnutrition.Model.Food;
+import net.schnellp.mycapnutrition.model.Food;
 import net.schnellp.mycapnutrition.Objective;
-import net.schnellp.mycapnutrition.Presenter.FoodSearchAdapter;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectActivity;
+import net.schnellp.mycapnutrition.multiselect.MultiSelectActivity;
 
 import java.util.ArrayList;
 

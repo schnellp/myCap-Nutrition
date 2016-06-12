@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.Presenter;
+package net.schnellp.mycapnutrition.presenter;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Model.Food;
-import net.schnellp.mycapnutrition.Model.Unit;
+import net.schnellp.mycapnutrition.model.Food;
+import net.schnellp.mycapnutrition.model.Unit;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
 

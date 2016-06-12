@@ -1,8 +1,8 @@
-package net.schnellp.mycapnutrition.Model;
+package net.schnellp.mycapnutrition.model;
 
 import android.content.ContentValues;
 
-import net.schnellp.mycapnutrition.Model.DBContract.FoodEntry;
+import net.schnellp.mycapnutrition.model.DBContract.FoodEntry;
 
 public class Food extends DataObject {
 

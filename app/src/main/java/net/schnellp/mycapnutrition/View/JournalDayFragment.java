@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.View;
+package net.schnellp.mycapnutrition.view;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -12,9 +12,9 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Model.IntOrNA;
-import net.schnellp.mycapnutrition.Model.ObjectMath;
-import net.schnellp.mycapnutrition.Presenter.ExpandableRecordListAdapter;
+import net.schnellp.mycapnutrition.model.IntOrNA;
+import net.schnellp.mycapnutrition.model.ObjectMath;
+import net.schnellp.mycapnutrition.presenter.ExpandableRecordListAdapter;
 import net.schnellp.mycapnutrition.R;
 
 

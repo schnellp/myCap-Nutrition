@@ -1,4 +1,4 @@
-package net.schnellp.mycapnutrition.Presenter;
+package net.schnellp.mycapnutrition.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,20 +10,20 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import net.schnellp.mycapnutrition.Model.DBContract;
-import net.schnellp.mycapnutrition.Model.Food;
+import net.schnellp.mycapnutrition.model.DBContract;
+import net.schnellp.mycapnutrition.model.Food;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
-import net.schnellp.mycapnutrition.MultiSelectListView.ActivatedLinearLayout;
-import net.schnellp.mycapnutrition.View.AddFood;
-import net.schnellp.mycapnutrition.MultiSelectListView.CheckableObject;
-import net.schnellp.mycapnutrition.MultiSelectListView.MultiSelectAdapter;
-import net.schnellp.mycapnutrition.View.FoodListFragment;
-import net.schnellp.mycapnutrition.View.RecipeForm;
-import net.schnellp.mycapnutrition.View.RecordView;
-import net.schnellp.mycapnutrition.View.SelectFood;
-import net.schnellp.mycapnutrition.View.UnitList;
+import net.schnellp.mycapnutrition.multiselect.ActivatedLinearLayout;
+import net.schnellp.mycapnutrition.view.AddFood;
+import net.schnellp.mycapnutrition.multiselect.CheckableObject;
+import net.schnellp.mycapnutrition.multiselect.MultiSelectAdapter;
+import net.schnellp.mycapnutrition.view.FoodListFragment;
+import net.schnellp.mycapnutrition.view.RecipeForm;
+import net.schnellp.mycapnutrition.view.RecordView;
+import net.schnellp.mycapnutrition.view.SelectFood;
+import net.schnellp.mycapnutrition.view.UnitList;
 
 import java.util.ArrayList;
 import java.util.Collections;
