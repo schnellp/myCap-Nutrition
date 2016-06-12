@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import net.schnellp.mycapnutrition.presenter.FoodSearchAdapter;
@@ -55,6 +56,12 @@ public class FoodListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         adapter = new FoodSearchAdapter(this, foodType);
+
+        EditText searchBar = (EditText) getActivity().findViewById(R.id.editTextFoodSearch);
+        if (searchBar != null) {
+            adapter.search(searchBar.getText().toString());
+        }
+
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(adapter);
         listView.setOnItemLongClickListener(adapter);
