@@ -1,5 +1,6 @@
 package net.schnellp.mycapnutrition.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -63,6 +65,8 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
                             .instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     fragment.adapter.search(v.getText().toString());
                     return true;
                 }
