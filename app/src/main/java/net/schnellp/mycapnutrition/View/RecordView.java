@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.presenter.UnitSpinnerAdapter;
+import net.schnellp.mycapnutrition.view.util.OptionsMenuUtil;
 
 public class RecordView extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -92,6 +95,24 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
         Spinner spinner = (Spinner) findViewById(R.id.spUnit);
         spinner.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_options_submit, menu);
+        OptionsMenuUtil.tintMenuItems(this, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_submit:
+                saveRecord(null);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void saveRecord(View v) {
