@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -15,6 +17,7 @@ import net.schnellp.mycapnutrition.model.Food;
 import net.schnellp.mycapnutrition.model.IntOrNA;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.view.util.OptionsMenuUtil;
 
 public class AddFood extends AppCompatActivity {
 
@@ -57,6 +60,24 @@ public class AddFood extends AppCompatActivity {
             return new DoubleOrNA(Double.parseDouble(string), false);
         } else {
             return new DoubleOrNA(0, true);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_options_submit, menu);
+        OptionsMenuUtil.tintMenuItems(this, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_submit:
+                addFood(null);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
