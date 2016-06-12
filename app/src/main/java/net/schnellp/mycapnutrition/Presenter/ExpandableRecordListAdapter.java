@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.model.Record;
 import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.R;
@@ -110,6 +111,7 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
         JournalDayView context = (JournalDayView) activity;
         Record record = getTypedGroup(position);
         Intent intent = new Intent(context, RecordView.class);
+        intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.EDIT_RECORD);
         intent.putExtra("record_dbid", record.DBID);
         activity.startActivity(intent);
     }
