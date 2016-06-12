@@ -22,6 +22,7 @@ import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.presenter.IngredientListAdapter;
 import net.schnellp.mycapnutrition.R;
+import net.schnellp.mycapnutrition.view.util.OptionsMenuUtil;
 
 import java.util.ArrayList;
 
@@ -91,6 +92,7 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
         getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
         getMenuInflater().inflate(R.menu.menu_options_submit, menu);
         this.optionsMenu = menu;
+        OptionsMenuUtil.tintMenuItems(this, menu);
         setSingleSelectOptionsMenuVisible(false);
         setMultiSelectOptionsMenuVisible(false);
         return true;

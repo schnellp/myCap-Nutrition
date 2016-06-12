@@ -15,6 +15,7 @@ import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.presenter.UnitListAdapter;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.multiselect.MultiSelectActivity;
+import net.schnellp.mycapnutrition.view.util.OptionsMenuUtil;
 
 import java.util.ArrayList;
 
@@ -53,6 +54,7 @@ public class UnitList extends AppCompatActivity implements MultiSelectActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_options_multi_select, menu);
         this.optionsMenu = menu;
+        OptionsMenuUtil.tintMenuItems(this, menu);
         setSingleSelectOptionsMenuVisible(false);
         setMultiSelectOptionsMenuVisible(false);
         return true;

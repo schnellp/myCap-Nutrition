@@ -1,6 +1,9 @@
 package net.schnellp.mycapnutrition.view;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -22,6 +25,7 @@ import net.schnellp.mycapnutrition.model.Record;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
 import net.schnellp.mycapnutrition.multiselect.MultiSelectActivity;
+import net.schnellp.mycapnutrition.view.util.OptionsMenuUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,6 +103,7 @@ public class JournalDayView extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         this.optionsMenu = menu;
         getMenuInflater().inflate(R.menu.menu_journal_day_view, menu);
+        OptionsMenuUtil.tintMenuItems(this, menu);
         setMultiSelectOptionsMenuVisible(false);
         setSingleSelectOptionsMenuVisible(false);
         return true;
