@@ -175,9 +175,6 @@ public class DataManager {
         values.put(FoodEntry._ACTIVE, 1);
         if (!servings.isNA) {
             values.put(FoodEntry.COLUMN_NAME_RECIPE_SERVINGS, servings.toString());
-            if (!dTotalMg.isNA) {
-                createUnit(dbid, "1 serving", dTotalMg.divide(servings.toDoubleOrNA()).round());
-            }
         }
 
         values.put(FoodEntry.COLUMN_NAME_NAME, name);
@@ -214,7 +211,24 @@ public class DataManager {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-        return foodManager.get(dbid);
+
+        Food newRecipe = foodManager.get(dbid);
+
+        List<Unit> units = getUnitsForFood(newRecipe);
+        boolean servingUnitUpdated = false;
+        for (Unit unit : units) {
+            if (unit.name.equals("1 serving")) {
+                updateUnit(unit.DBID, newRecipe, "1 serving",
+                        dTotalMg.divide(servings.toDoubleOrNA()).round());
+                servingUnitUpdated = true;
+                break;
+            }
+        }
+        if (!servingUnitUpdated) {
+            createUnit(dbid, "1 serving", dTotalMg.divide(servings.toDoubleOrNA()).round());
+        }
+
+        return newRecipe;
     }
 
     public Ingredient ingredientFromCursor(Cursor cursor) {
