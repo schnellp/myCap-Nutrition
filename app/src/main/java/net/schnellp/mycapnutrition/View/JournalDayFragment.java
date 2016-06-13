@@ -32,6 +32,13 @@ public class JournalDayFragment extends Fragment {
 
         date = getArguments().getString(DATE);
 
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         ExpandableListView listView = (ExpandableListView)
                 rootView.findViewById(R.id.recordListView);
         adapter = new ExpandableRecordListAdapter(this.getActivity(), date);
@@ -51,7 +58,5 @@ public class JournalDayFragment extends Fragment {
         String progressString = kcal + " / " + goalKcal + " " + resources.getString(R.string.kcal);
         progressBar.setProgress((kcal.isNA) ? 0 : kcal.val);
         progressText.setText(progressString);
-
-        return rootView;
     }
 }
