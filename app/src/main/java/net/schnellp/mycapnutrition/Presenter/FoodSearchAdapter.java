@@ -123,7 +123,7 @@ public class FoodSearchAdapter extends MultiSelectAdapter<Food> {
 
     public void search(String constraint) {
         clear();
-        addAll(MyCapNutrition.dataManager.foodManager.getFoodMatches(constraint));
+        addAll(MyCapNutrition.dataManager.foodManager.getFoodMatches(constraint, foodType));
         notifyDataSetChanged();
     }
 

@@ -82,14 +82,16 @@ public class FoodManager extends DataObjectManager<Food> {
                 kcal, carb_mg, fat_mg, protein_mg, true, DBContract.FoodEntry.TYPE_FOOD);
     }
 
-    public List<Food> getFoodMatches(String constraint) {
+    public List<Food> getFoodMatches(String constraint, int foodType) {
 
         String sql = "SELECT * FROM " + DBContract.FoodEntry.TABLE_NAME + " " +
                 "WHERE " + DBContract.FoodEntry._ID + " IN (" +
                 "SELECT " + DBContract.FTSFoodEntry._DOCID + " " +
                 "FROM " + DBContract.FTSFoodEntry.TABLE_NAME + " " +
                 "WHERE " + DBContract.FTSFoodEntry.TABLE_NAME + " " +
-                "MATCH ?)";
+                "MATCH ?) " +
+                "AND " +
+                DBContract.FoodEntry.COLUMN_NAME_TYPE + " = " + foodType;
         String[] args = { constraint };
 
         List<Food> newFoods = new ArrayList<>();

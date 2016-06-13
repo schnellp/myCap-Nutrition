@@ -64,11 +64,15 @@ public class SelectFood extends AppCompatActivity implements MultiSelectActivity
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
-                            .instantiateItem(mViewPager, mViewPager.getCurrentItem());
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    fragment.adapter.search(v.getText().toString());
+
+                    for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+                        FoodListFragment fragment = (FoodListFragment) mSectionsPagerAdapter
+                                .instantiateItem(mViewPager, i);
+                        fragment.adapter.search(v.getText().toString());
+                    }
+
                     return true;
                 }
                 return false;
