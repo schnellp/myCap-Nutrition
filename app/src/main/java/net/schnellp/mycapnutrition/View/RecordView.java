@@ -71,11 +71,6 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
             food = MyCapNutrition.dataManager.foodManager.get(intent.getIntExtra("food_dbid", -1));
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
             tv.setText(food.getName());
-
-            UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
-            Spinner spinner = (Spinner) findViewById(R.id.spUnit);
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(this);
         }
     }
 
@@ -87,8 +82,11 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         Spinner spinner = (Spinner) findViewById(R.id.spUnit);
         spinner.setAdapter(adapter);
 
-        int targetIndex = ((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit);
-        spinner.setSelection(targetIndex, true);
+        if (unit != null) {
+            int targetIndex = ((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit);
+            spinner.setSelection(targetIndex, true);
+        }
+        spinner.setOnItemSelectedListener(this);
     }
 
     @Override
