@@ -30,6 +30,7 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
     private static final int ADD_UNIT_RESULT = 2;
 
     private Food food;
+    private Unit unit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +51,10 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
             tv.setText(food.getName());
 
-            Unit unit = MyCapNutrition.dataManager.getUnit(record.unitID);
-            UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
-            Spinner spinner = (Spinner) findViewById(R.id.spUnit);
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(this);
-            spinner.setSelection(((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit));
+            unit = MyCapNutrition.dataManager.getUnit(record.unitID);
 
             ((EditText) findViewById(R.id.etRecordServing)).setText(
-                    record.quantity_cents.toDoubleOrNA().divide(100).round().toString());
+                    record.quantity_cents.toDoubleOrNA().divide(100).toString());
         } else if (intent.hasExtra("ingredient_dbid")) {
             Ingredient ingredient = MyCapNutrition.dataManager.getIngredient(
                     intent.getIntExtra("ingredient_dbid", -1));
@@ -66,15 +62,10 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
             tv.setText(food.getName());
 
-            Unit unit = MyCapNutrition.dataManager.getUnit(ingredient.unit_id);
-            UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
-            Spinner spinner = (Spinner) findViewById(R.id.spUnit);
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(this);
-            spinner.setSelection(((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit));
+            unit = MyCapNutrition.dataManager.getUnit(ingredient.unit_id);
 
             ((EditText) findViewById(R.id.etRecordServing)).setText(
-                    ingredient.quantity_cents.toDoubleOrNA().divide(100).round().toString());
+                    ingredient.quantity_cents.toDoubleOrNA().divide(100).toString());
 
         } else {
             food = MyCapNutrition.dataManager.foodManager.get(intent.getIntExtra("food_dbid", -1));
@@ -95,6 +86,9 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
         Spinner spinner = (Spinner) findViewById(R.id.spUnit);
         spinner.setAdapter(adapter);
+
+        int targetIndex = ((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit);
+        spinner.setSelection(targetIndex, true);
     }
 
     @Override
