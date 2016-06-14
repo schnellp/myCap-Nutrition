@@ -7,5 +7,5 @@
     <color name="colorBackground">#FAFAFA</color>
 
     <color name="listItemUnchecked">@color/colorBackground</color>
-    <color name="listItemChecked">@color/colorAccent</color>
+    <color name="listItemChecked">#3f3f51b5</color>
 </resources>
