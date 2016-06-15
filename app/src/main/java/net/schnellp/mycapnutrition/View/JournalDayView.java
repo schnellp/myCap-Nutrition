@@ -1,5 +1,6 @@
 package net.schnellp.mycapnutrition.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -7,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -15,12 +17,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.model.Conversion;
+import net.schnellp.mycapnutrition.model.Food;
 import net.schnellp.mycapnutrition.model.Record;
 import net.schnellp.mycapnutrition.Objective;
 import net.schnellp.mycapnutrition.R;
@@ -96,12 +103,15 @@ public class JournalDayView extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        setSingleSelectOptionsMenuVisible(false);
+        setMultiSelectOptionsMenuVisible(false);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.optionsMenu = menu;
+        getMenuInflater().inflate(R.menu.menu_options_copy, menu);
         getMenuInflater().inflate(R.menu.menu_journal_day_view, menu);
         OptionsMenuUtil.tintMenuItems(this, menu);
         setMultiSelectOptionsMenuVisible(false);
@@ -116,9 +126,11 @@ public class JournalDayView extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
 
         switch(item.getItemId()) {
+            case R.id.action_copy:
+                showCopyContextMenu();
+                return true;
             case R.id.action_edit:
-                JournalDayFragment fragment = (JournalDayFragment) mSectionsPagerAdapter
-                        .instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                JournalDayFragment fragment = getCurrentFragment();
                 fragment.adapter.editItem(fragment.adapter.getCheckedPositions().get(0));
                 return true;
             case R.id.action_delete:
@@ -134,11 +146,13 @@ public class JournalDayView extends AppCompatActivity
                             }
                         });
 
-                tempFragment = (JournalDayFragment) mSectionsPagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem());
+                tempFragment = getCurrentFragment();
                 tempRecords = tempFragment.adapter.getCheckedItems();
                 tempPositions = tempFragment.adapter.getCheckedPositions();
                 tempFragment.adapter.deleteCheckedItems();
                 snackbar.show();
+                setSingleSelectOptionsMenuVisible(false);
+                setMultiSelectOptionsMenuVisible(false);
                 return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, Settings.class);
@@ -147,6 +161,54 @@ public class JournalDayView extends AppCompatActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void showCopyContextMenu() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Copy to...")
+                .setItems(new String[] { "Today", "A new recipe" },
+                        new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ArrayList<Record> records = getCurrentFragment()
+                                .adapter.getCheckedItems();
+                        switch (which) {
+                            case 0: // today
+                                for (Record record : records) {
+                                    MyCapNutrition.dataManager.createRecord(Conversion.todayString(),
+                                            MyCapNutrition.dataManager.foodManager.get(record.foodID),
+                                            record.quantity_cents,
+                                            MyCapNutrition.dataManager.getUnit(record.unitID));
+                                }
+                                mViewPager.setCurrentItem(Conversion.dateToDayNumber(
+                                        Conversion.todayString()
+                                ) + 1, true);
+                                Toast.makeText(JournalDayView.this, "Record(s) copied.",
+                                        Toast.LENGTH_SHORT).show();
+                                getCurrentFragment().adapter.refreshItems();
+                                break;
+                            case 1: // a new recipe
+                                Food recipe = MyCapNutrition.dataManager.createBlankRecipe();
+                                for (Record record : records) {
+                                    MyCapNutrition.dataManager.createIngredient(recipe.DBID,
+                                            record.foodID, record.unitID, record.quantity_cents);
+                                }
+
+                                Intent intent = new Intent(JournalDayView.this, RecipeForm.class);
+                                intent.putExtra("recipe_dbid", recipe.DBID);
+                                intent.putExtra(Objective.INTENT_EXTRA_NAME, Objective.EDIT_RECIPE);
+
+                                startActivity(intent);
+                                break;
+                        }
+                    }
+                });
+
+        builder.create().show();
+    }
+
+    private JournalDayFragment getCurrentFragment() {
+        return (JournalDayFragment) mSectionsPagerAdapter
+                .instantiateItem(mViewPager, mViewPager.getCurrentItem());
     }
 
     public void pageBack(View v) {
@@ -167,6 +229,7 @@ public class JournalDayView extends AppCompatActivity
     @Override
     public void setMultiSelectOptionsMenuVisible(boolean visible) {
         if (optionsMenu != null) {
+            optionsMenu.setGroupVisible(R.id.menu_options_copy, visible);
             optionsMenu.setGroupVisible(R.id.menu_options_multi_select_group, visible);
         }
     }
