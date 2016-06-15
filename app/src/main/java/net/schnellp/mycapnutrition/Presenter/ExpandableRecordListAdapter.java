@@ -24,11 +24,13 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
 
     public LayoutInflater inflater;
     public Activity activity;
+    private final String date;
 
     public ExpandableRecordListAdapter(Activity act, String date) {
         activity = act;
         addAll(MyCapNutrition.dataManager.getRecordsFromDate(date));
         inflater = act.getLayoutInflater();
+        this.date = date;
     }
 
     @Override
@@ -105,6 +107,12 @@ public class ExpandableRecordListAdapter extends ExpandableMultiSelectAdapter<Re
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
+    }
+
+    public void refreshItems() {
+        items.clear();
+        addAll(MyCapNutrition.dataManager.getRecordsFromDate(date));
+        notifyDataSetChanged();
     }
 
     public void editItem(int position) {

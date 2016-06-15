@@ -9,6 +9,12 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public abstract class Conversion {
+    public static String todayString() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        return sdfDate.format(now);
+    }
+
     public static String dayNumberToDate(int day) {
         String dt = "1970-01-01";  // Start date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
