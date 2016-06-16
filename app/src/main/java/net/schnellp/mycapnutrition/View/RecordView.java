@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,18 +43,22 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        EditText finalField = (EditText) findViewById(R.id.etRecordServing);
+        EditText recordServing = (EditText) findViewById(R.id.etRecordServing);
 
-        finalField.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    saveRecord(v);
-                    return true;
+        if (recordServing != null) {
+            recordServing.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        saveRecord(v);
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        } else {
+            Log.w("RecordView", "Could not find final field by id: etRecordServing");
+        }
 
         Intent intent = getIntent();
 
@@ -63,28 +68,49 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
 
             food = MyCapNutrition.dataManager.foodManager.get(record.foodID);
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
-            tv.setText(food.getName());
+            if (tv != null) {
+                tv.setText(food.getName());
+            } else {
+                Log.w("RecordView", "Could not find view by id: tvFoodName");
+            }
 
             unit = MyCapNutrition.dataManager.getUnit(record.unitID);
 
-            ((EditText) findViewById(R.id.etRecordServing)).setText(
-                    record.quantity_cents.toDoubleOrNA().divide(100).toString());
+            if (recordServing != null) {
+                recordServing.setText(
+                        record.quantity_cents.toDoubleOrNA().divide(100).toString());
+            } else {
+                Log.w("RecordView", "Could not find view by id: etRecordServing");
+            }
+
         } else if (intent.hasExtra("ingredient_dbid")) {
             Ingredient ingredient = MyCapNutrition.dataManager.getIngredient(
                     intent.getIntExtra("ingredient_dbid", -1));
             food = MyCapNutrition.dataManager.foodManager.get(ingredient.food_id);
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
-            tv.setText(food.getName());
+            if (tv != null) {
+                tv.setText(food.getName());
+            } else {
+                Log.w("RecordView", "Could not find view by id: tvFoodName");
+            }
 
             unit = MyCapNutrition.dataManager.getUnit(ingredient.unit_id);
 
-            ((EditText) findViewById(R.id.etRecordServing)).setText(
-                    ingredient.quantity_cents.toDoubleOrNA().divide(100).toString());
+            if (recordServing != null) {
+                recordServing.setText(
+                        ingredient.quantity_cents.toDoubleOrNA().divide(100).toString());
+            } else {
+                Log.w("RecordView", "Could not find view by id: etRecordServing");
+            }
 
         } else {
             food = MyCapNutrition.dataManager.foodManager.get(intent.getIntExtra("food_dbid", -1));
             TextView tv = (TextView) findViewById(R.id.tvFoodName);
-            tv.setText(food.getName());
+            if (tv != null) {
+                tv.setText(food.getName());
+            } else {
+                Log.w("RecordView", "Could not find view by id: tvFoodName");
+            }
         }
     }
 
@@ -94,13 +120,18 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
 
         UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(this, food);
         Spinner spinner = (Spinner) findViewById(R.id.spUnit);
-        spinner.setAdapter(adapter);
+        if (spinner != null) {
+            spinner.setAdapter(adapter);
 
-        if (unit != null) {
-            int targetIndex = ((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit);
-            spinner.setSelection(targetIndex, true);
+            if (unit != null) {
+                int targetIndex = ((UnitSpinnerAdapter) spinner.getAdapter()).getPosition(unit);
+                spinner.setSelection(targetIndex, true);
+            }
+            spinner.setOnItemSelectedListener(this);
+        } else {
+            Log.e("RecordView", "Could not find view by id: spUnit" +
+                    "Record may be saved with incorrect unit!");
         }
-        spinner.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -126,10 +157,21 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
         Intent foundingIntent = getIntent();
 
         EditText et = (EditText) findViewById(R.id.etRecordServing);
-        IntOrNA quantity_cents = (new DoubleOrNA(et.getText().toString())).multiply(100).round();
+
+        IntOrNA quantity_cents;
+        if (et != null) {
+            quantity_cents = (new DoubleOrNA(et.getText().toString())).multiply(100).round();
+        }  else {
+            throw new RuntimeException("Could not find view by id: etRecordServing.");
+        }
 
         Spinner unitSpinner = (Spinner) findViewById(R.id.spUnit);
-        Unit unit = ((Unit) unitSpinner.getSelectedItem());
+        Unit unit;
+        if (unitSpinner != null) {
+            unit = ((Unit) unitSpinner.getSelectedItem());
+        } else {
+            throw new RuntimeException("Could not find view by id: spUnit.");
+        }
 
         switch (foundingIntent.getIntExtra(Objective.INTENT_EXTRA_NAME, -1)) {
             case Objective.CREATE_RECORD:
@@ -197,15 +239,23 @@ public class RecordView extends AppCompatActivity implements AdapterView.OnItemS
                 food = MyCapNutrition.dataManager.foodManager.get(data.getIntExtra("food_dbid", -1));
 
                 TextView tv = (TextView) findViewById(R.id.tvFoodName);
-                tv.setText(food.getName());
+                if (tv != null) {
+                    tv.setText(food.getName());
+                } else {
+                    Log.w("RecordView", "Could not find view by id: tvFoodName");
+                }
             }
         } else if (requestCode == ADD_UNIT_RESULT &&
                 data != null &&
                 data.hasExtra("unit_dbid")) {
             Unit unit = MyCapNutrition.dataManager.getUnit(data.getIntExtra("unit_dbid", -1));
             Spinner unitSpinner = (Spinner) findViewById(R.id.spUnit);
-            int spinnerPosition = ((UnitSpinnerAdapter) unitSpinner.getAdapter()).getPosition(unit);
-            unitSpinner.setSelection(spinnerPosition);
+            if (unitSpinner != null) {
+                int spinnerPosition = ((UnitSpinnerAdapter) unitSpinner.getAdapter()).getPosition(unit);
+                unitSpinner.setSelection(spinnerPosition);
+            } else {
+                throw new RuntimeException("Could not find view by id: spUnit.");
+            }
         }
     }
 
