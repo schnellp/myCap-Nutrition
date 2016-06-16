@@ -73,11 +73,6 @@ public class DataManager {
         return tableString.toString();
     }
 
-    public void rebuildFTS() {
-        database.execSQL("INSERT INTO " + FTSFoodEntry.TABLE_NAME + "(" +
-                FTSFoodEntry.TABLE_NAME + ") VALUES('rebuild')");
-    }
-
     public Food createBlankRecipe() {
         IntOrNA na = new IntOrNA();
         return foodManager.create("New Recipe", na,
@@ -472,25 +467,6 @@ public class DataManager {
         return newRecord;
     }
 
-    public List<Record> getAllRecords() {
-        List<Record> records = new ArrayList<>();
-
-        Cursor cursor = database.query(RecordEntry.TABLE_NAME,
-                null, // all columns
-                RecordEntry._ACTIVE + " = 1",
-                null, null, null, null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Record record = recordFromCursor(cursor);
-            records.add(record);
-            cursor.moveToNext();
-        }
-
-        cursor.close();
-        return records;
-    }
-
     public List<Record> getRecordsFromDate(String date) {
         List<Record> records = new ArrayList<>();
 
@@ -523,12 +499,6 @@ public class DataManager {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-    }
-
-    private void deleteRecord(Record record) {
-        database.delete(RecordEntry.TABLE_NAME,
-                RecordEntry._ID + " = " + record.DBID,
-                null);
     }
 
     public Unit unitFromCursor(Cursor cursor) {
@@ -637,12 +607,6 @@ public class DataManager {
             Log.e("Exception","SQLException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
         }
-    }
-
-    private void deleteUnit(Unit unit) {
-        database.delete(UnitEntry.TABLE_NAME,
-                UnitEntry._ID + " = " + unit.DBID,
-                null);
     }
 
     public boolean restoreUnit(Unit unit) {

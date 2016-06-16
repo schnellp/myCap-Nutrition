@@ -28,7 +28,7 @@
     </LinearLayout>
 
     <TextView
-        android:labelFor="@id/etRecordServing"
+        android:labelFor="@+id/etRecordServing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Amount"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
-        android:id="@+id/etRecordServing" />
+        android:id="@id/etRecordServing" />
 
     <Spinner
         android:layout_width="match_parent"
