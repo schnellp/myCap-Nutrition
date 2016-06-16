@@ -40,9 +40,12 @@ public class TransportManager {
         File file = new File(dir, "MyCap Nutrition data.mccsv");
 
         String[] tables = new String[] {
+                DBContract.PackageEntry.TABLE_NAME,
                 DBContract.FoodEntry.TABLE_NAME,
                 DBContract.UnitEntry.TABLE_NAME,
-                DBContract.RecordEntry.TABLE_NAME
+                DBContract.IngredientEntry.TABLE_NAME,
+                DBContract.RecordEntry.TABLE_NAME,
+                DBContract.BodyMassEntry.TABLE_NAME
         };
 
         try {
@@ -79,7 +82,7 @@ public class TransportManager {
         }
 
         Intent shareIntent = new Intent();
-
+        
         if (fileUri != null) {
             // Grant temporary read permission to the content URI
             shareIntent.addFlags(
