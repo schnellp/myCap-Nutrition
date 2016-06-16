@@ -1,5 +1,6 @@
 package net.schnellp.mycapnutrition.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -64,6 +66,13 @@ public class RecipeForm extends AppCompatActivity implements MultiSelectActivity
         switch (objective) {
             case Objective.CREATE_RECIPE:
                 recipe = MyCapNutrition.dataManager.createBlankRecipe();
+
+                EditText editText = (EditText)findViewById(R.id.recipe_name);
+                editText.requestFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+
                 break;
             case Objective.EDIT_RECIPE:
                 recipe = MyCapNutrition.dataManager.foodManager.get(
