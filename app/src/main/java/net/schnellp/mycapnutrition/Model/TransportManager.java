@@ -82,7 +82,7 @@ public class TransportManager {
         }
 
         Intent shareIntent = new Intent();
-        
+
         if (fileUri != null) {
             // Grant temporary read permission to the content URI
             shareIntent.addFlags(
@@ -176,13 +176,17 @@ public class TransportManager {
             int idcol = colnames.indexOf(DBContract._ID);
             String line;
             ArrayList<String> lineEntries;
+            dm.beginTransaction();
             while ((line = reader.readLine()) != null) {
 
                 if (line.equals("")) {
+                    dm.setTransactionSuccessful();
+                    dm.endTransaction();
                     if (!reader.ready()) {
                         break;
                     }
                     table = reader.readLine();
+                    dm.beginTransaction();
                     if (!reader.ready()) {
                         break;
                     }
