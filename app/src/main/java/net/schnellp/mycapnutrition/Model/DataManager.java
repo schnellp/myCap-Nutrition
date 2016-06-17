@@ -624,6 +624,18 @@ public class DataManager {
         return true;
     }
 
+    public void beginTransaction() {
+        database.beginTransaction();
+    }
+
+    public void setTransactionSuccessful() {
+        database.setTransactionSuccessful();
+    }
+
+    public void endTransaction() {
+        database.endTransaction();
+    }
+
     public int directInsert(String tableName, ContentValues values) {
         long insertID = -1;
         try {

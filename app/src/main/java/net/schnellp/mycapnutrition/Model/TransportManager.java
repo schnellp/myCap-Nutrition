@@ -40,9 +40,12 @@ public class TransportManager {
         File file = new File(dir, "MyCap Nutrition data.mccsv");
 
         String[] tables = new String[] {
+                DBContract.PackageEntry.TABLE_NAME,
                 DBContract.FoodEntry.TABLE_NAME,
                 DBContract.UnitEntry.TABLE_NAME,
-                DBContract.RecordEntry.TABLE_NAME
+                DBContract.IngredientEntry.TABLE_NAME,
+                DBContract.RecordEntry.TABLE_NAME,
+                DBContract.BodyMassEntry.TABLE_NAME
         };
 
         try {
@@ -152,18 +155,15 @@ public class TransportManager {
         return values;
     }
 
-    public void importData(Uri uri){
-
+    public void importData(InputStream inputStream, DataManager dm) {
         try {
-            InputStream inputStream = app.getContentResolver().openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException("Unable to create input stream.");
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     inputStream));
 
-            DataManager dm = MyCapNutrition.dataManager;
-
+            SparseArray<Integer> packageDBIDFromFileID = new SparseArray<>();
             SparseArray<Integer> foodDBIDFromFileID = new SparseArray<>();
             SparseArray<Integer> unitDBIDFromFileID = new SparseArray<>();
 
@@ -172,13 +172,17 @@ public class TransportManager {
             int idcol = colnames.indexOf(DBContract._ID);
             String line;
             ArrayList<String> lineEntries;
+            dm.beginTransaction();
             while ((line = reader.readLine()) != null) {
 
                 if (line.equals("")) {
+                    dm.setTransactionSuccessful();
+                    dm.endTransaction();
                     if (!reader.ready()) {
                         break;
                     }
                     table = reader.readLine();
+                    dm.beginTransaction();
                     if (!reader.ready()) {
                         break;
                     }
@@ -188,23 +192,43 @@ public class TransportManager {
                     lineEntries = getEntriesFromLine(line);
 
                     // Replace IDs in file with database IDs
-                    if (table.equals(DBContract.UnitEntry.TABLE_NAME)) {
-                        int foodDBIDCol = colnames.indexOf(DBContract.UnitEntry.COLUMN_NAME_FOOD_ID);
-                        int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
-                        lineEntries.set(foodDBIDCol,
-                                dm.foodManager.get(foodDBIDFromFileID.get(foodFileID)).DBID + "");
-                    } else if (table.equals(DBContract.RecordEntry.TABLE_NAME)) {
-                        int foodDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_FOOD_ID);
-                        int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
-                        Food food = dm.foodManager.get(foodDBIDFromFileID.get(foodFileID));
-                        lineEntries.set(foodDBIDCol, food.DBID + "");
+                    switch (table) {
+                        case DBContract.FoodEntry.TABLE_NAME:
 
-                        int unitDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_UNIT_ID);
-                        if (!lineEntries.get(unitDBIDCol).equals("")) {
-                            int unitFileID = Integer.parseInt(lineEntries.get(unitDBIDCol));
-                            lineEntries.set(unitDBIDCol,
-                                    dm.foodManager.get(unitDBIDFromFileID.get(unitFileID)).DBID + "");
-                        }
+                            break;
+                        case DBContract.UnitEntry.TABLE_NAME:
+                            int foodDBIDCol = colnames.indexOf(DBContract.UnitEntry.COLUMN_NAME_FOOD_ID);
+                            int foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
+                            lineEntries.set(foodDBIDCol,
+                                    dm.foodManager.get(foodDBIDFromFileID.get(foodFileID)).DBID + "");
+                            break;
+                        case DBContract.IngredientEntry.TABLE_NAME:
+                            int recipeDBIDCol = colnames.indexOf(
+                                    DBContract.IngredientEntry.COLUMN_NAME_RECIPE_ID);
+                            int recipeFileID = Integer.parseInt(lineEntries.get(recipeDBIDCol));
+                            lineEntries.set(recipeDBIDCol, "" + foodDBIDFromFileID.get(recipeFileID));
+
+                            foodDBIDCol = colnames.indexOf(DBContract.IngredientEntry.COLUMN_NAME_FOOD_ID);
+                            foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
+                            lineEntries.set(foodDBIDCol, "" + foodDBIDFromFileID.get(foodFileID));
+
+                            int unitDBIDCol = colnames.indexOf(DBContract.IngredientEntry.COLUMN_NAME_UNIT_ID);
+                            if (!lineEntries.get(unitDBIDCol).equals("")) {
+                                int unitFileID = Integer.parseInt(lineEntries.get(unitDBIDCol));
+                                lineEntries.set(unitDBIDCol, "" + unitDBIDFromFileID.get(unitFileID));
+                            }
+                            break;
+                        case DBContract.RecordEntry.TABLE_NAME:
+                            foodDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_FOOD_ID);
+                            foodFileID = Integer.parseInt(lineEntries.get(foodDBIDCol));
+                            lineEntries.set(foodDBIDCol, "" + foodDBIDFromFileID.get(foodFileID));
+
+                            unitDBIDCol = colnames.indexOf(DBContract.RecordEntry.COLUMN_NAME_UNIT_ID);
+                            if (!lineEntries.get(unitDBIDCol).equals("")) {
+                                int unitFileID = Integer.parseInt(lineEntries.get(unitDBIDCol));
+                                lineEntries.set(unitDBIDCol, "" + unitDBIDFromFileID.get(unitFileID));
+                            }
+                            break;
                     }
 
                     // Write to database
@@ -213,6 +237,17 @@ public class TransportManager {
                     int dbid = dm.directInsert(table, values);
 
                     // Update maps from file IDs to database IDs
+                    switch (table) {
+                        case DBContract.PackageEntry.TABLE_NAME:
+                            packageDBIDFromFileID.put(fileID, dbid);
+                            break;
+                        case DBContract.FoodEntry.TABLE_NAME:
+                            foodDBIDFromFileID.put(fileID, dbid);
+                            break;
+                        case DBContract.UnitEntry.TABLE_NAME:
+                            unitDBIDFromFileID.put(fileID, dbid);
+                            break;
+                    }
                     if (table.equals(DBContract.FoodEntry.TABLE_NAME)) {
                         foodDBIDFromFileID.put(fileID, dbid);
                     } else if (table.equals(DBContract.UnitEntry.TABLE_NAME)) {
@@ -222,6 +257,16 @@ public class TransportManager {
             }
             inputStream.close();
             // MyCapNutrition.dataManager.rebuildFTS();
+        } catch (IOException e) {
+            Log.e("Exception","IOException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
+    public void importData(Uri uri){
+        try {
+            InputStream inputStream = app.getContentResolver().openInputStream(uri);
+            importData(inputStream, MyCapNutrition.dataManager);
         } catch (IOException e) {
             Log.e("Exception","IOException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
