@@ -1,14 +1,20 @@
 package net.schnellp.mycapnutrition.model;
 
+import net.schnellp.mycapnutrition.MyCapNutrition;
 import net.schnellp.mycapnutrition.model.DBContract.*;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.io.IOException;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    private final Context context;
+
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Food.db";
 
     private static final String SQL_CREATE_TABLE_PACKAGE =
@@ -152,6 +158,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -169,6 +176,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_TRIGGER_FTS_BEFORE_DELETE);
         db.execSQL(SQL_TRIGGER_FTS_AFTER_UPDATE);
         db.execSQL(SQL_TRIGGER_FTS_AFTER_INSERT);
+
+        MyCapNutrition.databaseCreatedNow = true;
     }
 
     @Override

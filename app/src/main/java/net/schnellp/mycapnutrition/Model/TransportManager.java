@@ -155,17 +155,13 @@ public class TransportManager {
         return values;
     }
 
-    public void importData(Uri uri){
-
+    public void importData(InputStream inputStream, DataManager dm) {
         try {
-            InputStream inputStream = app.getContentResolver().openInputStream(uri);
             if (inputStream == null) {
                 throw new IOException("Unable to create input stream.");
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     inputStream));
-
-            DataManager dm = MyCapNutrition.dataManager;
 
             SparseArray<Integer> packageDBIDFromFileID = new SparseArray<>();
             SparseArray<Integer> foodDBIDFromFileID = new SparseArray<>();
@@ -261,6 +257,16 @@ public class TransportManager {
             }
             inputStream.close();
             // MyCapNutrition.dataManager.rebuildFTS();
+        } catch (IOException e) {
+            Log.e("Exception","IOException"+String.valueOf(e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
+    public void importData(Uri uri){
+        try {
+            InputStream inputStream = app.getContentResolver().openInputStream(uri);
+            importData(inputStream, MyCapNutrition.dataManager);
         } catch (IOException e) {
             Log.e("Exception","IOException"+String.valueOf(e.getMessage()));
             e.printStackTrace();
